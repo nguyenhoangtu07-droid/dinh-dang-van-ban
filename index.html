@@ -597,6 +597,18 @@ function normSig(s, prof){
   }
   return s;
 }
+// Địa danh: viết hoa chữ cái đầu mỗi âm tiết của tên riêng (Phụ lục II, NĐ 30).
+// Danh từ chung chỉ đơn vị hành chính đứng đầu chỉ viết hoa chữ đầu: “Thành phố Hồ Chí Minh”, “Thị xã …”, “Thị trấn …”.
+function normDiaDanh(s){
+  s = clean(s); if (!s) return s;
+  const allCaps = !/\p{Ll}/u.test(s);
+  s = s.split(" ").map(w => {
+    if (!allCaps && w.length > 1 && w.length <= 4 && !/\p{Ll}/u.test(w)) return w; // chữ viết tắt: TP., HCM
+    return w.charAt(0).toUpperCase() + w.slice(1).toLowerCase();
+  }).join(" ");
+  return s.replace(/^Thành Phố(?=\s|$)/u, "Thành phố").replace(/^Thị Xã(?=\s|$)/u, "Thị xã")
+          .replace(/^Thị Trấn(?=\s|$)/u, "Thị trấn").replace(/^Đặc Khu(?=\s|$)/u, "Đặc khu");
+}
 const isAuthLine = s => /^((KT|TM|TL|TUQ|PT|Q)\.\s|(T\/M|K\/T|T\/L|T\/U)\s)/.test(s);
 
 function bodyLineOf(it, punct, tblNo){
@@ -617,14 +629,14 @@ function loadResult(R, fileName){
   const m = {
     coQuanCT: cq.length > 1 ? cq.slice(0, -1).join("\n") : "",
     coQuan: cq.length ? cq[cq.length - 1] : "",
-    so: normSo(R.so, prof), diaDanh: R.diaDanh, d: normDay(R.d), m: normMonth(R.m), y: R.y,
+    so: normSo(R.so, prof), diaDanh: normDiaDanh(R.diaDanh), d: normDay(R.d), m: normMonth(R.m), y: R.y,
     loai: R.loai, tenLoai: R.tenLoai,
     trichYeu: R.loai === "cv" ? clean(R.trichYeu).replace(RX.vv, "$2") : clean(R.trichYeu),
     kinhGui: R.kinhGui.join("\n"),
     body: bodyItems.map(x => x.line).join("\n"),
     sig: R.sig.map(s => normSig(s, prof)).join("\n"), nguoiKy: R.nguoiKy, noiNhan: R.noiNhan.join("\n"),
   };
-  STATE = { bodyItems, bodyOrig: m.body, fileName, R, rawDate: { d: R.d, m: R.m }, ignored: new Set(), auto };
+  STATE = { bodyItems, bodyOrig: m.body, fileName, R, rawDate: { d: R.d, m: R.m }, rawDiaDanh: clean(R.diaDanh), ignored: new Set(), auto };
   for (const f of FIELDS) $("f_" + f).value = m[f] || "";
   $("work").style.display = "grid";
   update();
@@ -643,7 +655,7 @@ function readModel(){
     prof, dang: prof === "dang",
     coQuanCT: lines(v("coQuanCT")).map(s => s.toUpperCase()),
     coQuan: lines(v("coQuan")).map(s => s.toUpperCase()),
-    so: normSo(v("so"), prof), diaDanh: clean(v("diaDanh")),
+    so: normSo(v("so"), prof), diaDanh: normDiaDanh(v("diaDanh")),
     d: normDay(clean(v("d"))), m: normMonth(clean(v("m"))), y: clean(v("y")),
     loai: v("loai"), tenLoai: clean(v("tenLoai")).toUpperCase(),
     trichYeu: clean(v("trichYeu")),
@@ -858,6 +870,7 @@ function checks(M){
   } else if (!/^[\d\s .…_]*\/[\p{Lu}\d]+([-–][\p{Lu}\d.]+)*$/u.test(M.so)) add("warn", `Số, ký hiệu “${M.so}” chưa đúng dạng Số: …/Tên viết tắt (ví dụ 125/SNV-VP).`);
   else add("ok", "Số, ký hiệu đúng dạng.");
   if (!M.diaDanh) add("warn", "Thiếu địa danh trước ngày tháng.");
+  else if (STATE && STATE.rawDiaDanh && STATE.rawDiaDanh !== M.diaDanh && STATE.rawDiaDanh.toLowerCase() === M.diaDanh.toLowerCase()) add("info", `Đã viết hoa địa danh: “${STATE.rawDiaDanh}” → “${M.diaDanh}”.`);
   if (!/^\d{4}$/.test(M.y)) add("warn", "Thiếu năm ban hành.");
   else if (!M.d || !M.m) add("info", "Ngày, tháng đang để trống (văn bản chưa ký số) — sẽ chừa chỗ trống.");
   else add("ok", "Ngày tháng năm đủ, đã thêm số 0 cho ngày dưới 10 và tháng 1, 2.");
@@ -1227,6 +1240,8 @@ document.querySelectorAll("#work input, #work textarea, #work select").forEach(e
   el.addEventListener("input", () => { clearTimeout(tmr); tmr = setTimeout(update, 250); });
   el.addEventListener("change", update);
 });
+// Viết hoa địa danh ngay trong ô khi rời khỏi ô (không đổi khi đang gõ để con trỏ không nhảy)
+$("f_diaDanh").addEventListener("change", e => { const v = normDiaDanh(e.target.value); if (v !== e.target.value) e.target.value = v; });
 $("profile").addEventListener("change", () => { setProfileUI(); if (STATE){ STATE.auto = ""; update(); } });
 $("o_punct").addEventListener("change", () => {
   if (!STATE) return;
