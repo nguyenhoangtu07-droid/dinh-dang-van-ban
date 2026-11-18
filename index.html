@@ -13,11 +13,22 @@
   }
   *{box-sizing:border-box}
   body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--ink);background:var(--bg);font-size:14px}
-  header.top{background:#fff;border-bottom:3px solid var(--accent);padding:14px 20px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
-  .seal{width:38px;height:38px;border-radius:50%;background:var(--accent);color:#fff;display:grid;place-items:center;font-weight:700;font-family:"Times New Roman",serif;font-size:15px;flex:none}
-  header.top h1{font-size:18px;margin:0;font-weight:650}
-  header.top p{margin:2px 0 0;color:var(--muted);font-size:13px}
+  header.top{color:#fff}
+  .hero{border-top:4px solid #5e0b0e;background:
+      radial-gradient(1200px 300px at 85% -40%, rgba(255,255,255,.12), transparent 60%),
+      repeating-linear-gradient(135deg, rgba(255,255,255,.035) 0 2px, transparent 2px 14px),
+      linear-gradient(120deg, #7d1014 0%, #a3161b 55%, #b8282b 100%);
+    border-bottom:4px solid #d4a73a}
+  .hero-in{max-width:1400px;margin:0 auto;padding:22px 18px;display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+  .emblem{width:62px;height:62px;flex:none;border-radius:16px;display:grid;place-items:center;color:#fff;
+    background:rgba(255,255,255,.12);border:1.5px solid rgba(241,211,138,.75);box-shadow:inset 0 0 0 4px rgba(255,255,255,.04)}
+  .kicker{font-size:12.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#f1d38a}
+  header.top h1{font-size:25px;margin:3px 0 2px;font-weight:700;letter-spacing:-.01em}
+  header.top p{margin:0;color:rgba(255,255,255,.82);font-size:13.5px}
   header.top .sp{flex:1}
+  .prof{display:grid;gap:4px;font-size:12px;color:rgba(255,255,255,.8);min-width:270px}
+  .prof select{border:1px solid rgba(255,255,255,.35);border-radius:8px;padding:8px 10px;background:rgba(255,255,255,.95);color:var(--ink);font-size:14px}
+  @media (max-width:640px){ header.top h1{font-size:20px} .emblem{width:48px;height:48px} .prof{min-width:0;width:100%} }
   select,input,textarea,button{font:inherit;color:inherit}
   .wrap{max-width:1400px;margin:0 auto;padding:18px}
   .card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px}
@@ -73,23 +84,38 @@
   .tblv td{border:1px solid #000;padding:2pt 4pt;vertical-align:top}
   .muted-ph{color:#b0b7c0}
   .tag{display:inline-block;font-size:11px;padding:1px 7px;border-radius:999px;background:#eef1f5;color:var(--muted);margin-left:6px;font-weight:500}
-  footer.foot{color:var(--muted);font-size:12px;text-align:center;padding:20px}
+  footer.foot{margin-top:28px;background:#2a0c0d;color:rgba(255,255,255,.75);border-top:4px solid #d4a73a;font-size:12.5px;text-align:center}
+  .foot-in{max-width:1400px;margin:0 auto;padding:18px}
+  .foot .copy{color:#fff;font-weight:600;font-size:13.5px}
+  .foot .sub{margin-top:4px}
 </style>
 </head>
 <body>
 <header class="top">
-  <div class="seal">30</div>
-  <div>
-    <h1>Định dạng văn bản hành chính</h1>
-    <p>Trình bày lại thể thức theo Nghị định 30/2020/NĐ-CP · bản thử</p>
+  <div class="hero">
+    <div class="hero-in">
+      <div class="emblem" aria-hidden="true">
+        <svg viewBox="0 0 48 48" width="34" height="34" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M13 5h15l9 9v27a2 2 0 0 1-2 2H13a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2z"/>
+          <path d="M28 5v9h9"/>
+          <path d="M17 22h14M17 28h14M17 34h8"/>
+          <path d="M31 33l3 3 6-7" stroke-width="2.8"/>
+        </svg>
+      </div>
+      <div class="ttl">
+        <div class="kicker">Tổ Chuyển đổi số Trường Đại học Tiền Giang</div>
+        <h1>Định dạng văn bản hành chính</h1>
+        <p>Trình bày lại thể thức văn bản theo Nghị định 30/2020/NĐ-CP · bản thử nghiệm</p>
+      </div>
+      <div class="sp"></div>
+      <label class="prof">Bộ thể thức
+        <select id="profile">
+          <option value="nd30">Nghị định 30/2020/NĐ-CP (văn bản hành chính)</option>
+          <option value="dang" disabled>Văn bản của Đảng (HD 36-HD/VPTW) — bản sau</option>
+        </select>
+      </label>
+    </div>
   </div>
-  <div class="sp"></div>
-  <label class="f" style="min-width:260px">Bộ thể thức
-    <select id="profile">
-      <option value="nd30">Nghị định 30/2020/NĐ-CP (văn bản hành chính)</option>
-      <option value="dang" disabled>Văn bản của Đảng (HD 36-HD/VPTW) — bản sau</option>
-    </select>
-  </label>
 </header>
 
 <div class="wrap">
@@ -215,7 +241,12 @@
     </div>
   </section>
 </div>
-<footer class="foot">Bản thử nghiệm · Thể thức theo Phụ lục I, Nghị định 30/2020/NĐ-CP · Xử lý hoàn toàn trên trình duyệt</footer>
+<footer class="foot">
+  <div class="foot-in">
+    <div class="copy">Copyright © 2026 Tổ Chuyển đổi số, Trường Đại học Tiền Giang</div>
+    <div class="sub">Thể thức theo Phụ lục I, Nghị định 30/2020/NĐ-CP · Văn bản được xử lý ngay trên trình duyệt, không gửi lên máy chủ · Bản thử nghiệm</div>
+  </div>
+</footer>
 
 <script>
 "use strict";
