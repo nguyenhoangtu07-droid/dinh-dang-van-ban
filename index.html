@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Định dạng văn bản theo Nghị định 30/2020</title>
+<script src="lib/jszip.min.js"></script>
+<script src="lib/docx.iife.js"></script>
+<style>
+  :root{
+    --ink:#1b2430; --muted:#5d6b7a; --line:#d9dee5; --bg:#f3f5f8; --card:#fff;
+    --accent:#a3161b; --accent-2:#7d1014; --ok:#1d7a46; --warn:#a76300; --err:#b3261e;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--ink);background:var(--bg);font-size:14px}
+  header.top{background:#fff;border-bottom:3px solid var(--accent);padding:14px 20px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+  .seal{width:38px;height:38px;border-radius:50%;background:var(--accent);color:#fff;display:grid;place-items:center;font-weight:700;font-family:"Times New Roman",serif;font-size:15px;flex:none}
+  header.top h1{font-size:18px;margin:0;font-weight:650}
+  header.top p{margin:2px 0 0;color:var(--muted);font-size:13px}
+  header.top .sp{flex:1}
+  select,input,textarea,button{font:inherit;color:inherit}
+  .wrap{max-width:1400px;margin:0 auto;padding:18px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px}
+  #drop{border:2px dashed #b8c1cc;border-radius:12px;padding:34px 20px;text-align:center;background:#fff;cursor:pointer;transition:.15s}
+  #drop.hover{border-color:var(--accent);background:#fff6f6}
+  #drop b{font-size:16px}
+  #drop .hint{color:var(--muted);margin-top:6px}
+  .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .btn{border:1px solid var(--line);background:#fff;border-radius:8px;padding:8px 14px;cursor:pointer}
+  .btn:hover{border-color:#9aa6b2}
+  .btn.primary{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600}
+  .btn.primary:hover{background:var(--accent-2)}
+  .btn:disabled{opacity:.5;cursor:not-allowed}
+  .intro{display:grid;grid-template-columns:1.3fr 1fr;gap:16px}
+  .intro ul{margin:6px 0 0;padding-left:18px;color:var(--muted);line-height:1.6}
+  @media (max-width:900px){.intro{grid-template-columns:1fr}}
+  #work{display:none;grid-template-columns:minmax(360px,460px) 1fr;gap:16px;margin-top:16px;align-items:start}
+  @media (max-width:1000px){#work{grid-template-columns:1fr}}
+  .panel{display:flex;flex-direction:column;gap:12px}
+  details.sec{background:#fff;border:1px solid var(--line);border-radius:10px}
+  details.sec>summary{cursor:pointer;padding:10px 14px;font-weight:600;list-style:none;display:flex;justify-content:space-between}
+  details.sec>summary::after{content:"▾";color:var(--muted)}
+  details.sec:not([open])>summary::after{content:"▸"}
+  .sec .in{padding:0 14px 14px;display:grid;gap:9px}
+  label.f{display:grid;gap:4px;font-size:12.5px;color:var(--muted)}
+  label.f input,label.f textarea,label.f select{border:1px solid var(--line);border-radius:7px;padding:7px 9px;color:var(--ink);font-size:14px;background:#fff;width:100%}
+  label.f textarea{resize:vertical;min-height:56px;line-height:1.45}
+  #f_body{min-height:220px;font-family:"Times New Roman",Times,serif;font-size:14px}
+  .g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+  .g2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .g4{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+  .note{font-size:12px;color:var(--muted);line-height:1.5}
+  #checks{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+  #checks li{display:flex;gap:8px;align-items:flex-start;font-size:13px;line-height:1.4}
+  #checks .ic{flex:none;width:18px;height:18px;border-radius:50%;display:grid;place-items:center;color:#fff;font-size:11px;font-weight:700;margin-top:1px}
+  .ok .ic{background:var(--ok)} .warn .ic{background:var(--warn)} .err .ic{background:var(--err)} .info .ic{background:#4a6fa5}
+  .pv-bar{position:sticky;top:0;z-index:2;background:var(--bg);padding-bottom:10px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .pv-bar .t{font-weight:600}
+  .pv-bar .m{color:var(--muted);font-size:12.5px}
+  #msg{font-size:13px}
+  .pv-outer{overflow:auto;background:#e6e9ee;border-radius:10px;padding:18px;border:1px solid var(--line)}
+  /* ---- Trang A4 xem trước ---- */
+  .page{background:#fff;margin:0 auto;box-shadow:0 2px 10px rgba(0,0,0,.15);font-family:"Times New Roman",Times,serif;color:#000;width:210mm;min-height:297mm;transform-origin:top left}
+  .page p{margin:0}
+  .hd{display:flex}
+  .hd>div{text-align:center}
+  .ln{border-top:1px solid #000;margin:1px auto 0;height:0}
+  .up{text-transform:uppercase}
+  .ft{display:flex;margin-top:12pt;break-inside:avoid}
+  .ft .l{text-align:left}
+  .ft .r{text-align:center}
+  .tblv{border-collapse:collapse;width:100%;margin-top:6pt}
+  .tblv td{border:1px solid #000;padding:2pt 4pt;vertical-align:top}
+  .muted-ph{color:#b0b7c0}
+  .tag{display:inline-block;font-size:11px;padding:1px 7px;border-radius:999px;background:#eef1f5;color:var(--muted);margin-left:6px;font-weight:500}
+  footer.foot{color:var(--muted);font-size:12px;text-align:center;padding:20px}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="seal">30</div>
+  <div>
+    <h1>Định dạng văn bản hành chính</h1>
+    <p>Trình bày lại thể thức theo Nghị định 30/2020/NĐ-CP · bản thử</p>
+  </div>
+  <div class="sp"></div>
+  <label class="f" style="min-width:260px">Bộ thể thức
+    <select id="profile">
+      <option value="nd30">Nghị định 30/2020/NĐ-CP (văn bản hành chính)</option>
+      <option value="dang" disabled>Văn bản của Đảng (HD 36-HD/VPTW) — bản sau</option>
+    </select>
+  </label>
+</header>
+
+<div class="wrap">
+  <section class="intro">
+    <div>
+      <div id="drop" tabindex="0">
+        <b>Kéo thả file Word (.docx) vào đây</b>
+        <div class="hint">hoặc bấm để chọn file · file được xử lý ngay trên máy bạn, không gửi đi đâu</div>
+        <input type="file" id="file" accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document" hidden>
+      </div>
+      <div class="row" style="margin-top:10px">
+        <button class="btn" id="demo">Thử với công văn mẫu</button>
+        <span id="msg"></span>
+      </div>
+    </div>
+    <div class="card">
+      <b>Cách dùng</b>
+      <ul>
+        <li>Tải lên công văn, báo cáo, kế hoạch, tờ trình… dạng <b>.docx</b> (file .doc cũ: mở bằng Word rồi lưu lại thành .docx).</li>
+        <li>Ứng dụng tự nhận diện: tên cơ quan, số ký hiệu, ngày tháng, trích yếu, kính gửi, nội dung, chữ ký, nơi nhận.</li>
+        <li>Kiểm tra và sửa các ô bên trái nếu nhận diện sai, xem trước ở bên phải, rồi bấm <b>Tải về .docx</b>.</li>
+        <li>Kết quả cần người soạn rà lại trước khi trình ký.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="work">
+    <div class="panel">
+      <details class="sec" open>
+        <summary>Kiểm tra thể thức</summary>
+        <div class="in"><ul id="checks"></ul></div>
+      </details>
+
+      <details class="sec" open>
+        <summary>Phần đầu văn bản</summary>
+        <div class="in">
+          <label class="f">Tên cơ quan chủ quản (cấp trên, nếu có — mỗi dòng một dòng in)
+            <textarea id="f_coQuanCT" rows="2"></textarea></label>
+          <label class="f">Tên cơ quan ban hành văn bản
+            <textarea id="f_coQuan" rows="2"></textarea></label>
+          <label class="f">Số, ký hiệu (phần sau “Số:”)
+            <input id="f_so" placeholder="ví dụ 125/SNV-VP"></label>
+          <label class="f">Địa danh
+            <input id="f_diaDanh"></label>
+          <div class="g3">
+            <label class="f">Ngày<input id="f_d" inputmode="numeric"></label>
+            <label class="f">Tháng<input id="f_m" inputmode="numeric"></label>
+            <label class="f">Năm<input id="f_y" inputmode="numeric"></label>
+          </div>
+          <div class="g2">
+            <label class="f">Loại văn bản
+              <select id="f_loai">
+                <option value="cv">Công văn (không có tên loại)</option>
+                <option value="tl">Văn bản có tên loại</option>
+              </select></label>
+            <label class="f">Tên loại
+              <input id="f_tenLoai" placeholder="BÁO CÁO, KẾ HOẠCH…"></label>
+          </div>
+          <label class="f">Trích yếu nội dung
+            <textarea id="f_trichYeu" rows="2"></textarea></label>
+          <label class="f">Kính gửi (mỗi dòng một nơi; để trống nếu không có)
+            <textarea id="f_kinhGui" rows="2"></textarea></label>
+        </div>
+      </details>
+
+      <details class="sec" open>
+        <summary>Nội dung <span class="tag" id="bodyTag"></span></summary>
+        <div class="in">
+          <label class="f">Mỗi dòng là một đoạn. Đoạn không sửa sẽ giữ chữ đậm/nghiêng như file gốc.
+            <textarea id="f_body"></textarea></label>
+        </div>
+      </details>
+
+      <details class="sec" open>
+        <summary>Chữ ký và nơi nhận</summary>
+        <div class="in">
+          <label class="f">Quyền hạn, chức vụ người ký (mỗi dòng một dòng)
+            <textarea id="f_sig" rows="2" placeholder="KT. GIÁM ĐỐC&#10;PHÓ GIÁM ĐỐC"></textarea></label>
+          <label class="f">Họ và tên người ký
+            <input id="f_nguoiKy"></label>
+          <label class="f">Nơi nhận (mỗi dòng một nơi; dòng cuối thường là “Lưu: VT, …”)
+            <textarea id="f_noiNhan" rows="4"></textarea></label>
+        </div>
+      </details>
+
+      <details class="sec">
+        <summary>Tùy chọn trình bày</summary>
+        <div class="in">
+          <div class="g2">
+            <label class="f">Cỡ chữ nội dung
+              <select id="o_body"><option>13</option><option selected>14</option></select></label>
+            <label class="f">Cỡ chữ tên cơ quan, quốc hiệu
+              <select id="o_head"><option>12</option><option selected>13</option></select></label>
+            <label class="f">Giãn dòng
+              <select id="o_ls"><option value="1">Đơn (1,0)</option><option value="1.15">1,15</option><option value="1.2" selected>1,2</option><option value="1.3">1,3</option><option value="1.5">1,5</option></select></label>
+            <label class="f">Khoảng cách giữa các đoạn
+              <select id="o_para"><option value="6" selected>6 pt</option><option value="8">8 pt</option><option value="10">10 pt</option><option value="12">12 pt</option></select></label>
+            <label class="f">Lùi đầu dòng
+              <select id="o_ind"><option value="1">1 cm</option><option value="1.27" selected>1,27 cm</option></select></label>
+            <label class="f">Chuẩn hóa khoảng trắng, dấu câu
+              <select id="o_punct"><option value="1" selected>Có</option><option value="0">Không</option></select></label>
+          </div>
+          <div class="note">Lề trang (mm) — NĐ 30: trên, dưới 20–25; trái 30–35; phải 15–20.</div>
+          <div class="g4">
+            <label class="f">Trên<input id="o_mt" type="number" value="20" min="20" max="25"></label>
+            <label class="f">Dưới<input id="o_mb" type="number" value="20" min="20" max="25"></label>
+            <label class="f">Trái<input id="o_ml" type="number" value="30" min="30" max="35"></label>
+            <label class="f">Phải<input id="o_mr" type="number" value="15" min="15" max="20"></label>
+          </div>
+        </div>
+      </details>
+    </div>
+
+    <div>
+      <div class="pv-bar">
+        <span class="t">Xem trước</span>
+        <span class="m">gần đúng, không chia trang</span>
+        <span class="sp" style="flex:1"></span>
+        <button class="btn" id="reset">Tải file khác</button>
+        <button class="btn primary" id="dl">Tải về .docx</button>
+      </div>
+      <div class="pv-outer" id="pvOuter"><div id="pvScale"><div class="page" id="page"></div></div></div>
+    </div>
+  </section>
+</div>
+<footer class="foot">Bản thử nghiệm · Thể thức theo Phụ lục I, Nghị định 30/2020/NĐ-CP · Xử lý hoàn toàn trên trình duyệt</footer>
+
+<script>
+"use strict";
+/* =========================================================
+   1. ĐỌC FILE .DOCX
+   ========================================================= */
+const W_NS = "http://schemas.openxmlformats.org/wordprocessingml/2006/main";
+const kids = (el, name) => Array.from(el.childNodes).filter(n => n.nodeType === 1 && n.localName === name);
+function hasAnc(el, names, stop){ let a = el.parentNode; while (a && a !== stop){ if (names.includes(a.localName)) return true; a = a.parentNode; } return false; }
+function flag(rPr, name){
+  if (!rPr) return false; const e = kids(rPr, name)[0]; if (!e) return false;
+  const v = e.getAttributeNS(W_NS, "val") || e.getAttribute("w:val");
+  return !(v === "0" || v === "false" || v === "off" || v === "none");
+}
+const mkP = (runs, align, num) => ({ type: "p", runs, align: align || "", num: !!num, text: runs.map(r => r.text).join("") });
+const STATS = { drawings: 0, merged: false, numbered: 0, footnotes: false };
+
+function parseP(p){
+  const runs = [];
+  for (const r of p.getElementsByTagNameNS(W_NS, "r")){
+    if (hasAnc(r, ["del", "moveFrom", "Fallback", "txbxContent"], p)) continue;
+    const rPr = kids(r, "rPr")[0]; let t = "";
+    for (const c of r.childNodes){
+      if (c.nodeType !== 1) continue; const n = c.localName;
+      if (n === "t") t += c.textContent;
+      else if (n === "tab" || n === "ptab") t += "\t";
+      else if (n === "br" || n === "cr") t += "\n";
+      else if (n === "noBreakHyphen") t += "-";
+      else if (n === "drawing" || n === "pict") STATS.drawings++;
+      else if (n === "footnoteReference") STATS.footnotes = true;
+    }
+    if (t) runs.push({ text: t, b: flag(rPr, "b"), i: flag(rPr, "i"), u: flag(rPr, "u") });
+  }
+  const pPr = kids(p, "pPr")[0]; let align = "", num = false;
+  if (pPr){
+    const jc = kids(pPr, "jc")[0]; if (jc) align = jc.getAttributeNS(W_NS, "val") || "";
+    num = kids(pPr, "numPr").length > 0;
+  }
+  if (num && runs.length) STATS.numbered++;
+  return mkP(runs, align, num);
+}
+function walk(container, out){
+  for (const c of container.childNodes){
+    if (c.nodeType !== 1) continue;
+    const n = c.localName;
+    if (n === "p"){
+      for (const tb of Array.from(c.getElementsByTagNameNS(W_NS, "txbxContent")).filter(x => !hasAnc(x, ["Fallback"], c))) walk(tb, out);
+      out.push(parseP(c));
+    } else if (n === "tbl") out.push(parseTbl(c));
+    else if (n === "sdt"){ const sc = kids(c, "sdtContent")[0]; if (sc) walk(sc, out); }
+    else if (["customXml", "ins", "smartTag"].includes(n)) walk(c, out);
+  }
+}
+function parseTbl(t){
+  const rows = [];
+  for (const tr of kids(t, "tr")){
+    const row = [];
+    for (const tc of kids(tr, "tc")){
+      const tcPr = kids(tc, "tcPr")[0];
+      if (tcPr && (kids(tcPr, "gridSpan").length || kids(tcPr, "vMerge").length)) STATS.merged = true;
+      const tmp = [], ps = []; walk(tc, tmp);
+      for (const x of tmp){
+        if (x.type === "p") ps.push(x);
+        else for (const rr of x.rows) for (const cc of rr) ps.push(...cc);
+      }
+      row.push(ps);
+    }
+    rows.push(row);
+  }
+  return { type: "tbl", rows };
+}
+async function readDocx(file){
+  const zip = await JSZip.loadAsync(await file.arrayBuffer());
+  const f = zip.file("word/document.xml");
+  if (!f) throw new Error("Không tìm thấy nội dung Word trong file này.");
+  const doc = new DOMParser().parseFromString(await f.async("string"), "application/xml");
+  const body = doc.getElementsByTagNameNS(W_NS, "body")[0];
+  const blocks = []; walk(body, blocks);
+  return blocks;
+}
+
+/* =========================================================
+   2. NHẬN DIỆN CÁC THÀNH PHẦN THỂ THỨC
+   ========================================================= */
+const clean = s => (s || "").replace(/[\t    ]/g, " ").replace(/\s+/g, " ").trim();
+const RX = {
+  qh: /C[ỘO]NG\s*H(?:ÒA|OÀ|OA|ÓA|OÁ)\s*X[ÃA]\s*H[ỘO]I\s*CH[ỦU]\s*NGH[ĨI]A\s*VI[ỆE]T\s*NAM/i,
+  tn: /Độc\s*lập\s*[-–—]?\s*Tự\s*do\s*[-–—]?\s*Hạnh\s*phúc/i,
+  date: /^(?:(.*?)[,\s]+)?ngày\s*(\S{0,5}?)\s*tháng\s*(\S{0,5}?)\s*năm\s*(\d{4}|\S{0,5})\s*\.?$/i,
+  vv: /^(V\s*\/\s*v|Về\s*việc)\s*[:.]?\s*(.*)$/i,
+  kg: /^Kính\s*gửi\s*:?\s*(.*)$/i,
+  nn: /^Nơi\s*nhận\s*:?\s*(.*)$/i,
+  qhan: /^(KT|TM|TL|TUQ|Q|PT)\s*\.\s*\S/i,
+  dash: /^[-–—+•]\s*/,
+  tenLoai: /^(NGHỊ QUYẾT|QUYẾT ĐỊNH|CHỈ THỊ|QUY CHẾ|QUY ĐỊNH|THÔNG BÁO|HƯỚNG DẪN|CHƯƠNG TRÌNH|KẾ HOẠCH|PHƯƠNG ÁN|ĐỀ ÁN|DỰ ÁN|BÁO CÁO|BIÊN BẢN|TỜ TRÌNH|HỢP ĐỒNG|CÔNG ĐIỆN|BẢN GHI NHỚ|BẢN THỎA THUẬN|BẢN THOẢ THUẬN|GIẤY ỦY QUYỀN|GIẤY UỶ QUYỀN|GIẤY MỜI|GIẤY GIỚI THIỆU|GIẤY NGHỈ PHÉP|PHIẾU GỬI|PHIẾU CHUYỂN|PHIẾU BÁO|THƯ CÔNG)\b/,
+  chucVu: /(GIÁM ĐỐC|CHỦ TỊCH|TRƯỞNG|PHÓ|HIỆU|BÍ THƯ|CHÁNH|VIỆN|TỔNG|ỦY VIÊN|UỶ VIÊN|THƯ KÝ|KẾ TOÁN|CHỦ NHIỆM|CỤC|VỤ|BAN|THỦ TƯỚNG|BỘ)/,
+  bodyStart: /^(Căn\s*cứ|Thực\s*hiện|Theo|Nhằm|Để|Phúc\s*đáp|Thi\s*hành|Hôm\s*nay|Trả\s*lời|Xét)/i,
+};
+const isUpper = s => /\p{L}/u.test(s) && !/\p{Ll}/u.test(s) && s.length <= 90;
+const isNameLike = s => s.length <= 40 && /^\p{Lu}\p{Ll}*\.?(\s+\p{Lu}\p{Ll}*\.?){1,5}$/u.test(s);
+const isNoise = s => (/^[(\[].{0,50}[)\]]$/.test(s)) || /^(\/?\s*đã\s*k[ýí]|ký\s*tên)/i.test(s);
+const sigCand = s => RX.qhan.test(s) || (isUpper(s) && s.length <= 60 && !RX.nn.test(s) && !RX.tenLoai.test(s)) || isNameLike(s) || isNoise(s);
+const startsDash = s => RX.dash.test(s);
+const titleCase = s => s.toLowerCase().replace(/(^|\s)(\p{Ll})/gu, (m, a, b) => a + b.toUpperCase());
+
+function matchSo(s){
+  const m = s.match(/^Số\s*([:.])?\s*(.*)$/i);
+  if (!m || s.length > 90) return null;
+  let rest = m[2];
+  if (!m[1] && !/^[\d\s.…_]*\/\S/.test(rest)) return null;
+  let tail = "";
+  const vv = rest.match(/\s(V\s*\/\s*v|Về\s*việc)\b/i);
+  if (vv){ tail = rest.slice(vv.index).trim(); rest = rest.slice(0, vv.index); }
+  return { so: rest.trim(), rest: tail };
+}
+function matchDate(s){
+  const m = s.match(RX.date); if (!m) return null;
+  const num = v => /^\d{1,4}$/.test(v || "") ? v : "";
+  return { diaDanh: clean((m[1] || "").replace(/[,\s]+$/, "")), d: num(m[2]), m: num(m[3]), y: num(m[4]) };
+}
+function splitByBreak(p){
+  const parts = [[]];
+  for (const r of p.runs){
+    r.text.split("\n").forEach((seg, k) => { if (k > 0) parts.push([]); if (seg) parts[parts.length - 1].push({ ...r, text: seg }); });
+  }
+  return parts.map(rs => mkP(rs, p.align, p.num));
+}
+function splitByTabs(p, tailOnly){
+  const txt = p.text.replace(/(Số\s*:?|Kính\s*gửi\s*:?|V\/v)[\t  ]+/gi, "$1 ")
+    .replace(/(ngày)[\s.…_]+(tháng)/gi, "$1 $2").replace(/(tháng)[\s.…_]+(năm)/gi, "$1 $2");
+  const pieces = txt.split(/\t+| {3,}| {3,}/).map(clean).filter(Boolean);
+  if (pieces.length <= 1) return [p];
+  const ok = tailOnly
+    ? pieces.some(x => sigCand(x) || RX.nn.test(x) || startsDash(x))
+    : pieces.some(x => RX.qh.test(x) || RX.tn.test(x) || matchSo(x) || matchDate(x) || RX.kg.test(x) || (isUpper(x) && x.length < 70));
+  if (!ok) return [p];
+  return pieces.map(s => mkP([{ text: s, b: false, i: false, u: false }], p.align, p.num));
+}
+
+function linearize(blocks){
+  const N = blocks.length, items = [];
+  blocks.forEach((b, bi) => {
+    if (b.type === "p"){ items.push({ kind: "p", p: b, origin: "p" }); return; }
+    const txt = b.rows.map(r => r.map(c => c.map(p => p.text).join("\n")).join("\n")).join("\n");
+    const headerLike = RX.qh.test(txt) || RX.tn.test(txt) || /^\s*Số\s*[:\d]/im.test(txt) || /Kính\s*gửi/i.test(txt) && bi < 4;
+    const footerLike = /Nơi\s*nhận/i.test(txt) || (bi >= N - 4 && /^\s*(KT|TM|TL|TUQ|Q|PT)\s*\.\s/m.test(txt));
+    if (headerLike || footerLike){ for (const row of b.rows) for (const cell of row) for (const p of cell) items.push({ kind: "p", p, origin: "cell" }); }
+    else items.push({ kind: "tbl", tbl: b });
+  });
+  const out = [], M = items.length;
+  items.forEach((it, k) => {
+    if (it.kind !== "p"){ out.push(it); return; }
+    const head = it.origin === "cell" || k < 14, tail = k >= M - 16;
+    let ps = (head || tail) ? splitByBreak(it.p) : [it.p];
+    if (head || tail) ps = ps.flatMap(p => { const a = head ? splitByTabs(p, false) : [p]; return (a.length > 1 || !tail) ? a : splitByTabs(p, true); });
+    for (const p of ps){
+      const t = clean(p.text);
+      if (!t) continue;
+      if (/^[\s\-_–—=.*·•]{2,}$/.test(t) || t === "*") continue;
+      out.push({ kind: "p", p, t });
+    }
+  });
+  return out;
+}
+
+function classify(blocks){
+  const P = linearize(blocks), L = P.length;
+  const R = { coQuan: [], so: "", diaDanh: "", d: "", m: "", y: "", loai: "cv", tenLoai: "", trichYeu: "",
+              kinhGui: [], sig: [], nguoiKy: "", noiNhan: [], body: [], unknown: [] };
+  const isP = i => P[i] && P[i].kind === "p";
+  const tx = i => isP(i) ? P[i].t : "";
+  const H = Math.min(L, 30);
+  let seenSo = false, seenQH = false, seenDate = false, lastHead = -1, unknownIdx = [];
+  const isCont = s => !RX.qh.test(s) && !RX.tn.test(s) && !matchSo(s) && !matchDate(s) && !RX.kg.test(s)
+                      && !isUpper(s) && s.length < 110 && !/[.:]$/.test(s) && !RX.bodyStart.test(s);
+  const isTY = (it, idx) => {
+    if (!it || it.kind !== "p") return false;
+    const s = it.t;
+    if (RX.kg.test(s) || RX.bodyStart.test(s) || s.length > 170 || matchDate(s) || matchSo(s)) return false;
+    if (RX.vv.test(s)) return true;
+    const allBold = it.p.runs.length && it.p.runs.every(r => r.b || !r.text.trim());
+    return it.p.align === "center" || allBold || (idx === 0 && s.length < 130 && !/[.;:]$/.test(s));
+  };
+  const readKG = i => {
+    const m = tx(i).match(RX.kg); const list = [];
+    if (m[1]) list.push(m[1]);
+    let j = i + 1;
+    while (isP(j)){
+      const s = tx(j);
+      if (!RX.bodyStart.test(s) && (startsDash(s) || (s.length < 90 && /;$/.test(s)))) { list.push(s); j++; } else break;
+    }
+    R.kinhGui = list.map(s => s.replace(RX.dash, "").replace(/[;,.]+$/, "").trim()).filter(Boolean);
+    return j - 1;
+  };
+
+  let i = 0, headerEnd = 0;
+  for (; i < H; i++){
+    if (!isP(i)) break;
+    const s = tx(i);
+    if (RX.qh.test(s) || RX.tn.test(s)){
+      const pre = s.split(RX.qh)[0].split(RX.tn)[0].trim();
+      if (pre && isUpper(pre) && !seenSo) R.coQuan.push(pre);
+      seenQH = true; lastHead = i; continue;
+    }
+    const so = matchSo(s);
+    if (so && !seenSo){
+      R.so = so.so; seenSo = true; lastHead = i;
+      if (so.rest){ const v = so.rest.match(RX.vv); if (v) R.trichYeu = v[2]; }
+      continue;
+    }
+    const dt = matchDate(s);
+    if (dt && !seenDate){ Object.assign(R, dt); seenDate = true; lastHead = i; continue; }
+    const vv = s.match(RX.vv);
+    if (vv && !R.trichYeu && !R.tenLoai){
+      let t = vv[2], j = i + 1, c = 0;
+      while (j < H && isP(j) && c < 2 && isCont(tx(j))){ t += " " + tx(j); j++; c++; }
+      R.trichYeu = t; i = j - 1; lastHead = i; continue;
+    }
+    if (RX.kg.test(s)){ i = readKG(i); lastHead = i; break; }
+    if (isUpper(s) && !seenSo && !RX.tenLoai.test(s) && R.coQuan.length < 4){ R.coQuan.push(s); lastHead = i; continue; }
+    if (isUpper(s) && s.length <= 60 && RX.tenLoai.test(s) && !/:$/.test(s) && (seenSo || seenQH || seenDate)){
+      R.loai = "tl"; R.tenLoai = s; lastHead = i;
+      let j = i + 1; const t = [];
+      while (j < H && t.length < 3 && isTY(P[j], t.length)){ t.push(tx(j)); j++; }
+      R.trichYeu = t.join(" "); i = j - 1; lastHead = i;
+      if (isP(i + 1) && RX.kg.test(tx(i + 1))){ i = readKG(i + 1); lastHead = i; }
+      continue;
+    }
+    if (seenSo || seenQH || seenDate) break;
+    if (i > 6) break;
+    unknownIdx.push(i);
+  }
+  headerEnd = lastHead + 1;
+  // Kính gửi nằm ngay sau phần đầu (bố cục không chuẩn)
+  if (!R.kinhGui.length){
+    for (let k = headerEnd; k < Math.min(headerEnd + 3, L); k++){
+      if (isP(k) && RX.kg.test(tx(k))){ for (let q = headerEnd; q < k; q++) unknownIdx.push(q); headerEnd = readKG(k) + 1; break; }
+    }
+  }
+  if (lastHead < 0){ headerEnd = 0; unknownIdx = []; }
+  unknownIdx = unknownIdx.filter(k => k < headerEnd);
+
+  // ---- Phần cuối: nơi nhận, chữ ký
+  let nnIdx = -1, bodyEnd = L; const sigIdx = [], nnItems = [];
+  for (let k = L - 1; k >= headerEnd; k--){ if (isP(k) && RX.nn.test(tx(k))){ nnIdx = k; break; } }
+  if (nnIdx >= 0){
+    const first = tx(nnIdx).match(RX.nn)[1];
+    if (first) nnItems.push(first);
+    for (let k = nnIdx + 1; k < L; k++){
+      if (!isP(k)) continue;
+      const s = tx(k);
+      if (startsDash(s) || /^Lưu\s*:/i.test(s) || !sigCand(s)) nnItems.push(s); else sigIdx.push(k);
+    }
+    bodyEnd = nnIdx;
+  }
+  const pre = []; let k = bodyEnd - 1;
+  while (k >= headerEnd && isP(k) && sigCand(tx(k)) && pre.length < 8){ pre.unshift(k); k--; }
+  if (pre.length && pre.some(x => RX.qhan.test(tx(x)) || isUpper(tx(x)))){ sigIdx.unshift(...pre); bodyEnd = pre[0]; }
+
+  const sl = sigIdx.map(tx).filter(s => !isNoise(s));
+  let name = "";
+  for (let q = sl.length - 1; q >= 0; q--){ if (isNameLike(sl[q])){ name = sl[q]; sl.splice(q, 1); break; } }
+  if (!name && sl.length >= 2){
+    const last = sl[sl.length - 1];
+    if (isUpper(last) && !RX.chucVu.test(last) && !RX.qhan.test(last) && last.split(" ").length <= 6){ name = titleCase(last); sl.pop(); }
+  }
+  R.sig = sl.map(s => s.toUpperCase().replace(/^(KT|TM|TL|TUQ|Q|PT)\s*\.\s*/, "$1. "));
+  R.nguoiKy = name;
+  R.noiNhan = nnItems.map(s => s.startsWith("+") ? s : s.replace(RX.dash, "")).map(s => s.replace(/[;,.]+$/, "").trim()).filter(Boolean);
+
+  R.body = [...unknownIdx.map(x => P[x]), ...P.slice(headerEnd, bodyEnd)];
+  R.unknown = unknownIdx.map(tx);
+  R.found = { nn: nnIdx >= 0, sig: sigIdx.length > 0 };
+  return R;
+}
+
+/* =========================================================
+   3. CHUẨN HÓA
+   ========================================================= */
+const pad2 = v => (v && /^\d+$/.test(v) && +v < 10) ? String(+v).padStart(2, "0") : (v || "");
+const normDay = v => /^\d+$/.test(v) ? pad2(v) : v;
+const normMonth = v => /^\d+$/.test(v) ? (+v <= 2 ? pad2(v) : String(+v)) : v;
+function normSo(s){ s = clean(s); if (/^\d/.test(s)) s = s.replace(/\s*\/\s*/g, "/").replace(/\s*[-–]\s*/g, "-"); return s; }
+function normRuns(runs, punct){
+  let rs = runs.map(r => ({ ...r, text: r.text.replace(/[\t\n ]/g, " ").replace(/ {2,}/g, " ") })).filter(r => r.text);
+  for (let k = 1; k < rs.length; k++){ if (/ $/.test(rs[k - 1].text) && /^ /.test(rs[k].text)) rs[k].text = rs[k].text.replace(/^ +/, ""); }
+  if (punct){
+    rs.forEach(r => { r.text = r.text.replace(/ +([,.;:!?)\]])/g, "$1").replace(/([(\[]) +/g, "$1"); });
+    for (let k = 1; k < rs.length; k++){ if (/^[,.;:!?)\]]/.test(rs[k].text)) rs[k - 1].text = rs[k - 1].text.replace(/ +$/, ""); }
+  }
+  if (rs.length){ rs[0].text = rs[0].text.replace(/^ +/, ""); rs[rs.length - 1].text = rs[rs.length - 1].text.replace(/ +$/, ""); }
+  return rs.filter(r => r.text);
+}
+const normText = (s, punct) => normRuns([{ text: s }], punct).map(r => r.text).join("");
+const lines = s => (s || "").split("\n").map(clean).filter(Boolean);
+
+/* =========================================================
+   4. TRẠNG THÁI + FORM
+   ========================================================= */
+let STATE = null; // { model, bodyItems, bodyOrig, fileName }
+const $ = id => document.getElementById(id);
+const FIELDS = ["coQuanCT", "coQuan", "so", "diaDanh", "d", "m", "y", "loai", "tenLoai", "trichYeu", "kinhGui", "body", "sig", "nguoiKy", "noiNhan"];
+const OPTS = ["body", "head", "ls", "para", "ind", "punct", "mt", "mb", "ml", "mr"];
+
+function bodyLineOf(it, punct, tblNo){
+  if (it.kind === "tbl"){ const r = it.tbl.rows.length, c = Math.max(...it.tbl.rows.map(x => x.length)); return `[BẢNG ${tblNo}: ${r} dòng × ${c} cột — giữ nguyên]`; }
+  return normRuns(it.p.runs, punct).map(r => r.text).join("");
+}
+function loadResult(R, fileName){
+  const punct = $("o_punct").value === "1";
+  let tn = 0;
+  const bodyItems = R.body.map(it => ({ it, line: bodyLineOf(it, punct, it.kind === "tbl" ? ++tn : 0) })).filter(x => x.line);
+  const cq = R.coQuan.map(s => s.toUpperCase());
+  const m = {
+    coQuanCT: cq.length > 1 ? cq.slice(0, -1).join("\n") : "",
+    coQuan: cq.length ? cq[cq.length - 1] : "",
+    so: normSo(R.so), diaDanh: R.diaDanh, d: normDay(R.d), m: normMonth(R.m), y: R.y,
+    loai: R.loai, tenLoai: R.tenLoai,
+    trichYeu: R.loai === "cv" ? clean(R.trichYeu).replace(RX.vv, "$2") : clean(R.trichYeu),
+    kinhGui: R.kinhGui.join("\n"),
+    body: bodyItems.map(x => x.line).join("\n"),
+    sig: R.sig.join("\n"), nguoiKy: R.nguoiKy, noiNhan: R.noiNhan.join("\n"),
+  };
+  STATE = { bodyItems, bodyOrig: m.body, fileName, R, rawDate: { d: R.d, m: R.m } };
+  for (const f of FIELDS) $("f_" + f).value = m[f] || "";
+  $("work").style.display = "grid";
+  update();
+  setTimeout(() => $("work").scrollIntoView({ behavior: "smooth", block: "start" }), 50);
+}
+function readOpts(){
+  const n = id => +$("o_" + id).value;
+  const clamp = (v, a, b) => Math.min(b, Math.max(a, isFinite(v) ? v : a));
+  return { body: n("body"), head: n("head"), ls: n("ls"), para: n("para"), ind: n("ind"), punct: $("o_punct").value === "1",
+           mt: clamp(n("mt"), 20, 25), mb: clamp(n("mb"), 20, 25), ml: clamp(n("ml"), 30, 35), mr: clamp(n("mr"), 15, 20) };
+}
+function readModel(){
+  const v = id => $("f_" + id).value;
+  const o = readOpts();
+  const M = {
+    coQuanCT: lines(v("coQuanCT")).map(s => s.toUpperCase()),
+    coQuan: lines(v("coQuan")).map(s => s.toUpperCase()),
+    so: normSo(v("so")), diaDanh: clean(v("diaDanh")),
+    d: normDay(clean(v("d"))), m: normMonth(clean(v("m"))), y: clean(v("y")),
+    loai: v("loai"), tenLoai: clean(v("tenLoai")).toUpperCase(),
+    trichYeu: clean(v("trichYeu")),
+    kinhGui: lines(v("kinhGui")).map(s => s.replace(RX.dash, "").replace(/[;,.]+$/, "").trim()).filter(Boolean),
+    sig: lines(v("sig")).map(s => s.toUpperCase()),
+    nguoiKy: clean(v("nguoiKy")),
+    noiNhan: lines(v("noiNhan")).map(s => s.startsWith("+") ? s : s.replace(RX.dash, "")).map(s => s.replace(/[;,.]+$/, "").trim()).filter(Boolean),
+    opt: o,
+  };
+  if (M.loai === "cv") M.trichYeu = M.trichYeu.replace(RX.vv, "$2");
+  // Nội dung: giữ định dạng gốc cho dòng không sửa
+  const bodyVal = v("body");
+  const items = [];
+  if (STATE && bodyVal === STATE.bodyOrig){
+    for (const x of STATE.bodyItems) items.push(x.it.kind === "tbl" ? { kind: "tbl", tbl: x.it.tbl } : { kind: "p", runs: normRuns(x.it.p.runs, o.punct), align: x.it.p.align });
+  } else {
+    const used = new Set();
+    for (const raw of bodyVal.split("\n")){
+      const s = clean(raw); if (!s) continue;
+      const tm = s.match(/^\[BẢNG (\d+):/);
+      const idx = STATE ? STATE.bodyItems.findIndex((x, k) => !used.has(k) && (tm ? x.line.startsWith(`[BẢNG ${tm[1]}:`) : x.line === s)) : -1;
+      if (idx >= 0){
+        used.add(idx); const it = STATE.bodyItems[idx].it;
+        items.push(it.kind === "tbl" ? { kind: "tbl", tbl: it.tbl } : { kind: "p", runs: normRuns(it.p.runs, o.punct), align: it.p.align });
+      } else if (!tm) items.push({ kind: "p", runs: [{ text: normText(s, o.punct) }], align: "" });
+    }
+  }
+  M.body = items;
+  return M;
+}
+const soOut = so => !so ? "      /" : (so.startsWith("/") ? "      " + so : so);
+const dateStr = M => `${M.diaDanh ? M.diaDanh + ", " : ""}ngày ${M.d || "    "} tháng ${M.m || "    "} năm ${M.y || "      "}`;
+const trichYeuOut = M => M.loai === "cv" ? (M.trichYeu ? "V/v " + M.trichYeu : "") : M.trichYeu;
+const listOut = arr => arr.map((s, k) => (s.startsWith("+") ? s : "- " + s) + (k === arr.length - 1 ? "." : ";"));
+
+/* =========================================================
+   5. ĐO CHỮ + BỐ CỤC
+   ========================================================= */
+const _cv = document.createElement("canvas").getContext("2d");
+function tw(text, pt, bold, italic){ _cv.font = `${italic ? "italic " : ""}${bold ? "bold " : ""}${pt}pt "Times New Roman", "Liberation Serif", Times, serif`; return _cv.measureText(text).width * 15; }
+const QH = "CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM", TN = "Độc lập - Tự do - Hạnh phúc";
+const mm2tw = x => Math.round(x * 56.6929);
+function layout(M){
+  const o = M.opt, textW = 11906 - mm2tw(o.ml) - mm2tw(o.mr);
+  const tnSize = Math.min(14, o.head + 1);
+  const need = Math.max(tw(QH, o.head, true), tw(TN, tnSize, true), tw(dateStr(M), o.body, false, true)) + 260;
+  const R = Math.round(Math.min(textW * 0.64, Math.max(textW * 0.55, need)));
+  return { textW, L: textW - R, R, tnSize, FL: Math.round(textW * 0.44), FR: textW - Math.round(textW * 0.44) };
+}
+
+/* =========================================================
+   6. XEM TRƯỚC
+   ========================================================= */
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const runsHtml = runs => runs.map(r => { let h = esc(r.text); if (r.b) h = `<b>${h}</b>`; if (r.i) h = `<i>${h}</i>`; if (r.u) h = `<u>${h}</u>`; return h; }).join("");
+function renderPreview(M){
+  const o = M.opt, G = layout(M), px = t => (t / 15).toFixed(1) + "px";
+  const ph = (s, t) => s ? esc(s) : `<span class="muted-ph">${t}</span>`;
+  let h = "";
+  // phần đầu
+  const cqW = M.coQuan.length ? Math.max(...M.coQuan.map(s => tw(s, o.head, true))) : 0;
+  h += `<div class="hd"><div style="width:${px(G.L)}">`;
+  M.coQuanCT.forEach(s => h += `<p style="font-size:${o.head}pt">${esc(s)}</p>`);
+  M.coQuan.forEach(s => h += `<p style="font-size:${o.head}pt;font-weight:700">${esc(s)}</p>`);
+  if (!M.coQuan.length) h += `<p style="font-size:${o.head}pt" class="muted-ph">TÊN CƠ QUAN</p>`;
+  h += `<div class="ln" style="width:${px(Math.max(680, Math.min(G.L, cqW) * 0.4))}"></div>`;
+  h += `<p style="font-size:${o.head}pt;margin-top:6pt">Số: ${M.so ? esc(soOut(M.so)) : ph("", "…/…")}</p>`;
+  if (M.loai === "cv") h += `<p style="font-size:12pt;margin-top:3pt">${ph(trichYeuOut(M), "V/v trích yếu")}</p>`;
+  h += `</div><div style="width:${px(G.R)}">`;
+  h += `<p style="font-size:${o.head}pt;font-weight:700">${QH}</p>`;
+  h += `<p style="font-size:${G.tnSize}pt;font-weight:700">${TN}</p>`;
+  h += `<div class="ln" style="width:${px(tw(TN, G.tnSize, true))}"></div>`;
+  h += `<p style="font-size:${o.body}pt;font-style:italic;margin-top:10pt">${esc(dateStr(M))}</p>`;
+  h += `</div></div>`;
+  if (M.loai === "tl"){
+    h += `<p style="text-align:center;font-weight:700;font-size:${o.body}pt;margin-top:18pt">${ph(M.tenLoai, "TÊN LOẠI")}</p>`;
+    h += `<p style="text-align:center;font-weight:700;font-size:${o.body}pt">${ph(M.trichYeu, "Trích yếu")}</p>`;
+    h += `<div class="ln" style="width:${px(Math.max(1100, Math.min(G.textW, tw(M.trichYeu || "x", o.body, true)) / 3))}"></div>`;
+  }
+  // kính gửi
+  if (M.kinhGui.length === 1) h += `<p style="text-align:center;font-size:${o.body}pt;margin-top:12pt">Kính gửi: ${esc(M.kinhGui[0])}.</p>`;
+  else if (M.kinhGui.length > 1){
+    const kg = listOut(M.kinhGui);
+    h += `<div style="font-size:${o.body}pt;margin-top:12pt;display:flex;padding-left:2cm"><div style="width:2.3cm;flex:none">Kính gửi:</div><div>${kg.map(esc).join("<br>")}</div></div>`;
+  }
+  // nội dung
+  const ls = (o.ls * 1.15).toFixed(3);
+  let first = true;
+  for (const it of M.body){
+    if (it.kind === "tbl"){
+      h += `<table class="tblv" style="font-size:${o.body - 1}pt">` + it.tbl.rows.map(r => "<tr>" + r.map(c => `<td>${c.map(p => runsHtml(normRuns(p.runs, o.punct))).join("<br>")}</td>`).join("") + "</tr>").join("") + "</table>";
+      continue;
+    }
+    const center = it.align === "center" && it.runs.map(r => r.text).join("").length < 120;
+    h += `<p style="font-size:${o.body}pt;line-height:${ls};margin-top:${first ? 12 : o.para}pt;text-align:${center ? "center" : "justify"};text-indent:${center ? 0 : o.ind}cm">${runsHtml(it.runs)}</p>`;
+    first = false;
+  }
+  // chữ ký, nơi nhận
+  h += `<div class="ft"><div class="l" style="width:${px(G.FL)}">`;
+  if (M.noiNhan.length){
+    h += `<p style="font-size:12pt;font-weight:700;font-style:italic">Nơi nhận:</p>`;
+    h += listOut(M.noiNhan).map(s => `<p style="font-size:11pt">${esc(s)}</p>`).join("");
+  }
+  h += `</div><div class="r" style="width:${px(G.FR)}">`;
+  h += (M.sig.length ? M.sig : [""]).map(s => `<p style="font-size:${o.body}pt;font-weight:700">${ph(s, "QUYỀN HẠN, CHỨC VỤ")}</p>`).join("");
+  h += `<div style="height:${(o.body * 1.15 * 4).toFixed(0)}pt"></div><p style="font-size:${o.body}pt;font-weight:700">${ph(M.nguoiKy, "Họ và tên")}</p>`;
+  h += `</div></div>`;
+  const page = $("page");
+  page.style.padding = `${o.mt}mm ${o.mr}mm ${o.mb}mm ${o.ml}mm`;
+  page.innerHTML = h;
+  fitPreview();
+}
+function fitPreview(){
+  const outer = $("pvOuter"), page = $("page"), sc = $("pvScale");
+  const avail = outer.clientWidth - 36, w = page.offsetWidth;
+  const s = Math.min(1, avail / w);
+  page.style.transform = `scale(${s})`;
+  sc.style.height = (page.offsetHeight * s) + "px";
+  sc.style.width = (w * s) + "px"; sc.style.margin = "0 auto";
+}
+window.addEventListener("resize", () => { if (STATE) fitPreview(); });
+
+/* =========================================================
+   7. KIỂM TRA THỂ THỨC
+   ========================================================= */
+function checks(M){
+  const out = [], add = (lv, t) => out.push([lv, t]);
+  M.coQuan.length ? add("ok", "Có tên cơ quan ban hành.") : add("err", "Thiếu tên cơ quan ban hành văn bản.");
+  if (!M.so) add("err", "Thiếu số, ký hiệu văn bản.");
+  else if (!/^[\d\s .…_]*\/[\p{Lu}\d]+([-–][\p{Lu}\d.]+)*$/u.test(M.so)) add("warn", `Số, ký hiệu “${M.so}” chưa đúng dạng Số: …/Tên viết tắt (ví dụ 125/SNV-VP).`);
+  else add("ok", "Số, ký hiệu đúng dạng.");
+  if (!M.diaDanh) add("warn", "Thiếu địa danh trước ngày tháng.");
+  if (!/^\d{4}$/.test(M.y)) add("warn", "Thiếu năm ban hành.");
+  else if (!M.d || !M.m) add("info", "Ngày, tháng đang để trống (văn bản chưa ký số) — sẽ chừa chỗ trống.");
+  else add("ok", "Ngày tháng năm đủ, đã thêm số 0 cho ngày dưới 10 và tháng 1, 2.");
+  if (STATE && STATE.rawDate && ((STATE.rawDate.d && STATE.rawDate.d !== M.d) || (STATE.rawDate.m && STATE.rawDate.m !== M.m))) add("info", "Đã sửa cách ghi ngày/tháng theo quy định.");
+  if (M.loai === "tl" && !M.tenLoai) add("err", "Văn bản có tên loại nhưng chưa nhập tên loại.");
+  M.trichYeu ? add("ok", "Có trích yếu nội dung.") : add("warn", "Thiếu trích yếu nội dung.");
+  if (M.loai === "cv" && !M.kinhGui.length) add("warn", "Công văn chưa có “Kính gửi”.");
+  if (!M.body.length) add("err", "Không có nội dung văn bản.");
+  M.sig.length ? add("ok", "Có quyền hạn, chức vụ người ký.") : add("warn", "Thiếu quyền hạn, chức vụ người ký.");
+  if (!M.nguoiKy) add("warn", "Thiếu họ tên người ký.");
+  if (!M.noiNhan.length) add("warn", "Thiếu phần nơi nhận.");
+  else if (!/^Lưu\s*:/i.test(M.noiNhan[M.noiNhan.length - 1])) add("warn", "Dòng cuối nơi nhận nên là “Lưu: VT, …”.");
+  else add("ok", "Nơi nhận có dòng lưu văn thư.");
+  if (STATE){
+    const R = STATE.R;
+    if (R.unknown && R.unknown.length) add("info", `Một số dòng ở đầu văn bản chưa nhận diện được, đã đưa vào phần nội dung: “${R.unknown.slice(0, 2).join("”, “")}”.`);
+    if (STATS.numbered) add("warn", `Có ${STATS.numbered} đoạn đánh số tự động; số thứ tự tự động không được giữ, hãy gõ lại số ở ô Nội dung nếu cần.`);
+    if (STATS.drawings) add("warn", "File gốc có hình ảnh/hình vẽ — bản thử chưa giữ được, cần chèn lại.");
+    if (STATS.merged) add("warn", "Bảng trong file gốc có ô gộp — bảng xuất ra có thể bị lệch, cần rà lại.");
+    if (STATS.footnotes) add("warn", "File gốc có chú thích cuối trang — chưa được giữ.");
+  }
+  $("checks").innerHTML = out.map(([lv, t]) => `<li class="${lv}"><span class="ic">${{ ok: "✓", warn: "!", err: "×", info: "i" }[lv]}</span><span>${esc(t)}</span></li>`).join("");
+  $("bodyTag").textContent = `${M.body.length} đoạn/bảng`;
+}
+
+/* =========================================================
+   8. XUẤT .DOCX (docx.js)
+   ========================================================= */
+function buildDocx(M){
+  const D = docx, AL = D.AlignmentType, o = M.opt, G = layout(M), F = "Times New Roman";
+  const R = (text, x = {}) => new D.TextRun({ text, bold: !!x.b, italics: !!x.i, underline: x.u ? {} : undefined, size: Math.round((x.size || o.body) * 2), font: F });
+  const P = (children, x = {}) => new D.Paragraph({
+    children, alignment: x.align || AL.CENTER, keepNext: !!x.keepNext,
+    spacing: { before: x.before || 0, after: x.after || 0, line: x.line || 240, lineRule: D.LineRuleType.AUTO },
+    indent: x.indent, tabStops: x.tabs });
+  const lineP = (w, cellW, before = 0) => {
+    const ind = Math.max(0, Math.round((cellW - w) / 2));
+    return new D.Paragraph({ children: [new D.TextRun({ text: "", size: 2 })], alignment: AL.CENTER,
+      spacing: { before, after: 0, line: 40, lineRule: D.LineRuleType.EXACT }, indent: { left: ind, right: ind },
+      border: { bottom: { style: D.BorderStyle.SINGLE, size: 6, color: "000000", space: 1 } } });
+  };
+  const noB = { style: D.BorderStyle.NONE, size: 0, color: "FFFFFF" };
+  const NB = { top: noB, bottom: noB, left: noB, right: noB };
+  const TB = { top: noB, bottom: noB, left: noB, right: noB, insideHorizontal: noB, insideVertical: noB };
+  const cell = (children, w) => new D.TableCell({ children, width: { size: w, type: D.WidthType.DXA }, borders: NB,
+    margins: { left: 0, right: 0, top: 0, bottom: 0 }, verticalAlign: D.VerticalAlign.TOP });
+  const twoCol = (a, b, wa, wb) => new D.Table({ rows: [new D.TableRow({ children: [cell(a, wa), cell(b, wb)], cantSplit: true })],
+    width: { size: wa + wb, type: D.WidthType.DXA }, columnWidths: [wa, wb], layout: D.TableLayoutType.FIXED, borders: TB });
+
+  // ---- Phần đầu
+  const left = [];
+  M.coQuanCT.forEach(s => left.push(P([R(s, { size: o.head })])));
+  M.coQuan.forEach(s => left.push(P([R(s, { b: true, size: o.head })])));
+  const cqW = M.coQuan.length ? Math.max(...M.coQuan.map(s => tw(s, o.head, true))) : 1500;
+  left.push(lineP(Math.max(680, Math.min(G.L, cqW) * 0.4), G.L));
+  left.push(P([R("Số: " + soOut(M.so), { size: o.head })], { before: 120 }));
+  if (M.loai === "cv" && M.trichYeu) left.push(P([R(trichYeuOut(M), { size: 12 })], { before: 60 }));
+  const right = [
+    P([R(QH, { b: true, size: o.head })]),
+    P([R(TN, { b: true, size: G.tnSize })]),
+    lineP(tw(TN, G.tnSize, true), G.R),
+    P([R(dateStr(M), { i: true, size: o.body })], { before: 200 }),
+  ];
+  const children = [twoCol(left, right, G.L, G.R)];
+
+  if (M.loai === "tl"){
+    children.push(P([R(M.tenLoai || "", { b: true })], { before: 360, keepNext: true }));
+    if (M.trichYeu){
+      children.push(P([R(M.trichYeu, { b: true })], { keepNext: true }));
+      children.push(lineP(Math.max(1100, Math.min(G.textW, tw(M.trichYeu, o.body, true)) / 3), G.textW));
+    }
+  }
+  // ---- Kính gửi
+  if (M.kinhGui.length === 1){
+    children.push(P([R("Kính gửi: " + M.kinhGui[0] + ".")], { before: 240 }));
+  } else if (M.kinhGui.length > 1){
+    const start = 1134, at = start + 1304, kg = listOut(M.kinhGui);
+    children.push(P([new D.TextRun({ children: ["Kính gửi:", new D.Tab(), kg[0]], size: o.body * 2, font: F })],
+      { align: AL.LEFT, before: 240, indent: { left: at, hanging: at - start }, tabs: [{ type: D.TabStopType.LEFT, position: at }] }));
+    kg.slice(1).forEach(s => children.push(P([R(s)], { align: AL.LEFT, indent: { left: at } })));
+  }
+  // ---- Nội dung
+  const line = Math.round(o.ls * 240), ind = Math.round(o.ind * 567);
+  let first = true;
+  for (const it of M.body){
+    if (it.kind === "tbl"){
+      const ncol = Math.max(...it.tbl.rows.map(r => r.length)), cw = Math.floor(G.textW / ncol);
+      const rows = it.tbl.rows.map(r => new D.TableRow({ children: r.map(c => new D.TableCell({
+        width: { size: cw, type: D.WidthType.DXA }, margins: { left: 80, right: 80, top: 30, bottom: 30 },
+        children: c.length ? c.map(p => P(normRuns(p.runs, o.punct).map(x => R(x.text, { ...x, size: o.body - 1 })),
+          { align: p.align === "center" ? AL.CENTER : (p.align === "right" ? AL.RIGHT : AL.LEFT) })) : [P([])] })) }));
+      children.push(new D.Table({ rows, width: { size: cw * ncol, type: D.WidthType.DXA }, columnWidths: Array(ncol).fill(cw) }));
+      children.push(P([], { before: 0 }));
+      continue;
+    }
+    const center = it.align === "center" && it.runs.map(r => r.text).join("").length < 120;
+    children.push(P(it.runs.map(x => R(x.text, x)), { align: center ? AL.CENTER : AL.JUSTIFIED, before: first ? 240 : o.para * 20, line,
+      indent: center ? undefined : { firstLine: ind } }));
+    first = false;
+  }
+  // ---- Nơi nhận + chữ ký
+  const fl = [], fr = [];
+  if (M.noiNhan.length){
+    fl.push(P([R("Nơi nhận:", { b: true, i: true, size: 12 })], { align: AL.LEFT, before: 240 }));
+    listOut(M.noiNhan).forEach(s => fl.push(P([R(s, { size: 11 })], { align: AL.LEFT })));
+  } else fl.push(P([]));
+  (M.sig.length ? M.sig : [""]).forEach((s, k) => fr.push(P([R(s, { b: true })], { before: k === 0 ? 240 : 0 })));
+  for (let k = 0; k < 4; k++) fr.push(P([R("")]));
+  fr.push(P([R(M.nguoiKy, { b: true })]));
+  children.push(twoCol(fl, fr, G.FL, G.FR));
+
+  const header = new D.Header({ children: [P([new D.TextRun({ children: [D.PageNumber.CURRENT], size: o.body * 2, font: F })])] });
+  return new D.Document({
+    creator: "Định dạng văn bản NĐ 30", title: M.trichYeu || "Văn bản",
+    styles: { default: { document: { run: { font: F, size: o.body * 2 } } } },
+    sections: [{
+      properties: { titlePage: true, page: { size: { width: 11906, height: 16838 },
+        margin: { top: mm2tw(o.mt), bottom: mm2tw(o.mb), left: mm2tw(o.ml), right: mm2tw(o.mr), header: mm2tw(10), footer: mm2tw(10) } } },
+      headers: { default: header, first: new D.Header({ children: [P([])] }) },
+      children,
+    }],
+  });
+}
+
+/* ---- Tải về: dùng quyền tải file của trang (trên claude.ai), nếu không có thì tải trực tiếp */
+let dlCap = null;
+try { if (window.claude && typeof window.claude.use === "function") window.claude.use("downloads").then(d => { dlCap = d; }).catch(() => {}); } catch (e) {}
+async function saveFile(blob, name){
+  if (dlCap){
+    try { await dlCap.save({ filename: name, data: blob }); return "Đã tải về."; }
+    catch (e){ if (e && e.code === "declined") return "Đã hủy tải về."; if (e && e.code === "rate_limited") return "Đang có hộp thoại tải về, vui lòng thử lại."; }
+  }
+  const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = name;
+  document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 2000);
+  return "Đã tạo file.";
+}
+
+/* =========================================================
+   9. SỰ KIỆN
+   ========================================================= */
+let tmr = null;
+function update(){ if (!STATE) return; const M = readModel(); renderPreview(M); checks(M); }
+document.querySelectorAll("#work input, #work textarea, #work select").forEach(el => {
+  el.addEventListener("input", () => { clearTimeout(tmr); tmr = setTimeout(update, 200); });
+  el.addEventListener("change", update);
+});
+$("o_punct").addEventListener("change", () => {
+  if (!STATE) return;
+  const punct = $("o_punct").value === "1"; let tn = 0;
+  if ($("f_body").value === STATE.bodyOrig){
+    STATE.bodyItems.forEach(x => x.line = bodyLineOf(x.it, punct, x.it.kind === "tbl" ? ++tn : 0));
+    STATE.bodyOrig = $("f_body").value = STATE.bodyItems.map(x => x.line).join("\n");
+  }
+  update();
+});
+const msg = (t, err) => { $("msg").textContent = t; $("msg").style.color = err ? "var(--err)" : "var(--muted)"; };
+async function handleFile(file){
+  if (!file) return;
+  if (!/\.docx$/i.test(file.name)){ msg("Chỉ nhận file .docx. File .doc cũ: mở bằng Word rồi “Lưu thành” .docx.", true); return; }
+  msg("Đang đọc " + file.name + "…");
+  try {
+    Object.assign(STATS, { drawings: 0, merged: false, numbered: 0, footnotes: false });
+    const blocks = await readDocx(file);
+    loadResult(classify(blocks), file.name.replace(/\.docx$/i, ""));
+    msg("Đã đọc " + file.name + ". Kiểm tra các ô bên dưới.");
+  } catch (e){ console.error(e); msg("Không đọc được file: " + (e.message || e), true); }
+}
+const drop = $("drop"), fileIn = $("file");
+drop.addEventListener("click", () => fileIn.click());
+drop.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") fileIn.click(); });
+fileIn.addEventListener("change", () => { handleFile(fileIn.files[0]); fileIn.value = ""; });
+["dragenter", "dragover"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add("hover"); }));
+["dragleave", "drop"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove("hover"); }));
+drop.addEventListener("drop", e => handleFile(e.dataTransfer.files[0]));
+$("reset").addEventListener("click", () => { $("work").style.display = "none"; STATE = null; msg(""); window.scrollTo({ top: 0, behavior: "smooth" }); });
+$("dl").addEventListener("click", async () => {
+  if (!STATE) return;
+  const btn = $("dl"); btn.disabled = true;
+  try {
+    const blob = await docx.Packer.toBlob(buildDocx(readModel()));
+    msg(await saveFile(blob, (STATE.fileName || "van-ban") + "_ND30.docx"));
+  } catch (e){ console.error(e); msg("Lỗi khi tạo file: " + (e.message || e), true); }
+  btn.disabled = false;
+});
+
+/* ---- Văn bản mẫu (nội dung giả định, trình bày lộn xộn) */
+function sampleBlocks(){
+  const p = (t, x = {}) => mkP([{ text: t, b: !!x.b, i: !!x.i, u: false }], x.align || "");
+  return [
+    { type: "tbl", rows: [[
+      [p("UBND TỈNH A"), p("SỞ B"), p("Số:  125 / SB - VP"), p("V/v báo cáo kết quả triển khai"), p("chuyển đổi số năm 2026")],
+      [p("CỘNG HOÀ XÃ HỘI CHỦ NGHĨA VIỆT NAM"), p("Độc lập – Tự do – Hạnh phúc"), p("A, ngày 5 tháng 3 năm 2026", { i: true })],
+    ]] },
+    p("Kính gửi:     - Ủy ban nhân dân các xã, phường;"),
+    p("- Các phòng, ban thuộc Sở."),
+    p("    Thực hiện Kế hoạch số 10/KH-UBND ngày 10/01/2026 của UBND tỉnh A về chuyển đổi số năm 2026 , Sở B đề nghị các đơn vị báo cáo kết quả thực hiện như sau :"),
+    p("1. Nội dung báo cáo", { b: true }),
+    p("- Kết quả triển khai các nhiệm vụ chuyển đổi số trong quý I năm 2026  ( theo đề cương gửi kèm )."),
+    p("- Khó khăn, vướng mắc và đề xuất, kiến nghị."),
+    p("2. Thời gian gửi báo cáo", { b: true }),
+    p("Báo cáo gửi về Sở B trước ngày 20/3/2026, đồng thời gửi bản điện tử qua hệ thống quản lý văn bản để tổng hợp."),
+    p("Trân trọng./."),
+    { type: "tbl", rows: [[
+      [p("Nơi nhận:", { b: true, i: true }), p("- Như trên"), p("- Giám đốc Sở (để b/c)"), p("- Lưu: VT, VP")],
+      [p("KT. GIÁM ĐỐC", { b: true }), p("PHÓ GIÁM ĐỐC", { b: true }), p("(Đã ký)"), p("Nguyễn Văn A", { b: true })],
+    ]] },
+  ];
+}
+$("demo").addEventListener("click", () => {
+  Object.assign(STATS, { drawings: 0, merged: false, numbered: 0, footnotes: false });
+  loadResult(classify(sampleBlocks()), "cong-van-mau");
+  msg("Đang dùng công văn mẫu (nội dung giả định).");
+});
+</script>
+</body>
+</html>
