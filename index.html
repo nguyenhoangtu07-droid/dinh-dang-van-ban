@@ -20,15 +20,26 @@
       linear-gradient(120deg, #7d1014 0%, #a3161b 55%, #b8282b 100%);
     border-bottom:4px solid #d4a73a}
   .hero-in{max-width:1400px;margin:0 auto;padding:22px 18px;display:flex;align-items:center;gap:18px;flex-wrap:wrap}
-  .emblem{width:62px;height:62px;flex:none;border-radius:16px;display:grid;place-items:center;color:#fff;
-    background:rgba(255,255,255,.12);border:1.5px solid rgba(241,211,138,.75);box-shadow:inset 0 0 0 4px rgba(255,255,255,.04)}
+  .emblem{width:72px;height:72px;flex:none;border-radius:50%;display:grid;place-items:center;
+    background:#fff;border:3px solid #f1d38a;box-shadow:0 4px 14px rgba(0,0,0,.25)}
+  .emblem img{width:62px;height:62px;display:block}
+  .ver{display:inline-block;vertical-align:middle;font-size:12px;font-weight:700;letter-spacing:.02em;color:#5e0b0e;background:#f1d38a;border-radius:999px;padding:3px 10px;margin-left:8px;position:relative;top:-2px}
+  .spell{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+  .spell li{border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:13px;line-height:1.45;background:#fffdf7}
+  .spell .w{font-weight:700;color:var(--err);background:#fde8e6;border-radius:4px;padding:0 3px}
+  .spell .s{font-weight:700;color:var(--ok)}
+  .spell .ctx{color:var(--muted);font-size:12px;margin-top:2px}
+  .spell .acts{margin-top:6px;display:flex;gap:6px}
+  .spell .btn{padding:3px 10px;font-size:12.5px}
+  .sp-ok{color:var(--ok);font-size:13px}
+  mark.sp{background:#ffe08a;color:inherit;border-bottom:2px solid #e0a100;padding:0}
   .kicker{font-size:12.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#f1d38a}
   header.top h1{font-size:25px;margin:3px 0 2px;font-weight:700;letter-spacing:-.01em}
   header.top p{margin:0;color:rgba(255,255,255,.82);font-size:13.5px}
   header.top .sp{flex:1}
   .prof{display:grid;gap:4px;font-size:12px;color:rgba(255,255,255,.8);min-width:270px}
   .prof select{border:1px solid rgba(255,255,255,.35);border-radius:8px;padding:8px 10px;background:rgba(255,255,255,.95);color:var(--ink);font-size:14px}
-  @media (max-width:640px){ header.top h1{font-size:20px} .emblem{width:48px;height:48px} .prof{min-width:0;width:100%} }
+  @media (max-width:640px){ header.top h1{font-size:20px} .emblem{width:54px;height:54px} .emblem img{width:46px;height:46px} .prof{min-width:0;width:100%} }
   select,input,textarea,button{font:inherit;color:inherit}
   .wrap{max-width:1400px;margin:0 auto;padding:18px}
   .card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px}
@@ -94,24 +105,17 @@
 <header class="top">
   <div class="hero">
     <div class="hero-in">
-      <div class="emblem" aria-hidden="true">
-        <svg viewBox="0 0 48 48" width="34" height="34" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M13 5h15l9 9v27a2 2 0 0 1-2 2H13a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2z"/>
-          <path d="M28 5v9h9"/>
-          <path d="M17 22h14M17 28h14M17 34h8"/>
-          <path d="M31 33l3 3 6-7" stroke-width="2.8"/>
-        </svg>
-      </div>
+      <div class="emblem"><img src="assets/logo-tgu.svg" alt="Logo Trường Đại học Tiền Giang" width="56" height="56"></div>
       <div class="ttl">
         <div class="kicker">Tổ Chuyển đổi số Trường Đại học Tiền Giang</div>
-        <h1>Định dạng văn bản hành chính</h1>
-        <p>Trình bày lại thể thức văn bản theo Nghị định 30/2020/NĐ-CP · bản thử nghiệm</p>
+        <h1>Định dạng văn bản hành chính <span class="ver">Phiên bản 2</span></h1>
+        <p>Trình bày lại thể thức theo Nghị định 30/2020/NĐ-CP và Hướng dẫn 05-HD/VPTW · kiểm tra chính tả</p>
       </div>
       <div class="sp"></div>
       <label class="prof">Bộ thể thức
         <select id="profile">
           <option value="nd30">Nghị định 30/2020/NĐ-CP (văn bản hành chính)</option>
-          <option value="dang" disabled>Văn bản của Đảng (HD 36-HD/VPTW) — bản sau</option>
+          <option value="dang">Văn bản của Đảng (Hướng dẫn 05-HD/VPTW, 2026)</option>
         </select>
       </label>
     </div>
@@ -128,6 +132,7 @@
       </div>
       <div class="row" style="margin-top:10px">
         <button class="btn" id="demo">Thử với công văn mẫu</button>
+        <button class="btn" id="demo2">Thử với văn bản Đảng mẫu</button>
         <span id="msg"></span>
       </div>
     </div>
@@ -135,7 +140,8 @@
       <b>Cách dùng</b>
       <ul>
         <li>Tải lên công văn, báo cáo, kế hoạch, tờ trình… dạng <b>.docx</b> (file .doc cũ: mở bằng Word rồi lưu lại thành .docx).</li>
-        <li>Ứng dụng tự nhận diện: tên cơ quan, số ký hiệu, ngày tháng, trích yếu, kính gửi, nội dung, chữ ký, nơi nhận.</li>
+        <li>Ứng dụng tự nhận diện: tên cơ quan, số ký hiệu, ngày tháng, trích yếu, kính gửi, nội dung, chữ ký, nơi nhận. Văn bản có tiêu đề “ĐẢNG CỘNG SẢN VIỆT NAM” được tự chuyển sang thể thức Đảng.</li>
+        <li>Mục <b>Kiểm tra chính tả</b> chỉ ra từ viết sai, đặt dấu thanh sai, lỗi viết hoa, lặp từ, thiếu khoảng trắng — bấm <b>Sửa</b> để sửa ngay.</li>
         <li>Kiểm tra và sửa các ô bên trái nếu nhận diện sai, xem trước ở bên phải, rồi bấm <b>Tải về .docx</b>.</li>
         <li>Kết quả cần người soạn rà lại trước khi trình ký.</li>
       </ul>
@@ -150,13 +156,22 @@
       </details>
 
       <details class="sec" open>
+        <summary>Kiểm tra chính tả <span class="tag" id="spellTag"></span></summary>
+        <div class="in">
+          <div id="spellBar" class="row" style="display:none"><button class="btn" id="fixAll">Sửa tất cả lỗi có gợi ý</button></div>
+          <ul class="spell" id="spell"></ul>
+          <div class="note">Kiểm tra theo quy tắc ghép vần, vị trí dấu thanh, danh sách lỗi thường gặp và quy tắc viết hoa (Phụ lục II NĐ 30). Không thay được việc đọc soát của người soạn.</div>
+        </div>
+      </details>
+
+      <details class="sec" open>
         <summary>Phần đầu văn bản</summary>
         <div class="in">
           <label class="f">Tên cơ quan chủ quản (cấp trên, nếu có — mỗi dòng một dòng in)
             <textarea id="f_coQuanCT" rows="2"></textarea></label>
           <label class="f">Tên cơ quan ban hành văn bản
             <textarea id="f_coQuan" rows="2"></textarea></label>
-          <label class="f">Số, ký hiệu (phần sau “Số:”)
+          <label class="f"><span id="lbl_so">Số, ký hiệu (phần sau “Số:”)</span>
             <input id="f_so" placeholder="ví dụ 125/SNV-VP"></label>
           <label class="f">Địa danh
             <input id="f_diaDanh"></label>
@@ -194,6 +209,7 @@
         <div class="in">
           <label class="f">Quyền hạn, chức vụ người ký (mỗi dòng một dòng)
             <textarea id="f_sig" rows="2" placeholder="KT. GIÁM ĐỐC&#10;PHÓ GIÁM ĐỐC"></textarea></label>
+          <div class="note" id="sigNote">NĐ 30 ghi quyền hạn: TM., KT., TL., TUQ., Q. — văn bản Đảng ghi: T/M, K/T, T/L, Q.</div>
           <label class="f">Họ và tên người ký
             <input id="f_nguoiKy"></label>
           <label class="f">Nơi nhận (mỗi dòng một nơi; dòng cuối thường là “Lưu: VT, …”)
@@ -206,10 +222,12 @@
         <div class="in">
           <div class="g2">
             <label class="f">Cỡ chữ nội dung
-              <select id="o_body"><option>13</option><option selected>14</option></select></label>
-            <label class="f">Cỡ chữ tên cơ quan, quốc hiệu
+              <select id="o_body"><option>13</option><option selected>14</option><option>15</option></select></label>
+            <label class="f" id="w_head">Cỡ chữ tên cơ quan, quốc hiệu
               <select id="o_head"><option>12</option><option selected>13</option></select></label>
-            <label class="f">Giãn dòng
+            <label class="f" id="w_lsx" style="display:none">Giãn dòng (Exactly)
+              <select id="o_lsx"><option value="18">18 pt</option><option value="19">19 pt</option><option value="20" selected>20 pt</option><option value="21">21 pt</option><option value="22">22 pt</option></select></label>
+            <label class="f" id="w_ls">Giãn dòng
               <select id="o_ls"><option value="1">Đơn (1,0)</option><option value="1.15">1,15</option><option value="1.2" selected>1,2</option><option value="1.3">1,3</option><option value="1.5">1,5</option></select></label>
             <label class="f">Khoảng cách giữa các đoạn
               <select id="o_para"><option value="6" selected>6 pt</option><option value="8">8 pt</option><option value="10">10 pt</option><option value="12">12 pt</option></select></label>
@@ -218,7 +236,7 @@
             <label class="f">Chuẩn hóa khoảng trắng, dấu câu
               <select id="o_punct"><option value="1" selected>Có</option><option value="0">Không</option></select></label>
           </div>
-          <div class="note">Lề trang (mm) — NĐ 30: trên, dưới 20–25; trái 30–35; phải 15–20.</div>
+          <div class="note" id="marginNote">Lề trang (mm) — NĐ 30: trên, dưới 20–25; trái 30–35; phải 15–20.</div>
           <div class="g4">
             <label class="f">Trên<input id="o_mt" type="number" value="20" min="20" max="25"></label>
             <label class="f">Dưới<input id="o_mb" type="number" value="20" min="20" max="25"></label>
@@ -244,7 +262,7 @@
 <footer class="foot">
   <div class="foot-in">
     <div class="copy">Copyright © 2026 Tổ Chuyển đổi số, Trường Đại học Tiền Giang</div>
-    <div class="sub">Thể thức theo Phụ lục I, Nghị định 30/2020/NĐ-CP · Văn bản được xử lý ngay trên trình duyệt, không gửi lên máy chủ · Bản thử nghiệm</div>
+    <div class="sub">Phiên bản 2 · Thể thức theo Nghị định 30/2020/NĐ-CP và Hướng dẫn 05-HD/VPTW · Văn bản được xử lý ngay trên trình duyệt, không gửi lên máy chủ</div>
   </div>
 </footer>
 
@@ -333,13 +351,14 @@ async function readDocx(file){
    ========================================================= */
 const clean = s => (s || "").replace(/[\t    ]/g, " ").replace(/\s+/g, " ").trim();
 const RX = {
+  dcs: /ĐẢNG\s+CỘNG\s+SẢN\s+VIỆT\s+NAM/,
   qh: /C[ỘO]NG\s*H(?:ÒA|OÀ|OA|ÓA|OÁ)\s*X[ÃA]\s*H[ỘO]I\s*CH[ỦU]\s*NGH[ĨI]A\s*VI[ỆE]T\s*NAM/i,
   tn: /Độc\s*lập\s*[-–—]?\s*Tự\s*do\s*[-–—]?\s*Hạnh\s*phúc/i,
   date: /^(?:(.*?)[,\s]+)?ngày\s*(\S{0,5}?)\s*tháng\s*(\S{0,5}?)\s*năm\s*(\d{4}|\S{0,5})\s*\.?$/i,
   vv: /^(V\s*\/\s*v|Về\s*việc)\s*[:.]?\s*(.*)$/i,
   kg: /^Kính\s*gửi\s*:?\s*(.*)$/i,
   nn: /^Nơi\s*nhận\s*:?\s*(.*)$/i,
-  qhan: /^(KT|TM|TL|TUQ|Q|PT)\s*\.\s*\S/i,
+  qhan: /^(?:(KT|TM|TL|TUQ|Q|PT)\s*\.\s*\S|(T\/M|K\/T|T\/L|T\/U)\s*\S)/i,
   dash: /^[-–—+•]\s*/,
   tenLoai: /^(NGHỊ QUYẾT|QUYẾT ĐỊNH|CHỈ THỊ|QUY CHẾ|QUY ĐỊNH|THÔNG BÁO|HƯỚNG DẪN|CHƯƠNG TRÌNH|KẾ HOẠCH|PHƯƠNG ÁN|ĐỀ ÁN|DỰ ÁN|BÁO CÁO|BIÊN BẢN|TỜ TRÌNH|HỢP ĐỒNG|CÔNG ĐIỆN|BẢN GHI NHỚ|BẢN THỎA THUẬN|BẢN THOẢ THUẬN|GIẤY ỦY QUYỀN|GIẤY UỶ QUYỀN|GIẤY MỜI|GIẤY GIỚI THIỆU|GIẤY NGHỈ PHÉP|PHIẾU GỬI|PHIẾU CHUYỂN|PHIẾU BÁO|THƯ CÔNG)\b/,
   chucVu: /(GIÁM ĐỐC|CHỦ TỊCH|TRƯỞNG|PHÓ|HIỆU|BÍ THƯ|CHÁNH|VIỆN|TỔNG|ỦY VIÊN|UỶ VIÊN|THƯ KÝ|KẾ TOÁN|CHỦ NHIỆM|CỤC|VỤ|BAN|THỦ TƯỚNG|BỘ)/,
@@ -356,7 +375,7 @@ function matchSo(s){
   const m = s.match(/^Số\s*([:.])?\s*(.*)$/i);
   if (!m || s.length > 90) return null;
   let rest = m[2];
-  if (!m[1] && !/^[\d\s.…_]*\/\S/.test(rest)) return null;
+  if (!m[1] && !/^[\d\s.…_]*\/\S/.test(rest) && !/^[\d\s.…_]*[-–]\s*[\p{L}\d.]+\s*\/\s*\S/u.test(rest)) return null;
   let tail = "";
   const vv = rest.match(/\s(V\s*\/\s*v|Về\s*việc)\b/i);
   if (vv){ tail = rest.slice(vv.index).trim(); rest = rest.slice(0, vv.index); }
@@ -381,7 +400,7 @@ function splitByTabs(p, tailOnly){
   if (pieces.length <= 1) return [p];
   const ok = tailOnly
     ? pieces.some(x => sigCand(x) || RX.nn.test(x) || startsDash(x))
-    : pieces.some(x => RX.qh.test(x) || RX.tn.test(x) || matchSo(x) || matchDate(x) || RX.kg.test(x) || (isUpper(x) && x.length < 70));
+    : pieces.some(x => RX.qh.test(x) || RX.tn.test(x) || RX.dcs.test(x) || matchSo(x) || matchDate(x) || RX.kg.test(x) || (isUpper(x) && x.length < 70));
   if (!ok) return [p];
   return pieces.map(s => mkP([{ text: s, b: false, i: false, u: false }], p.align, p.num));
 }
@@ -391,8 +410,8 @@ function linearize(blocks){
   blocks.forEach((b, bi) => {
     if (b.type === "p"){ items.push({ kind: "p", p: b, origin: "p" }); return; }
     const txt = b.rows.map(r => r.map(c => c.map(p => p.text).join("\n")).join("\n")).join("\n");
-    const headerLike = RX.qh.test(txt) || RX.tn.test(txt) || /^\s*Số\s*[:\d]/im.test(txt) || /Kính\s*gửi/i.test(txt) && bi < 4;
-    const footerLike = /Nơi\s*nhận/i.test(txt) || (bi >= N - 4 && /^\s*(KT|TM|TL|TUQ|Q|PT)\s*\.\s/m.test(txt));
+    const headerLike = RX.qh.test(txt) || RX.tn.test(txt) || RX.dcs.test(txt) || /^\s*Số\s*[:\d]/im.test(txt) || /Kính\s*gửi/i.test(txt) && bi < 4;
+    const footerLike = /Nơi\s*nhận/i.test(txt) || (bi >= N - 4 && /^\s*((KT|TM|TL|TUQ|Q|PT)\s*\.\s|(T\/M|K\/T|T\/L)\s)/m.test(txt));
     if (headerLike || footerLike){ for (const row of b.rows) for (const cell of row) for (const p of cell) items.push({ kind: "p", p, origin: "cell" }); }
     else items.push({ kind: "tbl", tbl: b });
   });
@@ -446,7 +465,13 @@ function classify(blocks){
   for (; i < H; i++){
     if (!isP(i)) break;
     const s = tx(i);
+    if (RX.dcs.test(s) && s.length < 90){
+      const pre = s.split(RX.dcs)[0].trim();
+      if (pre && isUpper(pre) && !seenSo) R.coQuan.push(pre);
+      R.dang = true; seenQH = true; lastHead = i; continue;
+    }
     if (RX.qh.test(s) || RX.tn.test(s)){
+      R.hasQH = true;
       const pre = s.split(RX.qh)[0].split(RX.tn)[0].trim();
       if (pre && isUpper(pre) && !seenSo) R.coQuan.push(pre);
       seenQH = true; lastHead = i; continue;
@@ -513,7 +538,7 @@ function classify(blocks){
     const last = sl[sl.length - 1];
     if (isUpper(last) && !RX.chucVu.test(last) && !RX.qhan.test(last) && last.split(" ").length <= 6){ name = titleCase(last); sl.pop(); }
   }
-  R.sig = sl.map(s => s.toUpperCase().replace(/^(KT|TM|TL|TUQ|Q|PT)\s*\.\s*/, "$1. "));
+  R.sig = sl.map(s => s.toUpperCase());
   R.nguoiKy = name;
   R.noiNhan = nnItems.map(s => s.startsWith("+") ? s : s.replace(RX.dash, "")).map(s => s.replace(/[;,.]+$/, "").trim()).filter(Boolean);
 
@@ -529,7 +554,7 @@ function classify(blocks){
 const pad2 = v => (v && /^\d+$/.test(v) && +v < 10) ? String(+v).padStart(2, "0") : (v || "");
 const normDay = v => /^\d+$/.test(v) ? pad2(v) : v;
 const normMonth = v => /^\d+$/.test(v) ? (+v <= 2 ? pad2(v) : String(+v)) : v;
-function normSo(s){ s = clean(s); if (/^\d/.test(s)) s = s.replace(/\s*\/\s*/g, "/").replace(/\s*[-–]\s*/g, "-"); return s; }
+
 function normRuns(runs, punct){
   let rs = runs.map(r => ({ ...r, text: r.text.replace(/[\t\n ]/g, " ").replace(/ {2,}/g, " ") })).filter(r => r.text);
   for (let k = 1; k < rs.length; k++){ if (/ $/.test(rs[k - 1].text) && /^ /.test(rs[k].text)) rs[k].text = rs[k].text.replace(/^ +/, ""); }
@@ -546,16 +571,45 @@ const lines = s => (s || "").split("\n").map(clean).filter(Boolean);
 /* =========================================================
    4. TRẠNG THÁI + FORM
    ========================================================= */
-let STATE = null; // { model, bodyItems, bodyOrig, fileName }
+let STATE = null; // { bodyItems, bodyOrig, fileName, R, rawDate, ignored }
 const $ = id => document.getElementById(id);
 const FIELDS = ["coQuanCT", "coQuan", "so", "diaDanh", "d", "m", "y", "loai", "tenLoai", "trichYeu", "kinhGui", "body", "sig", "nguoiKy", "noiNhan"];
-const OPTS = ["body", "head", "ls", "para", "ind", "punct", "mt", "mb", "ml", "mr"];
+const isDangProf = () => $("profile").value === "dang";
+
+function normSo(s, prof){
+  s = clean(s).replace(/^Số\s*:?\s*/i, "");
+  if (/^\d/.test(s)) s = s.replace(/\s*\/\s*/g, "/").replace(/\s*[-–]\s*/g, "-");
+  if (prof === "dang") s = s.replace(/^(\d)(?=[-\/])/, "0$1"); // HD 05: số dưới 10 thêm số 0
+  return s;
+}
+// Quyền hạn ký: NĐ 30 dùng TM., KT., TL., TUQ., Q. — văn bản Đảng dùng T/M, K/T, T/L, Q.
+function normSig(s, prof){
+  s = clean(s).toUpperCase();
+  let m = s.match(/^(KT|TM|TL|TUQ|PT|Q)\s*\.\s*(.*)$/);
+  if (m){
+    const map = { KT: "K/T", TM: "T/M", TL: "T/L" };
+    return prof === "dang" && map[m[1]] ? `${map[m[1]]} ${m[2]}` : `${m[1]}. ${m[2]}`;
+  }
+  m = s.match(/^(T\/M|K\/T|T\/L|T\/U)\s*(.*)$/);
+  if (m){
+    const map = { "T/M": "TM.", "K/T": "KT.", "T/L": "TL.", "T/U": "TUQ." };
+    return prof === "dang" ? `${m[1]} ${m[2]}` : `${map[m[1]]} ${m[2]}`;
+  }
+  return s;
+}
+const isAuthLine = s => /^((KT|TM|TL|TUQ|PT|Q)\.\s|(T\/M|K\/T|T\/L|T\/U)\s)/.test(s);
 
 function bodyLineOf(it, punct, tblNo){
   if (it.kind === "tbl"){ const r = it.tbl.rows.length, c = Math.max(...it.tbl.rows.map(x => x.length)); return `[BẢNG ${tblNo}: ${r} dòng × ${c} cột — giữ nguyên]`; }
   return normRuns(it.p.runs, punct).map(r => r.text).join("");
 }
 function loadResult(R, fileName){
+  // Tự chọn bộ thể thức theo tiêu đề văn bản
+  let auto = "";
+  if (R.dang && !isDangProf()){ $("profile").value = "dang"; auto = "dang"; }
+  else if (R.hasQH && isDangProf()){ $("profile").value = "nd30"; auto = "nd30"; }
+  setProfileUI();
+  const prof = $("profile").value;
   const punct = $("o_punct").value === "1";
   let tn = 0;
   const bodyItems = R.body.map(it => ({ it, line: bodyLineOf(it, punct, it.kind === "tbl" ? ++tn : 0) })).filter(x => x.line);
@@ -563,14 +617,14 @@ function loadResult(R, fileName){
   const m = {
     coQuanCT: cq.length > 1 ? cq.slice(0, -1).join("\n") : "",
     coQuan: cq.length ? cq[cq.length - 1] : "",
-    so: normSo(R.so), diaDanh: R.diaDanh, d: normDay(R.d), m: normMonth(R.m), y: R.y,
+    so: normSo(R.so, prof), diaDanh: R.diaDanh, d: normDay(R.d), m: normMonth(R.m), y: R.y,
     loai: R.loai, tenLoai: R.tenLoai,
     trichYeu: R.loai === "cv" ? clean(R.trichYeu).replace(RX.vv, "$2") : clean(R.trichYeu),
     kinhGui: R.kinhGui.join("\n"),
     body: bodyItems.map(x => x.line).join("\n"),
-    sig: R.sig.join("\n"), nguoiKy: R.nguoiKy, noiNhan: R.noiNhan.join("\n"),
+    sig: R.sig.map(s => normSig(s, prof)).join("\n"), nguoiKy: R.nguoiKy, noiNhan: R.noiNhan.join("\n"),
   };
-  STATE = { bodyItems, bodyOrig: m.body, fileName, R, rawDate: { d: R.d, m: R.m } };
+  STATE = { bodyItems, bodyOrig: m.body, fileName, R, rawDate: { d: R.d, m: R.m }, ignored: new Set(), auto };
   for (const f of FIELDS) $("f_" + f).value = m[f] || "";
   $("work").style.display = "grid";
   update();
@@ -579,50 +633,57 @@ function loadResult(R, fileName){
 function readOpts(){
   const n = id => +$("o_" + id).value;
   const clamp = (v, a, b) => Math.min(b, Math.max(a, isFinite(v) ? v : a));
-  return { body: n("body"), head: n("head"), ls: n("ls"), para: n("para"), ind: n("ind"), punct: $("o_punct").value === "1",
+  return { body: n("body"), head: n("head"), ls: n("ls"), lsx: n("lsx"), para: n("para"), ind: n("ind"), punct: $("o_punct").value === "1",
            mt: clamp(n("mt"), 20, 25), mb: clamp(n("mb"), 20, 25), ml: clamp(n("ml"), 30, 35), mr: clamp(n("mr"), 15, 20) };
 }
 function readModel(){
   const v = id => $("f_" + id).value;
-  const o = readOpts();
+  const o = readOpts(), prof = $("profile").value;
   const M = {
+    prof, dang: prof === "dang",
     coQuanCT: lines(v("coQuanCT")).map(s => s.toUpperCase()),
     coQuan: lines(v("coQuan")).map(s => s.toUpperCase()),
-    so: normSo(v("so")), diaDanh: clean(v("diaDanh")),
+    so: normSo(v("so"), prof), diaDanh: clean(v("diaDanh")),
     d: normDay(clean(v("d"))), m: normMonth(clean(v("m"))), y: clean(v("y")),
     loai: v("loai"), tenLoai: clean(v("tenLoai")).toUpperCase(),
     trichYeu: clean(v("trichYeu")),
     kinhGui: lines(v("kinhGui")).map(s => s.replace(RX.dash, "").replace(/[;,.]+$/, "").trim()).filter(Boolean),
-    sig: lines(v("sig")).map(s => s.toUpperCase()),
+    sig: lines(v("sig")).map(s => normSig(s, prof)),
     nguoiKy: clean(v("nguoiKy")),
     noiNhan: lines(v("noiNhan")).map(s => s.startsWith("+") ? s : s.replace(RX.dash, "")).map(s => s.replace(/[;,.]+$/, "").trim()).filter(Boolean),
     opt: o,
   };
   if (M.loai === "cv") M.trichYeu = M.trichYeu.replace(RX.vv, "$2");
-  // Nội dung: giữ định dạng gốc cho dòng không sửa
+  // Nội dung: giữ định dạng gốc cho đoạn không sửa
   const bodyVal = v("body");
   const items = [];
-  if (STATE && bodyVal === STATE.bodyOrig){
+  M.bodyFromText = !(STATE && bodyVal === STATE.bodyOrig);
+  if (!M.bodyFromText){
     for (const x of STATE.bodyItems) items.push(x.it.kind === "tbl" ? { kind: "tbl", tbl: x.it.tbl } : { kind: "p", runs: normRuns(x.it.p.runs, o.punct), align: x.it.p.align });
   } else {
     const used = new Set();
-    for (const raw of bodyVal.split("\n")){
-      const s = clean(raw); if (!s) continue;
+    bodyVal.split("\n").forEach((raw, lineNo) => {
+      const s = clean(raw); if (!s) return;
       const tm = s.match(/^\[BẢNG (\d+):/);
       const idx = STATE ? STATE.bodyItems.findIndex((x, k) => !used.has(k) && (tm ? x.line.startsWith(`[BẢNG ${tm[1]}:`) : x.line === s)) : -1;
       if (idx >= 0){
         used.add(idx); const it = STATE.bodyItems[idx].it;
-        items.push(it.kind === "tbl" ? { kind: "tbl", tbl: it.tbl } : { kind: "p", runs: normRuns(it.p.runs, o.punct), align: it.p.align });
-      } else if (!tm) items.push({ kind: "p", runs: [{ text: normText(s, o.punct) }], align: "" });
-    }
+        items.push(it.kind === "tbl" ? { kind: "tbl", tbl: it.tbl, lineNo } : { kind: "p", runs: normRuns(it.p.runs, o.punct), align: it.p.align, lineNo });
+      } else if (!tm) items.push({ kind: "p", runs: [{ text: normText(s, o.punct) }], align: "", lineNo });
+    });
   }
   M.body = items;
   return M;
 }
-const soOut = so => !so ? "      /" : (so.startsWith("/") ? "      " + so : so);
+const DCS = "ĐẢNG CỘNG SẢN VIỆT NAM";
+const soOut = M => {
+  const so = M.so, blank = "      ";
+  if (M.dang) return "Số " + (!so ? blank + "-" : (/^[-–]/.test(so) ? blank + so : so));
+  return "Số: " + (!so ? blank + "/" : (so.startsWith("/") ? blank + so : so));
+};
 const dateStr = M => `${M.diaDanh ? M.diaDanh + ", " : ""}ngày ${M.d || "    "} tháng ${M.m || "    "} năm ${M.y || "      "}`;
 const trichYeuOut = M => M.loai === "cv" ? (M.trichYeu ? "V/v " + M.trichYeu : "") : M.trichYeu;
-const listOut = arr => arr.map((s, k) => (s.startsWith("+") ? s : "- " + s) + (k === arr.length - 1 ? "." : ";"));
+const listOut = (arr, last = ".") => arr.map((s, k) => (s.startsWith("+") ? s : "- " + s) + (k === arr.length - 1 ? last : ";"));
 
 /* =========================================================
    5. ĐO CHỮ + BỐ CỤC
@@ -632,91 +693,140 @@ function tw(text, pt, bold, italic){ _cv.font = `${italic ? "italic " : ""}${bol
 const QH = "CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM", TN = "Độc lập - Tự do - Hạnh phúc";
 const mm2tw = x => Math.round(x * 56.6929);
 function layout(M){
-  const o = M.opt, textW = 11906 - mm2tw(o.ml) - mm2tw(o.mr);
-  const PAD = 220;
+  const o = M.opt, textW = 11906 - mm2tw(o.ml) - mm2tw(o.mr), PAD = 220;
+  const head = M.dang ? 14 : o.head;
+  const dateSize = M.dang ? 14 : o.body;
   // Cột trái cần đủ rộng để tên cơ quan nằm trên một dòng
-  const leftNeed = Math.max(1500, ...M.coQuan.map(s => tw(s, o.head, true)), ...M.coQuanCT.map(s => tw(s, o.head, false)),
-                            tw("Số: " + soOut(M.so), o.head)) + PAD;
-  const rightNeed = q => Math.max(tw(QH, q, true), tw(TN, Math.min(14, q + 1), true), tw(dateStr(M), o.body, false, true)) + PAD;
-  let qhSize = o.head, rn = rightNeed(qhSize);
-  // Không đủ chỗ: quốc hiệu xuống cỡ 12 (NĐ 30 cho phép 12–13)
-  if (leftNeed + rn > textW && qhSize > 12){ qhSize = 12; rn = rightNeed(12); }
+  const leftNeed = Math.max(1500, ...M.coQuan.map(s => tw(s, head, true)), ...M.coQuanCT.map(s => tw(s, head, false)),
+                            tw(soOut(M), head)) + PAD;
+  const rightNeed = q => (M.dang ? Math.max(tw(DCS, 15, true), tw(dateStr(M), dateSize, false, true))
+                                 : Math.max(tw(QH, q, true), tw(TN, Math.min(14, q + 1), true), tw(dateStr(M), dateSize, false, true))) + PAD;
+  let qhSize = head, rn = rightNeed(qhSize);
+  // NĐ 30: không đủ chỗ thì quốc hiệu xuống cỡ 12 (cho phép 12–13)
+  if (!M.dang && leftNeed + rn > textW && qhSize > 12){ qhSize = 12; rn = rightNeed(12); }
   let R = leftNeed + rn <= textW ? rn + Math.round((textW - leftNeed - rn) / 2) : rn;
   R = Math.round(Math.min(textW * 0.66, R));
   const L = textW - R;
   // Tên vẫn dài hơn cột trái: ngắt ở chỗ cân đối thay vì để Word rớt một chữ
   const fit = (arr, bold) => arr.flatMap(s => {
-    if (tw(s, o.head, bold) <= L - 120) return [s];
+    if (tw(s, head, bold) <= L - 120) return [s];
     const w = s.split(" "); let best = null;
     for (let k = 1; k < w.length; k++){
       const a = w.slice(0, k).join(" "), b = w.slice(k).join(" ");
-      const m = Math.max(tw(a, o.head, bold), tw(b, o.head, bold));
+      const m = Math.max(tw(a, head, bold), tw(b, head, bold));
       if (!best || m < best.m) best = { a, b, m };
     }
     return best ? [best.a, best.b] : [s];
   });
-  return { textW, L, R, qhSize, tnSize: Math.min(14, qhSize + 1), qhReduced: qhSize < o.head,
+  return { textW, L, R, head, dateSize, qhSize, tnSize: Math.min(14, qhSize + 1), qhReduced: !M.dang && qhSize < o.head,
            cqCT: fit(M.coQuanCT, false), cq: fit(M.coQuan, true),
            FL: Math.round(textW * 0.44), FR: textW - Math.round(textW * 0.44) };
+}
+
+/* Mô tả trang văn bản dùng chung cho xem trước và xuất .docx
+   Đoạn: {t:"p", runs, align, before(pt), indent(cm), line, keepNext, idx}
+   Đường kẻ: {t:"rule", w(twip)} · Khoảng trống: {t:"gap", lines, size} · Kính gửi nhiều nơi: {t:"kg"} · Bảng: {t:"tbl"} */
+function buildSpec(M){
+  const o = M.opt, G = layout(M), D = M.dang, B = o.body;
+  const r = (text, x = {}) => ({ text, b: !!x.b, i: !!x.i, u: !!x.u, size: x.size || B, ph: !!x.ph });
+  const p = (runs, x = {}) => ({ t: "p", runs: Array.isArray(runs) ? runs : [runs], align: x.align || "center", before: x.before || 0,
+                                 indent: x.indent || 0, line: x.line || null, keepNext: !!x.keepNext, idx: x.idx });
+  // Phần đầu, cột trái
+  const L = [];
+  G.cqCT.forEach(s => L.push(p(r(s, { size: G.head }))));
+  G.cq.forEach(s => L.push(p(r(s, { b: true, size: G.head }))));
+  if (!G.cq.length) L.push(p(r("TÊN CƠ QUAN BAN HÀNH", { b: true, size: G.head, ph: true })));
+  const cqW = G.cq.length ? Math.max(...G.cq.map(s => tw(s, G.head, true))) : 1500;
+  if (D) L.push(p(r("*", { size: G.head })));
+  else L.push({ t: "rule", w: Math.max(680, Math.min(G.L, cqW) * 0.4) });
+  L.push(p(r(soOut(M), { size: G.head }), { before: D ? 0 : 6 }));
+  if (M.loai === "cv") L.push(p(r(trichYeuOut(M) || "V/v trích yếu", { size: 12, i: D, ph: !M.trichYeu }), { before: 3 }));
+  // Phần đầu, cột phải
+  const Rt = [];
+  if (D){
+    Rt.push(p(r(DCS, { b: true, size: 15 })));
+    Rt.push({ t: "rule", w: tw(DCS, 15, true) });
+  } else {
+    Rt.push(p(r(QH, { b: true, size: G.qhSize })));
+    Rt.push(p(r(TN, { b: true, size: G.tnSize })));
+    Rt.push({ t: "rule", w: tw(TN, G.tnSize, true) });
+  }
+  Rt.push(p(r(dateStr(M), { i: true, size: G.dateSize }), { before: 10 }));
+  // Tên loại, trích yếu, kính gửi
+  const A = [];
+  if (M.loai === "tl"){
+    A.push(p(r(M.tenLoai || "TÊN LOẠI", { b: true, size: D ? 15 : B, ph: !M.tenLoai }), { before: 18, keepNext: true }));
+    if (M.trichYeu){
+      A.push(p(r(M.trichYeu, { b: true, size: D ? 14 : B }), { keepNext: true }));
+      if (D) A.push(p(r("-----", { size: 14 }), { keepNext: true }));
+      else A.push({ t: "rule", w: Math.max(1100, Math.min(G.textW, tw(M.trichYeu, B, true)) / 3) });
+    }
+  }
+  if (M.kinhGui.length){
+    const lab = r("Kính gửi:", { i: D, size: D ? 14 : B });
+    if (M.kinhGui.length === 1) A.push(p([lab, r(" " + M.kinhGui[0] + (D ? ";" : "."))], { before: 12 }));
+    else A.push({ t: "kg", label: lab, items: listOut(M.kinhGui, D ? ";" : ".").map(s => r(s)), before: 12 });
+  }
+  // Nội dung
+  const line = D ? { exact: o.lsx } : { mult: o.ls };
+  let first = true;
+  M.body.forEach((it, k) => {
+    if (it.kind === "tbl"){ A.push({ t: "tbl", tbl: it.tbl, size: B - 1, punct: o.punct }); return; }
+    const txt = it.runs.map(x => x.text).join("");
+    const center = it.align === "center" && txt.length < 120;
+    A.push(p(it.runs.map(x => r(x.text, { ...x, size: B })), { align: center ? "center" : "justify", before: first ? 12 : o.para,
+      indent: center ? 0 : o.ind, line, idx: k }));
+    first = false;
+  });
+  // Nơi nhận, chữ ký
+  const FL = [], FR = [], S = D ? 14 : B;
+  if (M.noiNhan.length){
+    FL.push(p(D ? r("Nơi nhận:", { u: true, size: 14 }) : r("Nơi nhận:", { b: true, i: true, size: 12 }), { align: "left", before: 12 }));
+    listOut(M.noiNhan).forEach(s => FL.push(p(r(s, { size: D ? 12 : 11 }), { align: "left" })));
+  }
+  const sig = M.sig.length ? M.sig : ["QUYỀN HẠN, CHỨC VỤ"];
+  sig.forEach((s, k) => FR.push(p(r(s, { b: D ? isAuthLine(s) : true, size: S, ph: !M.sig.length }), { before: k === 0 ? 12 : 0 })));
+  FR.push({ t: "gap", lines: 4, size: S });
+  FR.push(p(r(M.nguoiKy || "Họ và tên", { b: true, size: S, ph: !M.nguoiKy })));
+  return { G, o, D, head: { L, R: Rt }, body: A, foot: { L: FL, R: FR }, pageNum: D ? 14 : B };
 }
 
 /* =========================================================
    6. XEM TRƯỚC
    ========================================================= */
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
-const runsHtml = runs => runs.map(r => { let h = esc(r.text); if (r.b) h = `<b>${h}</b>`; if (r.i) h = `<i>${h}</i>`; if (r.u) h = `<u>${h}</u>`; return h; }).join("");
-function renderPreview(M){
-  const o = M.opt, G = layout(M), px = t => (t / 15).toFixed(1) + "px";
-  const ph = (s, t) => s ? esc(s) : `<span class="muted-ph">${t}</span>`;
-  let h = "";
-  // phần đầu
-  const cqW = G.cq.length ? Math.max(...G.cq.map(s => tw(s, o.head, true))) : 0;
-  h += `<div class="hd"><div style="width:${px(G.L)}">`;
-  G.cqCT.forEach(s => h += `<p style="font-size:${o.head}pt">${esc(s)}</p>`);
-  G.cq.forEach(s => h += `<p style="font-size:${o.head}pt;font-weight:700">${esc(s)}</p>`);
-  if (!M.coQuan.length) h += `<p style="font-size:${o.head}pt" class="muted-ph">TÊN CƠ QUAN</p>`;
-  h += `<div class="ln" style="width:${px(Math.max(680, Math.min(G.L, cqW) * 0.4))}"></div>`;
-  h += `<p style="font-size:${o.head}pt;margin-top:6pt">Số: ${M.so ? esc(soOut(M.so)) : ph("", "…/…")}</p>`;
-  if (M.loai === "cv") h += `<p style="font-size:12pt;margin-top:3pt">${ph(trichYeuOut(M), "V/v trích yếu")}</p>`;
-  h += `</div><div style="width:${px(G.R)}">`;
-  h += `<p style="font-size:${G.qhSize}pt;font-weight:700;white-space:nowrap">${QH}</p>`;
-  h += `<p style="font-size:${G.tnSize}pt;font-weight:700">${TN}</p>`;
-  h += `<div class="ln" style="width:${px(tw(TN, G.tnSize, true))}"></div>`;
-  h += `<p style="font-size:${o.body}pt;font-style:italic;margin-top:10pt">${esc(dateStr(M))}</p>`;
-  h += `</div></div>`;
-  if (M.loai === "tl"){
-    h += `<p style="text-align:center;font-weight:700;font-size:${o.body}pt;margin-top:18pt">${ph(M.tenLoai, "TÊN LOẠI")}</p>`;
-    h += `<p style="text-align:center;font-weight:700;font-size:${o.body}pt">${ph(M.trichYeu, "Trích yếu")}</p>`;
-    h += `<div class="ln" style="width:${px(Math.max(1100, Math.min(G.textW, tw(M.trichYeu || "x", o.body, true)) / 3))}"></div>`;
-  }
-  // kính gửi
-  if (M.kinhGui.length === 1) h += `<p style="text-align:center;font-size:${o.body}pt;margin-top:12pt">Kính gửi: ${esc(M.kinhGui[0])}.</p>`;
-  else if (M.kinhGui.length > 1){
-    const kg = listOut(M.kinhGui);
-    h += `<div style="font-size:${o.body}pt;margin-top:12pt;display:flex;padding-left:2cm"><div style="width:2.3cm;flex:none">Kính gửi:</div><div>${kg.map(esc).join("<br>")}</div></div>`;
-  }
-  // nội dung
-  const ls = (o.ls * 1.15).toFixed(3);
-  let first = true;
-  for (const it of M.body){
-    if (it.kind === "tbl"){
-      h += `<table class="tblv" style="font-size:${o.body - 1}pt">` + it.tbl.rows.map(r => "<tr>" + r.map(c => `<td>${c.map(p => runsHtml(normRuns(p.runs, o.punct))).join("<br>")}</td>`).join("") + "</tr>").join("") + "</table>";
-      continue;
+// Chữ của đoạn, có tô vàng các vị trí lỗi chính tả (ranges: [{start,end}])
+function runsHtml(runs, ranges){
+  let off = 0, h = "";
+  for (const x of runs){
+    const t = x.text, a = off, b = off + t.length; off = b;
+    let seg = "", pos = 0;
+    for (const g of (ranges || [])){
+      const s0 = Math.max(g.start, a) - a, e0 = Math.min(g.end, b) - a;
+      if (e0 <= s0 || s0 < pos) continue;
+      seg += esc(t.slice(pos, s0)) + `<mark class="sp">${esc(t.slice(s0, e0))}</mark>`; pos = e0;
     }
-    const center = it.align === "center" && it.runs.map(r => r.text).join("").length < 120;
-    h += `<p style="font-size:${o.body}pt;line-height:${ls};margin-top:${first ? 12 : o.para}pt;text-align:${center ? "center" : "justify"};text-indent:${center ? 0 : o.ind}cm">${runsHtml(it.runs)}</p>`;
-    first = false;
+    seg += esc(t.slice(pos));
+    const st = `font-size:${x.size}pt;${x.b ? "font-weight:700;" : ""}${x.i ? "font-style:italic;" : ""}${x.u ? "text-decoration:underline;" : ""}`;
+    h += `<span style="${st}"${x.ph ? ' class="muted-ph"' : ""}>${seg}</span>`;
   }
-  // chữ ký, nơi nhận
-  h += `<div class="ft"><div class="l" style="width:${px(G.FL)}">`;
-  if (M.noiNhan.length){
-    h += `<p style="font-size:12pt;font-weight:700;font-style:italic">Nơi nhận:</p>`;
-    h += listOut(M.noiNhan).map(s => `<p style="font-size:11pt">${esc(s)}</p>`).join("");
-  }
-  h += `</div><div class="r" style="width:${px(G.FR)}">`;
-  h += (M.sig.length ? M.sig : [""]).map(s => `<p style="font-size:${o.body}pt;font-weight:700">${ph(s, "QUYỀN HẠN, CHỨC VỤ")}</p>`).join("");
-  h += `<div style="height:${(o.body * 1.15 * 4).toFixed(0)}pt"></div><p style="font-size:${o.body}pt;font-weight:700">${ph(M.nguoiKy, "Họ và tên")}</p>`;
-  h += `</div></div>`;
+  return h;
+}
+function blockHtml(b, px, marks){
+  if (b.t === "rule") return `<div class="ln" style="width:${px(b.w)}"></div>`;
+  if (b.t === "gap") return `<div style="height:${(b.size * 1.15 * b.lines).toFixed(0)}pt"></div>`;
+  if (b.t === "kg") return `<div style="margin-top:${b.before}pt;display:flex;padding-left:2cm"><div style="width:2.3cm;flex:none">${runsHtml([b.label])}</div><div>${b.items.map(x => runsHtml([x])).join("<br>")}</div></div>`;
+  if (b.t === "tbl") return `<table class="tblv" style="font-size:${b.size}pt">` + b.tbl.rows.map(rw => "<tr>" + rw.map(c => `<td>${c.map(q => runsHtml(normRuns(q.runs, b.punct).map(x => ({ ...x, size: b.size })))).join("<br>")}</td>`).join("") + "</tr>").join("") + "</table>";
+  const fs = b.runs.length ? b.runs[0].size : 14;
+  const lh = b.line ? (b.line.exact ? `${b.line.exact}pt` : (b.line.mult * 1.15).toFixed(3)) : "1.15";
+  return `<p style="font-size:${fs}pt;line-height:${lh};margin-top:${b.before}pt;text-align:${b.align};text-indent:${b.indent}cm">${runsHtml(b.runs, b.idx !== undefined ? marks[b.idx] : null)}</p>`;
+}
+function renderPreview(spec, marks){
+  const { G, o } = spec, px = t => (t / 15).toFixed(1) + "px";
+  const col = (arr, w, cls = "") => `<div class="${cls}" style="width:${px(w)}">${arr.map(b => blockHtml(b, px, marks)).join("")}</div>`;
+  let h = `<div class="hd">${col(spec.head.L, G.L)}${col(spec.head.R, G.R)}</div>`;
+  h += spec.body.map(b => blockHtml(b, px, marks)).join("");
+  h += `<div class="ft">${col(spec.foot.L, G.FL, "l")}${col(spec.foot.R, G.FR, "r")}</div>`;
   const page = $("page");
   page.style.padding = `${o.mt}mm ${o.mr}mm ${o.mb}mm ${o.ml}mm`;
   page.innerHTML = h;
@@ -737,30 +847,44 @@ window.addEventListener("resize", () => { if (STATE) fitPreview(); });
    ========================================================= */
 function checks(M){
   const out = [], add = (lv, t) => out.push([lv, t]);
+  const G = layout(M);
+  if (STATE && STATE.auto === "dang") add("info", "Văn bản có tiêu đề “ĐẢNG CỘNG SẢN VIỆT NAM” nên đã chuyển sang thể thức văn bản của Đảng (Hướng dẫn 05-HD/VPTW).");
+  if (STATE && STATE.auto === "nd30") add("info", "Văn bản có Quốc hiệu nên đã chuyển sang thể thức Nghị định 30/2020/NĐ-CP.");
   M.coQuan.length ? add("ok", "Có tên cơ quan ban hành.") : add("err", "Thiếu tên cơ quan ban hành văn bản.");
   if (!M.so) add("err", "Thiếu số, ký hiệu văn bản.");
-  else if (!/^[\d\s .…_]*\/[\p{Lu}\d]+([-–][\p{Lu}\d.]+)*$/u.test(M.so)) add("warn", `Số, ký hiệu “${M.so}” chưa đúng dạng Số: …/Tên viết tắt (ví dụ 125/SNV-VP).`);
+  else if (M.dang){
+    if (!/^[\d\s .…_]*-[\p{Lu}\d]+\/[\p{Lu}\d.\-]+$/u.test(M.so)) add("warn", `Số và ký hiệu “${M.so}” chưa đúng dạng văn bản Đảng: Số 12-CV/TU (gạch nối giữa số và tên loại, gạch chéo trước tên cơ quan).`);
+    else add("ok", "Số và ký hiệu đúng dạng văn bản Đảng (số dưới 10 đã thêm số 0).");
+  } else if (!/^[\d\s .…_]*\/[\p{Lu}\d]+([-–][\p{Lu}\d.]+)*$/u.test(M.so)) add("warn", `Số, ký hiệu “${M.so}” chưa đúng dạng Số: …/Tên viết tắt (ví dụ 125/SNV-VP).`);
   else add("ok", "Số, ký hiệu đúng dạng.");
   if (!M.diaDanh) add("warn", "Thiếu địa danh trước ngày tháng.");
   if (!/^\d{4}$/.test(M.y)) add("warn", "Thiếu năm ban hành.");
   else if (!M.d || !M.m) add("info", "Ngày, tháng đang để trống (văn bản chưa ký số) — sẽ chừa chỗ trống.");
   else add("ok", "Ngày tháng năm đủ, đã thêm số 0 cho ngày dưới 10 và tháng 1, 2.");
   if (STATE && STATE.rawDate && ((STATE.rawDate.d && STATE.rawDate.d !== M.d) || (STATE.rawDate.m && STATE.rawDate.m !== M.m))) add("info", "Đã sửa cách ghi ngày/tháng theo quy định.");
-  if (layout(M).qhReduced) add("info", "Tên cơ quan dài nên quốc hiệu được để cỡ 12 (NĐ 30 cho phép 12–13) để phần đầu không bị ngắt dòng.");
+  if (G.qhReduced) add("info", "Tên cơ quan dài nên quốc hiệu được để cỡ 12 (NĐ 30 cho phép 12–13) để phần đầu không bị ngắt dòng.");
+  if (M.dang && (M.opt.body < 14)) add("warn", "Văn bản Đảng: nội dung nên để cỡ chữ 14–15 (đang để " + M.opt.body + ").");
+  if (!M.dang && (M.opt.body > 14)) add("warn", "NĐ 30: nội dung nên để cỡ chữ 13–14 (đang để " + M.opt.body + ").");
   if (M.loai === "tl" && !M.tenLoai) add("err", "Văn bản có tên loại nhưng chưa nhập tên loại.");
   M.trichYeu ? add("ok", "Có trích yếu nội dung.") : add("warn", "Thiếu trích yếu nội dung.");
   if (M.loai === "cv" && !M.kinhGui.length) add("warn", "Công văn chưa có “Kính gửi”.");
   if (!M.body.length) add("err", "Không có nội dung văn bản.");
-  M.sig.length ? add("ok", "Có quyền hạn, chức vụ người ký.") : add("warn", "Thiếu quyền hạn, chức vụ người ký.");
+  if (!M.sig.length) add("warn", "Thiếu quyền hạn, chức vụ người ký.");
+  else if (M.dang && M.sig.some(s => /^(KT|TM|TL)\./.test(s))) add("warn", "Văn bản Đảng ghi quyền hạn là T/M, K/T, T/L.");
+  else add("ok", "Có quyền hạn, chức vụ người ký.");
   if (!M.nguoiKy) add("warn", "Thiếu họ tên người ký.");
   if (!M.noiNhan.length) add("warn", "Thiếu phần nơi nhận.");
-  else if (!/^Lưu\s*:/i.test(M.noiNhan[M.noiNhan.length - 1])) add("warn", "Dòng cuối nơi nhận nên là “Lưu: VT, …”.");
+  else if (M.dang){
+    if (!M.noiNhan.some(s => /^Lưu\b/i.test(s))) add("warn", "Nơi nhận chưa có dòng lưu (ví dụ “Lưu Văn phòng …”).");
+    else add("ok", "Nơi nhận có dòng lưu.");
+    if (M.loai === "cv" && M.kinhGui.length && !/^Như\s+trên/i.test(M.noiNhan[0])) add("info", "Công văn có “Kính gửi” thì dòng đầu nơi nhận thường là “Như trên”.");
+  } else if (!/^Lưu\s*:/i.test(M.noiNhan[M.noiNhan.length - 1])) add("warn", "Dòng cuối nơi nhận nên là “Lưu: VT, …”.");
   else add("ok", "Nơi nhận có dòng lưu văn thư.");
   if (STATE){
     const R = STATE.R;
     if (R.unknown && R.unknown.length) add("info", `Một số dòng ở đầu văn bản chưa nhận diện được, đã đưa vào phần nội dung: “${R.unknown.slice(0, 2).join("”, “")}”.`);
     if (STATS.numbered) add("warn", `Có ${STATS.numbered} đoạn đánh số tự động; số thứ tự tự động không được giữ, hãy gõ lại số ở ô Nội dung nếu cần.`);
-    if (STATS.drawings) add("warn", "File gốc có hình ảnh/hình vẽ — bản thử chưa giữ được, cần chèn lại.");
+    if (STATS.drawings) add("warn", "File gốc có hình ảnh/hình vẽ — chưa giữ được, cần chèn lại.");
     if (STATS.merged) add("warn", "Bảng trong file gốc có ô gộp — bảng xuất ra có thể bị lệch, cần rà lại.");
     if (STATS.footnotes) add("warn", "File gốc có chú thích cuối trang — chưa được giữ.");
   }
@@ -769,99 +893,293 @@ function checks(M){
 }
 
 /* =========================================================
-   8. XUẤT .DOCX (docx.js)
+   8. KIỂM TRA CHÍNH TẢ
    ========================================================= */
-function buildDocx(M){
-  const D = docx, AL = D.AlignmentType, o = M.opt, G = layout(M), F = "Times New Roman";
-  const R = (text, x = {}) => new D.TextRun({ text, bold: !!x.b, italics: !!x.i, underline: x.u ? {} : undefined, size: Math.round((x.size || o.body) * 2), font: F });
-  const P = (children, x = {}) => new D.Paragraph({
-    children, alignment: x.align || AL.CENTER, keepNext: !!x.keepNext,
-    spacing: { before: x.before || 0, after: x.after || 0, line: x.line || 240, lineRule: D.LineRuleType.AUTO },
-    indent: x.indent, tabStops: x.tabs });
-  const lineP = (w, cellW, before = 0) => {
+const SPELL = (() => {
+  const TONE = { "́": 1, "̀": 2, "̉": 3, "̃": 4, "̣": 5 };
+  const TMARK = ["", "́", "̀", "̉", "̃", "̣"];
+  const V = "aăâeêioôơuưy";
+  const ONS = ["ngh", "ng", "gh", "gi", "kh", "nh", "ph", "th", "tr", "ch", "qu", "b", "c", "d", "đ", "g", "h", "k", "l", "m", "n", "p", "r", "s", "t", "v", "x"];
+  const RIMES = new Set(`a ai ao au ay ac ach am an ang anh ap at ăc ăm ăn ăng ăp ăt âc âm ân âng âp ât âu ây
+    e eo ec em en eng ep et ê êch êm ên ênh êp êt êu êng i ia ich im in inh ip it iu iêc iêm iên iêng iêp iêt iêu
+    o oa oac oach oai oam oan oang oanh oao oap oat oay oăc oăm oăn oăng oăt oe oen oeo oet oc oi om on ong ooc oong op ot
+    ô ôc ôi ôm ôn ông ôp ôt ơ ơi ơm ơn ơp ơt
+    u ua uân uâng uât uây uc ui um un ung up ut uy uya uych uyên uyêt uynh uyt uyu uê uêch uênh uơ uôc uôi uôm uôn uông uôt
+    ư ưa ưc ưi ưm ưn ưng ưt ưu ươc ươi ươm ươn ương ươp ươt ươu y yêm yên yêng yêt yêu ych ynh yt`.trim().split(/\s+/));
+  // Lỗi thường gặp trong văn bản hành chính: [viết sai, viết đúng]
+  const COMMON = [
+    ["sử lý", "xử lý"], ["sử lí", "xử lí"], ["chuẩn đoán", "chẩn đoán"], ["sát nhập", "sáp nhập"], ["giành cho", "dành cho"],
+    ["xuất xắc", "xuất sắc"], ["suất sắc", "xuất sắc"], ["sắc xảo", "sắc sảo"], ["sơ xuất", "sơ suất"], ["xuất sứ", "xuất xứ"],
+    ["chặc chẽ", "chặt chẽ"], ["trao dồi", "trau dồi"], ["giữ liệu", "dữ liệu"], ["chiển khai", "triển khai"], ["triễn khai", "triển khai"],
+    ["trương trình", "chương trình"], ["trú trọng", "chú trọng"], ["lảnh đạo", "lãnh đạo"], ["năng xuất", "năng suất"], ["sản suất", "sản xuất"],
+    ["thẫm quyền", "thẩm quyền"], ["hướng dẩn", "hướng dẫn"], ["giãi quyết", "giải quyết"], ["phát triễn", "phát triển"], ["dám sát", "giám sát"],
+    ["xát sao", "sát sao"], ["sác định", "xác định"], ["sây dựng", "xây dựng"], ["chủ chì", "chủ trì"], ["chỉnh xửa", "chỉnh sửa"],
+    ["xửa đổi", "sửa đổi"], ["bổ xung", "bổ sung"], ["đề suất", "đề xuất"], ["cặp nhật", "cập nhật"], ["ảnh hưỡng", "ảnh hưởng"],
+    ["rà xoát", "rà soát"], ["hồ xơ", "hồ sơ"], ["xử dụng", "sử dụng"], ["đột suất", "đột xuất"], ["sẳn sàng", "sẵn sàng"],
+    ["vẩn còn", "vẫn còn"], ["củng như", "cũng như"], ["củng là", "cũng là"], ["củng được", "cũng được"], ["củng có", "cũng có"],
+    ["củng đã", "cũng đã"], ["suy nghỉ", "suy nghĩ"], ["nghĩ phép", "nghỉ phép"], ["nghĩ hưu", "nghỉ hưu"], ["bảo đãm", "bảo đảm"],
+    ["đảm bão", "đảm bảo"], ["dể dàng", "dễ dàng"], ["mặt dù", "mặc dù"], ["chậm chễ", "chậm trễ"], ["vướng mắt", "vướng mắc"],
+    ["nổ lực", "nỗ lực"], ["kiễm tra", "kiểm tra"], ["dấy tờ", "giấy tờ"], ["xinh viên", "sinh viên"], ["xinh hoạt", "sinh hoạt"],
+    ["dảng dạy", "giảng dạy"], ["học xinh", "học sinh"], ["chín sách", "chính sách"], ["chách nhiệm", "trách nhiệm"], ["chiệu tập", "triệu tập"],
+    ["thời hạng", "thời hạn"], ["đúng hạng", "đúng hạn"], ["quá hạng", "quá hạn"], ["nhiệm vũ", "nhiệm vụ"], ["bào cáo", "báo cáo"],
+    ["cở sở", "cơ sở"], ["cơ xở", "cơ sở"], ["thông tinh", "thông tin"], ["chuyễn đổi", "chuyển đổi"], ["dải ngân", "giải ngân"],
+    ["ngân xách", "ngân sách"], ["thực hiên", "thực hiện"], ["tổ trức", "tổ chức"], ["trỉ đạo", "chỉ đạo"], ["kịp thơi", "kịp thời"],
+    ["dữ gìn", "giữ gìn"], ["giám đóc", "giám đốc"], ["phối hơp", "phối hợp"], ["chất lượn", "chất lượng"], ["dành được", "giành được"],
+  ];
+  // Viết hoa theo Phụ lục II, NĐ 30: [viết sai, viết đúng] — phân biệt hoa thường
+  const CAPS = [
+    ["Ủy Ban Nhân Dân", "Ủy ban nhân dân"], ["Uỷ Ban Nhân Dân", "Uỷ ban nhân dân"], ["Hội Đồng Nhân Dân", "Hội đồng nhân dân"],
+    ["Chính Phủ", "Chính phủ"], ["Thủ Tướng", "Thủ tướng"], ["Quốc Hội", "Quốc hội"], ["Bộ Chính Trị", "Bộ Chính trị"],
+    ["Ban Chấp Hành", "Ban Chấp hành"], ["Đảng Cộng Sản Việt Nam", "Đảng Cộng sản Việt Nam"], ["Mặt Trận Tổ Quốc", "Mặt trận Tổ quốc"],
+    ["Nghị Định", "Nghị định"], ["Nghị Quyết", "Nghị quyết"], ["Thông Tư", "Thông tư"], ["Quyết Định", "Quyết định"], ["Công Văn", "Công văn"],
+    ["Kế Hoạch", "Kế hoạch"], ["Chỉ Thị", "Chỉ thị"], ["Phó Chủ Tịch", "Phó Chủ tịch"], ["Chủ Tịch", "Chủ tịch"], ["Bộ Trưởng", "Bộ trưởng"],
+    ["Phó Giám Đốc", "Phó Giám đốc"], ["Giám Đốc", "Giám đốc"], ["Hiệu Trưởng", "Hiệu trưởng"], ["Bí Thư", "Bí thư"],
+    ["Ban Thường Vụ", "Ban Thường vụ"], ["Ban Giám Hiệu", "Ban Giám hiệu"], ["Trường Đại Học", "Trường Đại học"], ["Thành Phố", "Thành phố"],
+    ["Việt nam", "Việt Nam"], ["Tiền giang", "Tiền Giang"], ["Đồng tháp", "Đồng Tháp"], ["Hồ Chí minh", "Hồ Chí Minh"],
+  ];
+  // Hư từ hay bị gõ lặp (“của của”, “và và”)
+  const FUNC = new Set("của và các những được là trong cho với để đã sẽ có không này theo tại về đến thì mà nên bị do vì cũng đang việc một ở như khi phải rằng nhằm hoặc nếu".split(" "));
+  const LB = "(?<![\\p{L}\\p{M}])", RB = "(?![\\p{L}\\p{M}])";
+  const reEsc = s => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const commonRe = COMMON.map(([w, r]) => [new RegExp(LB + reEsc(w) + RB, "giu"), r]);
+  const capsRe = CAPS.map(([w, r]) => [new RegExp(LB + reEsc(w) + RB, "gu"), r]);
+
+  function decomp(w){
+    const cl = []; let tone = 0, at = -1, n = 0;
+    for (const ch of w.normalize("NFD")){
+      if (/\p{M}/u.test(ch)){ if (TONE[ch]){ tone = TONE[ch]; at = cl.length - 1; n++; } else if (cl.length) cl[cl.length - 1] += ch; }
+      else cl.push(ch);
+    }
+    const chars = cl.map(c => c.normalize("NFC"));
+    return { base: chars.join(""), chars, tone, at, n };
+  }
+  function parse(b){
+    for (const o of ONS){
+      if (!b.startsWith(o)) continue;
+      if (o === "gi"){ const rest = b.slice(2); if (!rest || !V.includes(rest[0])) return { on: "g", rime: b.slice(1) }; return { on: "gi", rime: rest }; }
+      return { on: o, rime: b.slice(o.length) };
+    }
+    return { on: "", rime: b };
+  }
+  function valid(b, tone){
+    const { on, rime } = parse(b);
+    if (!RIMES.has(rime)) return false;
+    const f = rime[0];
+    if (["k", "gh", "ngh"].includes(on) && !"ieêy".includes(f)) return false;
+    if (["c", "ng"].includes(on) && "ieêy".includes(f)) return false;
+    if (on === "g" && "eê".includes(f)) return false;
+    if (on === "qu" && "uư".includes(f)) return false;
+    if (on === "gi" && f === "i") return false;
+    if (/(c|ch|p|t)$/.test(rime) && tone !== 1 && tone !== 5) return false; // vần tắc chỉ đi với dấu sắc, nặng
+    return true;
+  }
+  function tonePos(b){
+    const { rime } = parse(b), off = b.length - rime.length;
+    const m = rime.match(/^[aăâeêioôơuưy]+/); if (!m) return [];
+    const v = m[0], fin = rime.length > v.length;
+    const sp = [...v].map((c, i) => "ăâêôơư".includes(c) ? i : -1).filter(i => i >= 0);
+    let pos;
+    if (sp.length) pos = [sp[sp.length - 1]];
+    else if (v.length === 1) pos = [0];
+    else if (fin) pos = [v.length - 1];
+    else if (["oa", "oe", "uy"].includes(v)) pos = [0, 1]; // hòa/hoà, khỏe/khoẻ, thủy/thuỷ đều được chấp nhận
+    else if (v.length === 3) pos = [1];
+    else pos = [0];
+    return pos.map(i => i + off);
+  }
+  const compose = (chars, tone, pos) => chars.map((c, i) => i === pos && tone ? (c.normalize("NFD") + TMARK[tone]).normalize("NFC") : c).join("");
+  function caseLike(src, out){
+    if (src.length > 1 && src === src.toUpperCase() && src !== src.toLowerCase()) return out.toUpperCase();
+    const c = src[0];
+    if (c && c === c.toUpperCase() && c !== c.toLowerCase()) return out[0].toUpperCase() + out.slice(1);
+    return out;
+  }
+  function fixOnset(b){
+    const sw = [["ngh", "ng"], ["ng", "ngh"], ["gh", "g"], ["g", "gh"], ["k", "c"], ["c", "k"], ["q", "qu"]];
+    for (const [a, z] of sw){
+      if (!b.startsWith(a)) continue;
+      if (a === "ng" && b.startsWith("ngh")) continue;
+      if (a === "g" && (b.startsWith("gh") || b.startsWith("gi"))) continue;
+      if (a === "c" && b.startsWith("ch")) continue;
+      if (a === "k" && b.startsWith("kh")) continue;
+      if (a === "q" && b.startsWith("qu")) continue;
+      const nb = z + b.slice(a.length);
+      if (valid(nb, 1) || valid(nb, 0)) return nb;
+    }
+    return null;
+  }
+  function checkWord(tok){
+    const low = tok.toLowerCase();
+    if (low.length > 8 || /[fjwz]/.test(low)) return null;
+    const hasDia = /[̀-ͯ]/.test(low.normalize("NFD"));
+    const d = decomp(low);
+    if (d.n > 1) return { msg: "Từ có hơn một dấu thanh", sug: null };
+    if (!valid(d.base, d.tone)){
+      if (!hasDia) return null; // không dấu: thường là từ nước ngoài hoặc chữ viết tắt
+      const nb = fixOnset(d.base);
+      if (nb && valid(nb, d.tone)){ const pos = tonePos(nb); return { msg: "Sai quy tắc ghép phụ âm đầu", sug: caseLike(tok, compose([...nb], d.tone, pos[0])) }; }
+      return { msg: "Từ không đúng cách ghép vần tiếng Việt", sug: null };
+    }
+    if (d.tone){
+      const pos = tonePos(d.base);
+      if (pos.length && !pos.includes(d.at)) return { msg: "Đặt dấu thanh chưa đúng vị trí", sug: caseLike(tok, compose(d.chars, d.tone, pos[0])) };
+    }
+    return null;
+  }
+  const PRI = { common: 0, caps: 1, dup: 2, word: 3, punct: 4, paren: 5 };
+  function checkText(text){
+    const out = [];
+    const add = (start, found, sug, msg, kind) => out.push({ start, end: start + found.length, found, sug, msg, kind });
+    for (const [re, r] of commonRe) for (const m of text.matchAll(re)) add(m.index, m[0], caseLike(m[0], r), "Lỗi chính tả thường gặp", "common");
+    for (const [re, r] of capsRe) for (const m of text.matchAll(re)) add(m.index, m[0], r, "Viết hoa chưa đúng (Phụ lục II, NĐ 30)", "caps");
+    for (const m of text.matchAll(/(?<![\p{L}\p{M}])([\p{L}\p{M}]+)\s+\1(?![\p{L}\p{M}])/giu))
+      if (FUNC.has(m[1].toLowerCase())) add(m.index, m[0], m[1], "Lặp từ", "dup");
+    for (const m of text.matchAll(/[\p{L}\p{M}]+/gu)){ const c = checkWord(m[0]); if (c) add(m.index, m[0], c.sug, c.msg, "word"); }
+    for (const m of text.matchAll(/(?<=[\p{L}\d)])[,;](?=\p{L})/gu)) add(m.index, m[0], m[0] + " ", "Thiếu khoảng trắng sau dấu câu", "punct");
+    for (const m of text.matchAll(/(?<=\p{Ll})\.(?=\p{Lu})/gu)) add(m.index, ".", ". ", "Thiếu khoảng trắng sau dấu chấm", "punct");
+    const op = (text.match(/\(/g) || []).length, cp = (text.match(/\)/g) || []).length;
+    if (op !== cp) out.push({ start: -1, end: -1, found: "( )", sug: null, msg: "Số dấu ngoặc mở và đóng không khớp", kind: "paren" });
+    out.sort((a, b) => PRI[a.kind] - PRI[b.kind] || a.start - b.start);
+    const kept = [];
+    for (const x of out){ if (x.start < 0 || !kept.some(k => k.start >= 0 && x.start < k.end && k.start < x.end)) kept.push(x); }
+    return kept.sort((a, b) => a.start - b.start);
+  }
+  return { checkText };
+})();
+
+// Thu thập lỗi trong trích yếu, kính gửi, nội dung, nơi nhận
+function spellIssues(M){
+  const all = [];
+  const push = (field, idx, label, text) => {
+    for (const x of SPELL.checkText(text)){
+      const key = `${field}|${idx}|${x.start}|${x.found}`;
+      if (STATE && STATE.ignored.has(`${field}|${x.found}`)) continue;
+      all.push({ ...x, field, idx, label, text, key });
+    }
+  };
+  if (M.trichYeu) push("trichYeu", 0, "Trích yếu", M.trichYeu);
+  M.kinhGui.forEach((s, k) => push("kinhGui", k, `Kính gửi, dòng ${k + 1}`, s));
+  M.body.forEach((it, k) => { if (it.kind === "p") push("body", k, `Nội dung, đoạn ${k + 1}`, it.runs.map(r => r.text).join("")); });
+  M.noiNhan.forEach((s, k) => push("noiNhan", k, `Nơi nhận, dòng ${k + 1}`, s));
+  return all;
+}
+function renderSpell(issues){
+  $("spellTag").textContent = issues.length ? `${issues.length} lỗi` : "không có lỗi";
+  $("spellBar").style.display = issues.some(x => x.sug) ? "flex" : "none";
+  if (!issues.length){ $("spell").innerHTML = `<li class="sp-ok" style="border:0;background:none;padding:0">✓ Không phát hiện lỗi chính tả.</li>`; return; }
+  $("spell").innerHTML = issues.slice(0, 80).map((x, i) => {
+    const a = Math.max(0, x.start - 28), b = Math.min(x.text.length, x.end + 28);
+    const ctx = x.start < 0 ? "" : `${a > 0 ? "…" : ""}${esc(x.text.slice(a, x.start))}<span class="w">${esc(x.text.slice(x.start, x.end))}</span>${esc(x.text.slice(x.end, b))}${b < x.text.length ? "…" : ""}`;
+    const show = s => esc(s).replace(/ $/, "␣");
+    return `<li><b>${esc(x.msg)}</b>${x.sug ? `: <span class="w">${show(x.found)}</span> → <span class="s">${show(x.sug)}</span>` : ""}
+      <div class="ctx">${esc(x.label)}${ctx ? " · “" + ctx + "”" : ""}</div>
+      <div class="acts">${x.sug ? `<button class="btn" data-fix="${i}">Sửa</button>` : ""}<button class="btn" data-ign="${i}">Bỏ qua</button></div></li>`;
+  }).join("") + (issues.length > 80 ? `<li class="note">… còn ${issues.length - 80} lỗi nữa, sửa bớt để xem tiếp.</li>` : "");
+}
+// Sửa lỗi: thay đoạn chữ [start,end) bằng gợi ý, giữ định dạng đậm/nghiêng nếu lỗi nằm trong một đoạn chữ cùng định dạng
+const splice = (t, a, b, s) => t.slice(0, a) + s + t.slice(b);
+function applyFixes(fixes){
+  if (!STATE || !LAST) return;
+  const M = LAST.M;
+  const groups = {};
+  for (const x of fixes){ if (!x.sug || x.start < 0) continue; (groups[x.field + "|" + x.idx] ||= []).push(x); }
+  for (const g of Object.values(groups)){
+    g.sort((a, b) => b.start - a.start);
+    const { field, idx } = g[0];
+    if (field === "trichYeu"){ let t = M.trichYeu; g.forEach(x => t = splice(t, x.start, x.end, x.sug)); $("f_trichYeu").value = t; M.trichYeu = t; }
+    else if (field === "kinhGui" || field === "noiNhan"){ const arr = M[field]; let t = arr[idx]; g.forEach(x => t = splice(t, x.start, x.end, x.sug)); arr[idx] = t; $("f_" + field).value = arr.join("\n"); }
+    else if (field === "body") fixBody(M, idx, g);
+  }
+  update();
+}
+function fixBody(M, idx, g){
+  const it = M.body[idx]; if (!it || it.kind !== "p") return;
+  const punct = $("o_punct").value === "1";
+  if (!M.bodyFromText){
+    const x0 = STATE.bodyItems[idx];
+    let runs = normRuns(x0.it.p.runs, punct).map(r => ({ ...r }));
+    let ok = true;
+    for (const x of g){
+      let off = 0, done = false;
+      for (const r of runs){
+        const a = off, b = off + r.text.length; off = b;
+        if (x.start >= a && x.end <= b){ r.text = splice(r.text, x.start - a, x.end - a, x.sug); done = true; break; }
+      }
+      if (!done){ ok = false; break; }
+    }
+    if (ok){
+      x0.it.p.runs = runs;
+      let tn = 0;
+      STATE.bodyItems.forEach(y => y.line = bodyLineOf(y.it, punct, y.it.kind === "tbl" ? ++tn : 0));
+      STATE.bodyOrig = $("f_body").value = STATE.bodyItems.map(y => y.line).join("\n");
+      return;
+    }
+  }
+  // Nội dung đã sửa tay (hoặc lỗi nằm vắt qua hai kiểu chữ): sửa thẳng trên dòng chữ
+  const lns = $("f_body").value.split("\n");
+  let lineNo = it.lineNo;
+  if (lineNo === undefined){ let c = -1; lineNo = lns.findIndex(l => clean(l) && ++c === idx); }
+  if (lineNo < 0 || lineNo >= lns.length) return;
+  let t = it.runs.map(r => r.text).join("");
+  g.forEach(x => t = splice(t, x.start, x.end, x.sug));
+  lns[lineNo] = t;
+  $("f_body").value = lns.join("\n");
+}
+
+/* =========================================================
+   9. XUẤT .DOCX (docx.js)
+   ========================================================= */
+function buildDocx(spec){
+  const D = docx, AL = D.AlignmentType, F = "Times New Roman", { G, o } = spec;
+  const ALIGN = { center: AL.CENTER, left: AL.LEFT, justify: AL.JUSTIFIED, right: AL.RIGHT };
+  const TR = x => new D.TextRun({ text: x.ph ? "" : x.text, bold: x.b, italics: x.i, underline: x.u ? {} : undefined, size: Math.round(x.size * 2), font: F });
+  const lineOf = l => !l ? { line: 240, lineRule: D.LineRuleType.AUTO }
+    : l.exact ? { line: Math.round(l.exact * 20), lineRule: D.LineRuleType.EXACT } : { line: Math.round(l.mult * 240), lineRule: D.LineRuleType.AUTO };
+  const ruleP = (w, cellW) => {
     const ind = Math.max(0, Math.round((cellW - w) / 2));
     return new D.Paragraph({ children: [new D.TextRun({ text: "", size: 2 })], alignment: AL.CENTER,
-      spacing: { before, after: 0, line: 40, lineRule: D.LineRuleType.EXACT }, indent: { left: ind, right: ind },
+      spacing: { before: 0, after: 0, line: 40, lineRule: D.LineRuleType.EXACT }, indent: { left: ind, right: ind },
       border: { bottom: { style: D.BorderStyle.SINGLE, size: 6, color: "000000", space: 1 } } });
   };
   const noB = { style: D.BorderStyle.NONE, size: 0, color: "FFFFFF" };
   const NB = { top: noB, bottom: noB, left: noB, right: noB };
-  const TB = { top: noB, bottom: noB, left: noB, right: noB, insideHorizontal: noB, insideVertical: noB };
-  const cell = (children, w) => new D.TableCell({ children, width: { size: w, type: D.WidthType.DXA }, borders: NB,
+  const TB = { ...NB, insideHorizontal: noB, insideVertical: noB };
+  const conv = (b, cellW) => {
+    if (b.t === "rule") return [ruleP(b.w, cellW)];
+    if (b.t === "gap") return Array.from({ length: b.lines }, () => new D.Paragraph({ children: [new D.TextRun({ text: "", size: b.size * 2, font: F })] }));
+    if (b.t === "kg"){
+      const start = 1134, at = start + 1304;
+      const first = new D.Paragraph({ alignment: AL.LEFT, spacing: { before: b.before * 20, after: 0 },
+        indent: { left: at, hanging: at - start }, tabStops: [{ type: D.TabStopType.LEFT, position: at }],
+        children: [TR(b.label), new D.TextRun({ children: [new D.Tab(), b.items[0].text], size: b.items[0].size * 2, font: F })] });
+      return [first, ...b.items.slice(1).map(x => new D.Paragraph({ alignment: AL.LEFT, indent: { left: at }, children: [TR(x)] }))];
+    }
+    if (b.t === "tbl"){
+      const ncol = Math.max(...b.tbl.rows.map(r => r.length)), cw = Math.floor(G.textW / ncol);
+      const rows = b.tbl.rows.map(r => new D.TableRow({ children: r.map(c => new D.TableCell({
+        width: { size: cw, type: D.WidthType.DXA }, margins: { left: 80, right: 80, top: 30, bottom: 30 },
+        children: c.length ? c.map(q => new D.Paragraph({ alignment: q.align === "center" ? AL.CENTER : (q.align === "right" ? AL.RIGHT : AL.LEFT),
+          children: normRuns(q.runs, b.punct).map(x => TR({ ...x, size: b.size })) })) : [new D.Paragraph({})] })) }));
+      return [new D.Table({ rows, width: { size: cw * ncol, type: D.WidthType.DXA }, columnWidths: Array(ncol).fill(cw) }), new D.Paragraph({})];
+    }
+    return [new D.Paragraph({ children: b.runs.map(TR), alignment: ALIGN[b.align] || AL.CENTER, keepNext: b.keepNext,
+      spacing: { before: Math.round(b.before * 20), after: 0, ...lineOf(b.line) },
+      indent: b.indent ? { firstLine: Math.round(b.indent * 567) } : undefined })];
+  };
+  const cell = (arr, w) => new D.TableCell({ children: arr.flatMap(b => conv(b, w)), width: { size: w, type: D.WidthType.DXA }, borders: NB,
     margins: { left: 0, right: 0, top: 0, bottom: 0 }, verticalAlign: D.VerticalAlign.TOP });
   const twoCol = (a, b, wa, wb) => new D.Table({ rows: [new D.TableRow({ children: [cell(a, wa), cell(b, wb)], cantSplit: true })],
     width: { size: wa + wb, type: D.WidthType.DXA }, columnWidths: [wa, wb], layout: D.TableLayoutType.FIXED, borders: TB });
-
-  // ---- Phần đầu
-  const left = [];
-  G.cqCT.forEach(s => left.push(P([R(s, { size: o.head })])));
-  G.cq.forEach(s => left.push(P([R(s, { b: true, size: o.head })])));
-  const cqW = G.cq.length ? Math.max(...G.cq.map(s => tw(s, o.head, true))) : 1500;
-  left.push(lineP(Math.max(680, Math.min(G.L, cqW) * 0.4), G.L));
-  left.push(P([R("Số: " + soOut(M.so), { size: o.head })], { before: 120 }));
-  if (M.loai === "cv" && M.trichYeu) left.push(P([R(trichYeuOut(M), { size: 12 })], { before: 60 }));
-  const right = [
-    P([R(QH, { b: true, size: G.qhSize })]),
-    P([R(TN, { b: true, size: G.tnSize })]),
-    lineP(tw(TN, G.tnSize, true), G.R),
-    P([R(dateStr(M), { i: true, size: o.body })], { before: 200 }),
-  ];
-  const children = [twoCol(left, right, G.L, G.R)];
-
-  if (M.loai === "tl"){
-    children.push(P([R(M.tenLoai || "", { b: true })], { before: 360, keepNext: true }));
-    if (M.trichYeu){
-      children.push(P([R(M.trichYeu, { b: true })], { keepNext: true }));
-      children.push(lineP(Math.max(1100, Math.min(G.textW, tw(M.trichYeu, o.body, true)) / 3), G.textW));
-    }
-  }
-  // ---- Kính gửi
-  if (M.kinhGui.length === 1){
-    children.push(P([R("Kính gửi: " + M.kinhGui[0] + ".")], { before: 240 }));
-  } else if (M.kinhGui.length > 1){
-    const start = 1134, at = start + 1304, kg = listOut(M.kinhGui);
-    children.push(P([new D.TextRun({ children: ["Kính gửi:", new D.Tab(), kg[0]], size: o.body * 2, font: F })],
-      { align: AL.LEFT, before: 240, indent: { left: at, hanging: at - start }, tabs: [{ type: D.TabStopType.LEFT, position: at }] }));
-    kg.slice(1).forEach(s => children.push(P([R(s)], { align: AL.LEFT, indent: { left: at } })));
-  }
-  // ---- Nội dung
-  const line = Math.round(o.ls * 240), ind = Math.round(o.ind * 567);
-  let first = true;
-  for (const it of M.body){
-    if (it.kind === "tbl"){
-      const ncol = Math.max(...it.tbl.rows.map(r => r.length)), cw = Math.floor(G.textW / ncol);
-      const rows = it.tbl.rows.map(r => new D.TableRow({ children: r.map(c => new D.TableCell({
-        width: { size: cw, type: D.WidthType.DXA }, margins: { left: 80, right: 80, top: 30, bottom: 30 },
-        children: c.length ? c.map(p => P(normRuns(p.runs, o.punct).map(x => R(x.text, { ...x, size: o.body - 1 })),
-          { align: p.align === "center" ? AL.CENTER : (p.align === "right" ? AL.RIGHT : AL.LEFT) })) : [P([])] })) }));
-      children.push(new D.Table({ rows, width: { size: cw * ncol, type: D.WidthType.DXA }, columnWidths: Array(ncol).fill(cw) }));
-      children.push(P([], { before: 0 }));
-      continue;
-    }
-    const center = it.align === "center" && it.runs.map(r => r.text).join("").length < 120;
-    children.push(P(it.runs.map(x => R(x.text, x)), { align: center ? AL.CENTER : AL.JUSTIFIED, before: first ? 240 : o.para * 20, line,
-      indent: center ? undefined : { firstLine: ind } }));
-    first = false;
-  }
-  // ---- Nơi nhận + chữ ký
-  const fl = [], fr = [];
-  if (M.noiNhan.length){
-    fl.push(P([R("Nơi nhận:", { b: true, i: true, size: 12 })], { align: AL.LEFT, before: 240 }));
-    listOut(M.noiNhan).forEach(s => fl.push(P([R(s, { size: 11 })], { align: AL.LEFT })));
-  } else fl.push(P([]));
-  (M.sig.length ? M.sig : [""]).forEach((s, k) => fr.push(P([R(s, { b: true })], { before: k === 0 ? 240 : 0 })));
-  for (let k = 0; k < 4; k++) fr.push(P([R("")]));
-  fr.push(P([R(M.nguoiKy, { b: true })]));
-  children.push(twoCol(fl, fr, G.FL, G.FR));
-
-  const header = new D.Header({ children: [P([new D.TextRun({ children: [D.PageNumber.CURRENT], size: o.body * 2, font: F })])] });
+  const children = [twoCol(spec.head.L, spec.head.R, G.L, G.R), ...spec.body.flatMap(b => conv(b, G.textW)),
+                    twoCol(spec.foot.L, spec.foot.R, G.FL, G.FR)];
+  const header = new D.Header({ children: [new D.Paragraph({ alignment: AL.CENTER, children: [new D.TextRun({ children: [D.PageNumber.CURRENT], size: spec.pageNum * 2, font: F })] })] });
   return new D.Document({
-    creator: "Định dạng văn bản NĐ 30", title: M.trichYeu || "Văn bản",
+    creator: "Định dạng văn bản — Tổ Chuyển đổi số Trường Đại học Tiền Giang",
     styles: { default: { document: { run: { font: F, size: o.body * 2 } } } },
     sections: [{
       properties: { titlePage: true, page: { size: { width: 11906, height: 16838 },
         margin: { top: mm2tw(o.mt), bottom: mm2tw(o.mb), left: mm2tw(o.ml), right: mm2tw(o.mr), header: mm2tw(10), footer: mm2tw(10) } } },
-      headers: { default: header, first: new D.Header({ children: [P([])] }) },
+      headers: { default: header, first: new D.Header({ children: [new D.Paragraph({})] }) },
       children,
     }],
   });
@@ -881,14 +1199,35 @@ async function saveFile(blob, name){
 }
 
 /* =========================================================
-   9. SỰ KIỆN
+   10. SỰ KIỆN
    ========================================================= */
-let tmr = null;
-function update(){ if (!STATE) return; const M = readModel(); renderPreview(M); checks(M); }
+let tmr = null, LAST = null;
+function update(){
+  if (!STATE) return;
+  const M = readModel(), spec = buildSpec(M), issues = spellIssues(M);
+  const marks = {};
+  issues.forEach(x => { if (x.field === "body" && x.start >= 0) (marks[x.idx] ||= []).push(x); });
+  LAST = { M, issues };
+  renderPreview(spec, marks); checks(M); renderSpell(issues);
+}
+function setProfileUI(){
+  const D = isDangProf();
+  $("w_head").style.display = D ? "none" : "";
+  $("w_ls").style.display = D ? "none" : "";
+  $("w_lsx").style.display = D ? "" : "none";
+  $("lbl_so").textContent = D ? "Số và ký hiệu (phần sau chữ “Số”)" : "Số, ký hiệu (phần sau “Số:”)";
+  $("f_so").placeholder = D ? "ví dụ 12-CV/TU" : "ví dụ 125/SNV-VP";
+  $("f_sig").placeholder = D ? "T/M ĐẢNG UỶ\nBÍ THƯ" : "KT. GIÁM ĐỐC\nPHÓ GIÁM ĐỐC";
+  $("marginNote").textContent = D ? "Lề trang (mm) — HD 05-HD/VPTW: trên 20, dưới 20, trái 30, phải 15." : "Lề trang (mm) — NĐ 30: trên, dưới 20–25; trái 30–35; phải 15–20.";
+  $("o_ind").value = D ? "1" : $("o_ind").value;
+  if (D && +$("o_body").value < 14) $("o_body").value = "14";
+  if (!D && +$("o_body").value > 14) $("o_body").value = "14";
+}
 document.querySelectorAll("#work input, #work textarea, #work select").forEach(el => {
-  el.addEventListener("input", () => { clearTimeout(tmr); tmr = setTimeout(update, 200); });
+  el.addEventListener("input", () => { clearTimeout(tmr); tmr = setTimeout(update, 250); });
   el.addEventListener("change", update);
 });
+$("profile").addEventListener("change", () => { setProfileUI(); if (STATE){ STATE.auto = ""; update(); } });
 $("o_punct").addEventListener("change", () => {
   if (!STATE) return;
   const punct = $("o_punct").value === "1"; let tn = 0;
@@ -898,6 +1237,12 @@ $("o_punct").addEventListener("change", () => {
   }
   update();
 });
+$("spell").addEventListener("click", e => {
+  const b = e.target.closest("button"); if (!b || !LAST) return;
+  if (b.dataset.fix !== undefined) applyFixes([LAST.issues[+b.dataset.fix]]);
+  else if (b.dataset.ign !== undefined){ const x = LAST.issues[+b.dataset.ign]; STATE.ignored.add(`${x.field}|${x.found}`); update(); }
+});
+$("fixAll").addEventListener("click", () => { if (LAST) applyFixes(LAST.issues.filter(x => x.sug)); });
 const msg = (t, err) => { $("msg").textContent = t; $("msg").style.color = err ? "var(--err)" : "var(--muted)"; };
 async function handleFile(file){
   if (!file) return;
@@ -922,39 +1267,62 @@ $("dl").addEventListener("click", async () => {
   if (!STATE) return;
   const btn = $("dl"); btn.disabled = true;
   try {
-    const blob = await docx.Packer.toBlob(buildDocx(readModel()));
-    msg(await saveFile(blob, (STATE.fileName || "van-ban") + "_ND30.docx"));
+    const M = readModel();
+    const blob = await docx.Packer.toBlob(buildDocx(buildSpec(M)));
+    msg(await saveFile(blob, (STATE.fileName || "van-ban") + (M.dang ? "_Dang.docx" : "_ND30.docx")));
   } catch (e){ console.error(e); msg("Lỗi khi tạo file: " + (e.message || e), true); }
   btn.disabled = false;
 });
 
-/* ---- Văn bản mẫu (nội dung giả định, trình bày lộn xộn) */
+/* ---- Văn bản mẫu (nội dung giả định, trình bày lộn xộn, cố ý có lỗi chính tả) */
+const sp = (t, x = {}) => mkP([{ text: t, b: !!x.b, i: !!x.i, u: false }], x.align || "");
 function sampleBlocks(){
-  const p = (t, x = {}) => mkP([{ text: t, b: !!x.b, i: !!x.i, u: false }], x.align || "");
   return [
     { type: "tbl", rows: [[
-      [p("UBND TỈNH A"), p("SỞ B"), p("Số:  125 / SB - VP"), p("V/v báo cáo kết quả triển khai"), p("chuyển đổi số năm 2026")],
-      [p("CỘNG HOÀ XÃ HỘI CHỦ NGHĨA VIỆT NAM"), p("Độc lập – Tự do – Hạnh phúc"), p("A, ngày 5 tháng 3 năm 2026", { i: true })],
+      [sp("UBND TỈNH A"), sp("SỞ B"), sp("Số:  125 / SB - VP"), sp("V/v báo cáo kết quả triển khai"), sp("chuyển đổi số năm 2026")],
+      [sp("CỘNG HOÀ XÃ HỘI CHỦ NGHĨA VIỆT NAM"), sp("Độc lập – Tự do – Hạnh phúc"), sp("A, ngày 5 tháng 3 năm 2026", { i: true })],
     ]] },
-    p("Kính gửi:     - Ủy ban nhân dân các xã, phường;"),
-    p("- Các phòng, ban thuộc Sở."),
-    p("    Thực hiện Kế hoạch số 10/KH-UBND ngày 10/01/2026 của UBND tỉnh A về chuyển đổi số năm 2026 , Sở B đề nghị các đơn vị báo cáo kết quả thực hiện như sau :"),
-    p("1. Nội dung báo cáo", { b: true }),
-    p("- Kết quả triển khai các nhiệm vụ chuyển đổi số trong quý I năm 2026  ( theo đề cương gửi kèm )."),
-    p("- Khó khăn, vướng mắc và đề xuất, kiến nghị."),
-    p("2. Thời gian gửi báo cáo", { b: true }),
-    p("Báo cáo gửi về Sở B trước ngày 20/3/2026, đồng thời gửi bản điện tử qua hệ thống quản lý văn bản để tổng hợp."),
-    p("Trân trọng./."),
+    sp("Kính gửi:     - Ủy ban nhân dân các xã, phường;"),
+    sp("- Các phòng, ban thuộc Sở."),
+    sp("    Thực hiện Kế hoạch số 10/KH-UBND ngày 10/01/2026 của Ủy Ban Nhân Dân tỉnh A về chuyển đổi số năm 2026 , Sở B đề nghị các đơn vị báo cáo kết qủa thực hiện như sau :"),
+    sp("1. Nội dung báo cáo", { b: true }),
+    sp("- Kết quả triển khai các nhiệm vụ chuyển đổi số trong quý I năm 2026  ( theo đề cương gửi kèm )."),
+    sp("- Khó khăn,vướng mắc và đề suất, kiến nghị."),
+    sp("2. Thời gian gửi báo cáo", { b: true }),
+    sp("Báo cáo gửi về Sở B trước ngày 20/3/2026, đồng thời gửi bản điện tử qua hệ thống quản lý văn bản để tổng hợp."),
+    sp("Trân trọng./."),
     { type: "tbl", rows: [[
-      [p("Nơi nhận:", { b: true, i: true }), p("- Như trên"), p("- Giám đốc Sở (để b/c)"), p("- Lưu: VT, VP")],
-      [p("KT. GIÁM ĐỐC", { b: true }), p("PHÓ GIÁM ĐỐC", { b: true }), p("(Đã ký)"), p("Nguyễn Văn A", { b: true })],
+      [sp("Nơi nhận:", { b: true, i: true }), sp("- Như trên"), sp("- Giám đốc Sở (để b/c)"), sp("- Lưu: VT, VP")],
+      [sp("KT. GIÁM ĐỐC", { b: true }), sp("PHÓ GIÁM ĐỐC", { b: true }), sp("(Đã ký)"), sp("Nguyễn Văn A", { b: true })],
+    ]] },
+  ];
+}
+function sampleDang(){
+  return [
+    { type: "tbl", rows: [[
+      [sp("ĐẢNG BỘ TỈNH A"), sp("ĐẢNG UỶ TRƯỜNG B"), sp("*"), sp("Số 5 - CV/ĐU"), sp("V/v triển khai học tập, quán triệt"), sp("nghị quyết của cấp trên")],
+      [sp("ĐẢNG CỘNG SẢN VIỆT NAM", { b: true }), sp("A, ngày 3 tháng 2 năm 2026", { i: true })],
+    ]] },
+    sp("Kính gửi: Các chi bộ trực thuộc"),
+    sp("Thực hiện chỉ đạo của cấp trên, Ban Thường vụ Đảng uỷ đề nghị các chi bộ tổ chức học tập, quán triệt nghị quyết đến toàn thể đảng viên như sau:"),
+    sp("1. Thời gian: hoàn thành trước ngày 28/02/2026; các chi bộ chủ động sắp xếp, bảo đãm 100% đảng viên tham gia."),
+    sp("2. Sau khi học tập, các chi bộ tổng hợp kết qủa và gửi báo cáo về Văn phòng Đảng uỷ để để tổng hợp, báo cáo cấp trên.Các trường hợp vắng mặt phải được học bù."),
+    sp("3. Văn phòng Đảng uỷ có trách nhiệm theo dõi, đôn đốc và kịp thời sử lý các vướng mắt phát sinh trong quá trình thực hiện."),
+    { type: "tbl", rows: [[
+      [sp("Nơi nhận:"), sp("- Như trên,"), sp("- Đảng uỷ cấp trên (để b/c),"), sp("- Lưu Văn phòng Đảng uỷ.")],
+      [sp("T/M ĐẢNG UỶ", { b: true }), sp("BÍ THƯ"), sp("(Đã ký)"), sp("Nguyễn Văn C", { b: true })],
     ]] },
   ];
 }
 $("demo").addEventListener("click", () => {
   Object.assign(STATS, { drawings: 0, merged: false, numbered: 0, footnotes: false });
   loadResult(classify(sampleBlocks()), "cong-van-mau");
-  msg("Đang dùng công văn mẫu (nội dung giả định).");
+  msg("Đang dùng công văn mẫu (nội dung giả định, cố ý có vài lỗi chính tả).");
+});
+$("demo2").addEventListener("click", () => {
+  Object.assign(STATS, { drawings: 0, merged: false, numbered: 0, footnotes: false });
+  loadResult(classify(sampleDang()), "van-ban-dang-mau");
+  msg("Đang dùng văn bản Đảng mẫu (nội dung giả định, cố ý có vài lỗi chính tả).");
 });
 </script>
 </body>

@@ -1,8 +1,17 @@
-# Định dạng văn bản hành chính theo Nghị định 30/2020/NĐ-CP
+# Định dạng văn bản hành chính — Phiên bản 2
 
-Ứng dụng web nhỏ dùng để trình bày lại thể thức một văn bản Word (.docx) theo **Phụ lục I, Nghị định 30/2020/NĐ-CP** về công tác văn thư.
+Ứng dụng web của **Tổ Chuyển đổi số Trường Đại học Tiền Giang**, dùng để trình bày lại thể thức một văn bản Word (.docx) theo:
+
+- **Nghị định 30/2020/NĐ-CP** về công tác văn thư (văn bản hành chính);
+- **Hướng dẫn 05-HD/VPTW ngày 27/5/2026** của Văn phòng Trung ương Đảng về thể thức và kỹ thuật trình bày văn bản của Đảng (thay Hướng dẫn 36-HD/VPTW).
 
 > Bản thử nghiệm. Văn bản xuất ra cần người soạn rà soát lại trước khi trình ký.
+
+## Có gì mới ở phiên bản 2
+
+- **Bộ thể thức văn bản của Đảng**: tiêu đề “ĐẢNG CỘNG SẢN VIỆT NAM”, dấu sao dưới tên cơ quan, số ký hiệu dạng `Số 05-CV/ĐU`, trích yếu công văn in nghiêng cỡ 12, dòng `-----` dưới trích yếu, quyền hạn ký T/M, K/T, T/L, “Nơi nhận” gạch chân, giãn dòng Exactly 18–22 pt. Văn bản có tiêu đề Đảng được tự chuyển sang bộ thể thức này.
+- **Kiểm tra chính tả**: phát hiện từ ghép vần sai (ví dụ “nghành”), dấu thanh đặt sai chỗ (“qủa”), lỗi thường gặp (“sử lý”, “đề suất”), viết hoa sai theo Phụ lục II NĐ 30 (“Ủy Ban Nhân Dân”), lặp từ (“của của”), thiếu khoảng trắng sau dấu câu. Có nút **Sửa**, **Bỏ qua** và **Sửa tất cả**.
+- Logo Trường ở đầu trang.
 
 ## Tính năng
 
@@ -30,12 +39,13 @@
 - Chưa giữ được hình ảnh, chú thích cuối trang và số thứ tự đánh tự động.
 - Bảng có ô gộp có thể bị lệch.
 - Chưa hỗ trợ file .doc cũ (mở bằng Word rồi lưu lại thành .docx).
-- Chưa có thể thức văn bản của Đảng (Hướng dẫn 36-HD/VPTW).
+- Kiểm tra chính tả dựa trên quy tắc và danh sách lỗi thường gặp, không phải từ điển đầy đủ: không bắt được từ đúng chính tả nhưng dùng sai nghĩa.
 
 ## Cấu trúc
 
 ```
 index.html          giao diện và toàn bộ xử lý
+assets/logo-tgu.svg logo Trường Đại học Tiền Giang
 lib/docx.iife.js    thư viện docx (giấy phép MIT), dùng để tạo file .docx
 lib/jszip.min.js    thư viện JSZip (giấy phép MIT hoặc GPLv3), dùng để đọc file .docx
 ```
