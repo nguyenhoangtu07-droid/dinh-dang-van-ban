@@ -602,10 +602,31 @@ const QH = "CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM", TN = "Độc lập -
 const mm2tw = x => Math.round(x * 56.6929);
 function layout(M){
   const o = M.opt, textW = 11906 - mm2tw(o.ml) - mm2tw(o.mr);
-  const tnSize = Math.min(14, o.head + 1);
-  const need = Math.max(tw(QH, o.head, true), tw(TN, tnSize, true), tw(dateStr(M), o.body, false, true)) + 260;
-  const R = Math.round(Math.min(textW * 0.64, Math.max(textW * 0.55, need)));
-  return { textW, L: textW - R, R, tnSize, FL: Math.round(textW * 0.44), FR: textW - Math.round(textW * 0.44) };
+  const PAD = 220;
+  // Cột trái cần đủ rộng để tên cơ quan nằm trên một dòng
+  const leftNeed = Math.max(1500, ...M.coQuan.map(s => tw(s, o.head, true)), ...M.coQuanCT.map(s => tw(s, o.head, false)),
+                            tw("Số: " + soOut(M.so), o.head)) + PAD;
+  const rightNeed = q => Math.max(tw(QH, q, true), tw(TN, Math.min(14, q + 1), true), tw(dateStr(M), o.body, false, true)) + PAD;
+  let qhSize = o.head, rn = rightNeed(qhSize);
+  // Không đủ chỗ: quốc hiệu xuống cỡ 12 (NĐ 30 cho phép 12–13)
+  if (leftNeed + rn > textW && qhSize > 12){ qhSize = 12; rn = rightNeed(12); }
+  let R = leftNeed + rn <= textW ? rn + Math.round((textW - leftNeed - rn) / 2) : rn;
+  R = Math.round(Math.min(textW * 0.66, R));
+  const L = textW - R;
+  // Tên vẫn dài hơn cột trái: ngắt ở chỗ cân đối thay vì để Word rớt một chữ
+  const fit = (arr, bold) => arr.flatMap(s => {
+    if (tw(s, o.head, bold) <= L - 120) return [s];
+    const w = s.split(" "); let best = null;
+    for (let k = 1; k < w.length; k++){
+      const a = w.slice(0, k).join(" "), b = w.slice(k).join(" ");
+      const m = Math.max(tw(a, o.head, bold), tw(b, o.head, bold));
+      if (!best || m < best.m) best = { a, b, m };
+    }
+    return best ? [best.a, best.b] : [s];
+  });
+  return { textW, L, R, qhSize, tnSize: Math.min(14, qhSize + 1), qhReduced: qhSize < o.head,
+           cqCT: fit(M.coQuanCT, false), cq: fit(M.coQuan, true),
+           FL: Math.round(textW * 0.44), FR: textW - Math.round(textW * 0.44) };
 }
 
 /* =========================================================
@@ -618,16 +639,16 @@ function renderPreview(M){
   const ph = (s, t) => s ? esc(s) : `<span class="muted-ph">${t}</span>`;
   let h = "";
   // phần đầu
-  const cqW = M.coQuan.length ? Math.max(...M.coQuan.map(s => tw(s, o.head, true))) : 0;
+  const cqW = G.cq.length ? Math.max(...G.cq.map(s => tw(s, o.head, true))) : 0;
   h += `<div class="hd"><div style="width:${px(G.L)}">`;
-  M.coQuanCT.forEach(s => h += `<p style="font-size:${o.head}pt">${esc(s)}</p>`);
-  M.coQuan.forEach(s => h += `<p style="font-size:${o.head}pt;font-weight:700">${esc(s)}</p>`);
+  G.cqCT.forEach(s => h += `<p style="font-size:${o.head}pt">${esc(s)}</p>`);
+  G.cq.forEach(s => h += `<p style="font-size:${o.head}pt;font-weight:700">${esc(s)}</p>`);
   if (!M.coQuan.length) h += `<p style="font-size:${o.head}pt" class="muted-ph">TÊN CƠ QUAN</p>`;
   h += `<div class="ln" style="width:${px(Math.max(680, Math.min(G.L, cqW) * 0.4))}"></div>`;
   h += `<p style="font-size:${o.head}pt;margin-top:6pt">Số: ${M.so ? esc(soOut(M.so)) : ph("", "…/…")}</p>`;
   if (M.loai === "cv") h += `<p style="font-size:12pt;margin-top:3pt">${ph(trichYeuOut(M), "V/v trích yếu")}</p>`;
   h += `</div><div style="width:${px(G.R)}">`;
-  h += `<p style="font-size:${o.head}pt;font-weight:700">${QH}</p>`;
+  h += `<p style="font-size:${G.qhSize}pt;font-weight:700;white-space:nowrap">${QH}</p>`;
   h += `<p style="font-size:${G.tnSize}pt;font-weight:700">${TN}</p>`;
   h += `<div class="ln" style="width:${px(tw(TN, G.tnSize, true))}"></div>`;
   h += `<p style="font-size:${o.body}pt;font-style:italic;margin-top:10pt">${esc(dateStr(M))}</p>`;
@@ -694,6 +715,7 @@ function checks(M){
   else if (!M.d || !M.m) add("info", "Ngày, tháng đang để trống (văn bản chưa ký số) — sẽ chừa chỗ trống.");
   else add("ok", "Ngày tháng năm đủ, đã thêm số 0 cho ngày dưới 10 và tháng 1, 2.");
   if (STATE && STATE.rawDate && ((STATE.rawDate.d && STATE.rawDate.d !== M.d) || (STATE.rawDate.m && STATE.rawDate.m !== M.m))) add("info", "Đã sửa cách ghi ngày/tháng theo quy định.");
+  if (layout(M).qhReduced) add("info", "Tên cơ quan dài nên quốc hiệu được để cỡ 12 (NĐ 30 cho phép 12–13) để phần đầu không bị ngắt dòng.");
   if (M.loai === "tl" && !M.tenLoai) add("err", "Văn bản có tên loại nhưng chưa nhập tên loại.");
   M.trichYeu ? add("ok", "Có trích yếu nội dung.") : add("warn", "Thiếu trích yếu nội dung.");
   if (M.loai === "cv" && !M.kinhGui.length) add("warn", "Công văn chưa có “Kính gửi”.");
@@ -741,14 +763,14 @@ function buildDocx(M){
 
   // ---- Phần đầu
   const left = [];
-  M.coQuanCT.forEach(s => left.push(P([R(s, { size: o.head })])));
-  M.coQuan.forEach(s => left.push(P([R(s, { b: true, size: o.head })])));
-  const cqW = M.coQuan.length ? Math.max(...M.coQuan.map(s => tw(s, o.head, true))) : 1500;
+  G.cqCT.forEach(s => left.push(P([R(s, { size: o.head })])));
+  G.cq.forEach(s => left.push(P([R(s, { b: true, size: o.head })])));
+  const cqW = G.cq.length ? Math.max(...G.cq.map(s => tw(s, o.head, true))) : 1500;
   left.push(lineP(Math.max(680, Math.min(G.L, cqW) * 0.4), G.L));
   left.push(P([R("Số: " + soOut(M.so), { size: o.head })], { before: 120 }));
   if (M.loai === "cv" && M.trichYeu) left.push(P([R(trichYeuOut(M), { size: 12 })], { before: 60 }));
   const right = [
-    P([R(QH, { b: true, size: o.head })]),
+    P([R(QH, { b: true, size: G.qhSize })]),
     P([R(TN, { b: true, size: G.tnSize })]),
     lineP(tw(TN, G.tnSize, true), G.R),
     P([R(dateStr(M), { i: true, size: o.body })], { before: 200 }),
