@@ -7,6 +7,16 @@
 
 > Bản thử nghiệm. Văn bản xuất ra cần người soạn rà soát lại trước khi trình ký.
 
+## Bổ sung (phiên bản 2.1)
+
+- **Giữ số thứ tự do Word đánh tự động** (1., a), I., gạch đầu dòng): chuyển thành chữ để không bị mất.
+- **Kiểm tra ký hiệu khớp tên loại** theo bảng chữ viết tắt (ví dụ BÁO CÁO → BC, TỜ TRÌNH → TTr, văn bản Đảng: công văn → CV, quy định → QĐi).
+- **Lưu thông tin đơn vị** (tên cơ quan, địa danh, người ký, nơi nhận) trên trình duyệt để lần sau tự điền.
+- **Quyết định, Nghị quyết**: dòng thẩm quyền in hoa đậm ở giữa; các dòng căn cứ in nghiêng (NĐ 30), cuối dòng dấu chấm phẩy, dòng cuối dấu chấm; “QUYẾT ĐỊNH:” ở giữa; “Điều 1.” in đậm.
+- **Tờ trình**: chọn “Kính gửi” hoặc “Kính trình” (văn bản Đảng mặc định “Kính trình”).
+- **Soạn mới từ mẫu**: công văn, quyết định, tờ trình, báo cáo, kế hoạch, thông báo, giấy mời — cho cả hai bộ thể thức.
+- Địa danh tự viết hoa theo Phụ lục II NĐ 30.
+
 ## Có gì mới ở phiên bản 2
 
 - **Bộ thể thức văn bản của Đảng**: tiêu đề “ĐẢNG CỘNG SẢN VIỆT NAM”, dấu sao dưới tên cơ quan, số ký hiệu dạng `Số 05-CV/ĐU`, trích yếu công văn in nghiêng cỡ 12, dòng `-----` dưới trích yếu, quyền hạn ký T/M, K/T, T/L, “Nơi nhận” gạch chân, giãn dòng Exactly 18–22 pt. Văn bản có tiêu đề Đảng được tự chuyển sang bộ thể thức này.
