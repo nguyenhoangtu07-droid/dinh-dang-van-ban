@@ -64,6 +64,14 @@
   #work{display:none;grid-template-columns:minmax(360px,460px) 1fr;gap:16px;margin-top:16px;align-items:start}
   @media (max-width:1000px){#work{grid-template-columns:1fr}}
   .panel{display:flex;flex-direction:column;gap:12px}
+  /* Cột nhập liệu bên trái: cao vừa màn hình, có thanh cuộn riêng */
+  #work > .panel{position:sticky;top:10px;align-self:start;max-height:calc(100vh - 20px);overflow-y:auto;
+    padding-right:6px;overscroll-behavior:contain;scrollbar-gutter:stable;scrollbar-color:#9aa6b2 transparent}
+  #work > .panel::-webkit-scrollbar{width:12px}
+  #work > .panel::-webkit-scrollbar-thumb{background:#9aa6b2;border-radius:8px;border:3px solid var(--bg)}
+  #work > .panel::-webkit-scrollbar-thumb:hover{background:#6b7785}
+  #work > .panel > details{flex:none}
+  @media (max-width:1000px){ #work > .panel{position:static;max-height:none;overflow:visible;padding-right:0} }
   details.sec{background:#fff;border:1px solid var(--line);border-radius:10px}
   details.sec>summary{cursor:pointer;padding:10px 14px;font-weight:600;list-style:none;display:flex;justify-content:space-between}
   details.sec>summary::after{content:"▾";color:var(--muted)}
@@ -86,7 +94,7 @@
   .pv-bar .m{color:var(--muted);font-size:12.5px}
   #msg{font-size:13px}
   .pv-outer{overflow:auto;background:#e6e9ee;border-radius:10px;padding:18px;border:1px solid var(--line);
-    max-height:calc(100vh - 80px);min-height:360px;overscroll-behavior:contain;scrollbar-gutter:stable}
+    max-height:calc(100vh - 66px);min-height:360px;overscroll-behavior:contain;scrollbar-gutter:stable}
   /* Cột xem trước đứng yên khi cuộn trang, văn bản dài cuộn trong khung riêng */
   .pv-col{position:sticky;top:10px;align-self:start}
   .pv-outer::-webkit-scrollbar{width:12px;height:12px}
