@@ -7,6 +7,12 @@
 
 > Bản thử nghiệm. Văn bản xuất ra cần người soạn rà soát lại trước khi trình ký.
 
+## Bổ sung (phiên bản 2.2)
+
+- **Gợi ý căn cứ cho Quyết định**: thư viện căn cứ lấy từ các quyết định của Trường (thành lập Trường, Quy chế tổ chức và hoạt động, tuyển sinh, đào tạo…). Tích để thêm, bỏ tích để gỡ; tự sắp thứ tự và dấu câu cuối dòng; gợi ý theo trích yếu; cảnh báo căn cứ có thể đã hết hiệu lực. Có thể lưu thêm căn cứ riêng vào thư viện.
+- **Văn bản kèm theo** (danh sách, quy định… nằm sau phần chữ ký) được tách riêng, đặt sang trang mới, giữ nguyên nội dung.
+- Không còn tách nhầm đoạn có xuống dòng mềm (Shift+Enter).
+
 ## Bổ sung (phiên bản 2.1)
 
 - **Giữ số thứ tự do Word đánh tự động** (1., a), I., gạch đầu dòng): chuyển thành chữ để không bị mất.

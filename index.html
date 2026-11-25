@@ -32,6 +32,17 @@
   .spell .acts{margin-top:6px;display:flex;gap:6px}
   .spell .btn{padding:3px 10px;font-size:12.5px}
   .sp-ok{color:var(--ok);font-size:13px}
+  .cclist{display:grid;gap:4px}
+  .ccg{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.03em;margin-top:6px}
+  .cci{display:flex;gap:8px;align-items:flex-start;padding:7px 8px;border:1px solid var(--line);border-radius:8px;font-size:13px;line-height:1.45;cursor:pointer;background:#fff}
+  .cci:hover{border-color:#9aa6b2}
+  .cci.on{background:#f1f8f4;border-color:#9fd0b2}
+  .cci input{margin-top:3px;flex:none}
+  .cci span{flex:1}
+  .ccsug{display:inline-block;font-size:11px;font-weight:700;color:#7a5400;background:#fff1c7;border-radius:999px;padding:0 7px}
+  .ccold{display:block;font-size:12px;color:var(--warn);margin-top:2px}
+  .ccdel{border:0;background:none;color:var(--muted);font-size:18px;line-height:1;cursor:pointer;padding:0 4px}
+  .ccdel:hover{color:var(--err)}
   .unitbar{display:flex;flex-wrap:wrap;gap:6px;align-items:center;padding:8px;border:1px dashed #cdd5df;border-radius:8px;background:#f8fafc}
   .unitbar .btn{padding:5px 10px;font-size:13px}
   .unitbar .note{flex-basis:100%}
@@ -117,6 +128,7 @@
   .tblv{border-collapse:collapse;width:100%;margin-top:6pt}
   .tblv td{border:1px solid #000;padding:2pt 4pt;vertical-align:top}
   .muted-ph{color:#b0b7c0}
+  .pbreak{margin:28pt -30mm 18pt;border-top:2px dashed #9aa6b2;text-align:center;font:12px system-ui,sans-serif;color:#5d6b7a;padding-top:6px}
   .tag{display:inline-block;font-size:11px;padding:1px 7px;border-radius:999px;background:#eef1f5;color:var(--muted);margin-left:6px;font-weight:500}
   footer.foot{margin-top:28px;background:#2a0c0d;color:rgba(255,255,255,.75);border-top:4px solid #d4a73a;font-size:12.5px;text-align:center}
   .foot-in{max-width:1400px;margin:0 auto;padding:18px}
@@ -131,7 +143,7 @@
       <div class="emblem"><img src="assets/logo-tgu.svg" alt="Logo Trường Đại học Tiền Giang" width="56" height="56"></div>
       <div class="ttl">
         <div class="kicker">Tổ Chuyển đổi số Trường Đại học Tiền Giang</div>
-        <h1>Định dạng văn bản hành chính <span class="ver">Phiên bản 2.1</span></h1>
+        <h1>Định dạng văn bản hành chính <span class="ver">Phiên bản 2.2</span></h1>
         <p>Trình bày lại thể thức theo Nghị định 30/2020/NĐ-CP và Hướng dẫn 05-HD/VPTW · kiểm tra chính tả</p>
       </div>
       <div class="sp"></div>
@@ -237,6 +249,16 @@
         </div>
       </details>
 
+      <details class="sec" open id="ccSec" style="display:none">
+        <summary>Căn cứ ban hành <span class="tag" id="ccTag"></span></summary>
+        <div class="in">
+          <div class="note">Tích để thêm căn cứ vào phần nội dung, bỏ tích để gỡ ra. Căn cứ được tự sắp thứ tự (văn bản cấp trên trước), cuối dòng tự thêm dấu “;”, dòng cuối dấu “.”. Mục <b class="ccsug">gợi ý</b> dựa theo trích yếu.</div>
+          <div class="row"><button class="btn" id="ccSuggest" type="button">Thêm các căn cứ gợi ý</button><button class="btn" id="ccSaveDoc" type="button">Lưu căn cứ trong văn bản vào thư viện</button></div>
+          <div class="note" id="ccNote"></div>
+          <div id="ccList" class="cclist"></div>
+        </div>
+      </details>
+
       <details class="sec" open>
         <summary>Nội dung <span class="tag" id="bodyTag"></span></summary>
         <div class="in">
@@ -303,7 +325,7 @@
 <footer class="foot">
   <div class="foot-in">
     <div class="copy">Copyright © 2026 Tổ Chuyển đổi số, Trường Đại học Tiền Giang</div>
-    <div class="sub">Phiên bản 2.1 · Thể thức theo Nghị định 30/2020/NĐ-CP và Hướng dẫn 05-HD/VPTW · Văn bản được xử lý ngay trên trình duyệt, không gửi lên máy chủ</div>
+    <div class="sub">Phiên bản 2.2 · Thể thức theo Nghị định 30/2020/NĐ-CP và Hướng dẫn 05-HD/VPTW · Văn bản được xử lý ngay trên trình duyệt, không gửi lên máy chủ</div>
   </div>
 </footer>
 
@@ -515,24 +537,36 @@ function splitByTabs(p, tailOnly){
 function linearize(blocks){
   const N = blocks.length, items = [];
   blocks.forEach((b, bi) => {
-    if (b.type === "p"){ items.push({ kind: "p", p: b, origin: "p" }); return; }
+    if (b.type === "p"){ items.push({ kind: "p", p: b, origin: "p", bi }); return; }
     const txt = b.rows.map(r => r.map(c => c.map(p => p.text).join("\n")).join("\n")).join("\n");
     const headerLike = RX.qh.test(txt) || RX.tn.test(txt) || RX.dcs.test(txt) || /^\s*Số\s*[:\d]/im.test(txt) || /Kính\s*(gửi|trình)/i.test(txt) && bi < 4;
     const footerLike = /Nơi\s*nhận/i.test(txt) || (bi >= N - 4 && /^\s*((KT|TM|TL|TUQ|Q|PT)\s*\.\s|(T\/M|K\/T|T\/L)\s)/m.test(txt));
-    if (headerLike || footerLike){ for (const row of b.rows) for (const cell of row) for (const p of cell) items.push({ kind: "p", p, origin: "cell" }); }
-    else items.push({ kind: "tbl", tbl: b });
+    if (headerLike || footerLike){ for (const row of b.rows) for (const cell of row) for (const p of cell) items.push({ kind: "p", p, origin: "cell", bi }); }
+    else items.push({ kind: "tbl", tbl: b, bi });
   });
   const out = [], M = items.length;
   items.forEach((it, k) => {
     if (it.kind !== "p"){ out.push(it); return; }
     const head = it.origin === "cell" || k < 14, tail = k >= M - 16;
-    let ps = (head || tail) ? splitByBreak(it.p) : [it.p];
+    // Xuống dòng mềm (Shift+Enter) chỉ tách khi đoạn thật sự là phần đầu/phần chữ ký;
+    // đoạn nội dung như “Căn cứ … của ⏎ Bộ trưởng …” giữ nguyên một đoạn
+    let ps = [it.p];
+    if (head || tail){
+      const br = splitByBreak(it.p);
+      if (br.length > 1){
+        const ts = br.map(q => clean(q.text)).filter(Boolean);
+        const looksHead = x => RX.qh.test(x) || RX.tn.test(x) || RX.dcs.test(x) || !!matchSo(x) || !!matchDate(x) || RX.kg.test(x) || RX.vv.test(x) || (isUpper(x) && x.length < 70);
+        const looksTail = x => sigCand(x) || RX.nn.test(x) || startsDash(x);
+        const bodyLike = /^[-–]?\s*(Căn\s*cứ|Theo\s*đề\s*nghị|Xét\s)/i.test(ts[0] || "") || RX.bodyStart.test(ts[0] || "");
+        if (it.origin === "cell" || (!bodyLike && ((head && ts.some(looksHead)) || (tail && ts.some(looksTail))))) ps = br;
+      }
+    }
     if (head || tail) ps = ps.flatMap(p => { const a = head ? splitByTabs(p, false) : [p]; return (a.length > 1 || !tail) ? a : splitByTabs(p, true); });
     for (const p of ps){
       const t = clean(p.text);
       if (!t) continue;
       if (/^[\s\-_–—=.*·•]{2,}$/.test(t) || t === "*") continue;
-      out.push({ kind: "p", p, t });
+      out.push({ kind: "p", p, t, bi: it.bi });
     }
   });
   return out;
@@ -625,11 +659,27 @@ function classify(blocks){
 
   // ---- Phần cuối: nơi nhận, chữ ký
   let nnIdx = -1, bodyEnd = L; const sigIdx = [], nnItems = [];
-  for (let k = L - 1; k >= headerEnd; k--){ if (isP(k) && RX.nn.test(tx(k))){ nnIdx = k; break; } }
+  for (let k = headerEnd; k < L; k++){ if (isP(k) && RX.nn.test(tx(k))){ nnIdx = k; break; } }
+  // Văn bản kèm theo (danh sách, quy định, phụ lục…) nằm sau phần chữ ký: tách riêng, giữ nguyên
+  let apIdx = -1;
+  if (nnIdx >= 0){
+    for (let q = nnIdx + 1; q < L; q++){
+      if (!isP(q)) continue;
+      const s = tx(q);
+      if (RX.qh.test(s) || RX.tn.test(s) || RX.dcs.test(s) || (isUpper(s) && /^(DANH SÁCH|PHỤ LỤC|QUY ĐỊNH|QUY CHẾ|BẢNG|BIỂU|KẾ HOẠCH|HƯỚNG DẪN|ĐIỀU LỆ|CHƯƠNG TRÌNH)(\s|$)/.test(s))){ apIdx = q; break; }
+    }
+    if (apIdx >= 0){
+      const main = new Set(R.coQuan.map(x => clean(x).toUpperCase()));
+      while (apIdx - 1 > nnIdx && P[apIdx - 1].bi === P[apIdx].bi) apIdx--;
+      while (apIdx - 1 > nnIdx && isP(apIdx - 1) && main.has(tx(apIdx - 1).toUpperCase())) apIdx--;
+    }
+  }
+  const END = apIdx >= 0 ? apIdx : L;
+  R.appendix = apIdx >= 0 ? blocks.slice(P[apIdx].bi) : [];
   if (nnIdx >= 0){
     const first = tx(nnIdx).match(RX.nn)[1];
     if (first) nnItems.push(first);
-    for (let k = nnIdx + 1; k < L; k++){
+    for (let k = nnIdx + 1; k < END; k++){
       if (!isP(k)) continue;
       const s = tx(k);
       if (startsDash(s) || /^Lưu\s*:/i.test(s) || !sigCand(s)) nnItems.push(s); else sigIdx.push(k);
@@ -687,7 +737,7 @@ const isDangProf = () => $("profile").value === "dang";
 
 function normSo(s, prof){
   s = clean(s).replace(/^Số\s*:?\s*/i, "");
-  if (/^\d/.test(s)) s = s.replace(/\s*\/\s*/g, "/").replace(/\s*[-–]\s*/g, "-");
+  if (/^[\d\/\-–]/.test(s)) s = s.replace(/\s*\/\s*/g, "/").replace(/\s*[-–]\s*/g, "-"); // cả số đang để trống: “/QĐ - ĐHTG”
   if (prof === "dang") s = s.replace(/^(\d)(?=[-\/])/, "0$1"); // HD 05: số dưới 10 thêm số 0
   return s;
 }
@@ -746,7 +796,7 @@ function loadResult(R, fileName, opts = {}){
     body: bodyItems.map(x => x.line).join("\n"),
     sig: R.sig.map(s => normSig(s, prof)).join("\n"), nguoiKy: R.nguoiKy, noiNhan: R.noiNhan.join("\n"),
   };
-  STATE = { bodyItems, bodyOrig: m.body, fileName, R, rawDate: { d: R.d, m: R.m }, rawDiaDanh: clean(R.diaDanh), ignored: new Set(), auto };
+  STATE = { bodyItems, bodyOrig: m.body, fileName, R, appendix: R.appendix || [], rawDate: { d: R.d, m: R.m }, rawDiaDanh: clean(R.diaDanh), ignored: new Set(), auto };
   for (const f of FIELDS) $("f_" + f).value = m[f] || "";
   STATE.unitFilled = unitFill(opts.template ? "all" : "empty");
   refreshUnitNote();
@@ -797,6 +847,7 @@ function readModel(){
     });
   }
   M.body = items;
+  M.appendix = STATE ? STATE.appendix || [] : [];
   return M;
 }
 const DCS = "ĐẢNG CỘNG SẢN VIỆT NAM";
@@ -969,7 +1020,19 @@ function buildSpec(M){
   sig.forEach((s, k) => FR.push(p(r(s, { b: D ? isAuthLine(s) : true, size: S, ph: !M.sig.length }), { before: k === 0 ? 12 : 0 })));
   FR.push({ t: "gap", lines: 4, size: S });
   FR.push(p(r(M.nguoiKy || "Họ và tên", { b: true, size: S, ph: !M.nguoiKy })));
-  return { G, o, D, head: { L, R: Rt }, body: A, foot: { L: FL, R: FR }, pageNum: D ? 14 : B };
+  // Văn bản kèm theo: sang trang mới, giữ nguyên nội dung và kiểu chữ đậm/nghiêng
+  const AP = [];
+  if (M.appendix.length){
+    AP.push({ t: "pb" });
+    const isHeadTbl = tb => { const tx = tb.rows.map(r => r.map(c => c.map(q => q.text).join(" ")).join(" ")).join(" "); return RX.qh.test(tx) || RX.tn.test(tx) || RX.dcs.test(tx); };
+    for (const b of M.appendix){
+      if (b.type === "tbl"){ AP.push({ t: "tbl", tbl: b, size: B - 1, punct: o.punct, plain: isHeadTbl(b) }); continue; }
+      const runs = normRuns(b.runs, o.punct); if (!runs.length) continue;
+      const al = b.align === "center" ? "center" : (b.align === "right" ? "right" : "justify");
+      AP.push(p(runs.map(x => r(x.text, { ...x, size: B })), { align: al, before: o.para, indent: al === "justify" ? o.ind : 0, line }));
+    }
+  }
+  return { G, o, D, head: { L, R: Rt }, body: A, foot: { L: FL, R: FR }, appendix: AP, pageNum: D ? 14 : B };
 }
 
 /* =========================================================
@@ -995,6 +1058,8 @@ function runsHtml(runs, ranges){
 }
 function blockHtml(b, px, marks){
   if (b.t === "rule") return `<div class="ln" style="width:${px(b.w)}"></div>`;
+  if (b.t === "pb") return `<div class="pbreak">Trang mới · văn bản kèm theo (giữ nguyên nội dung)</div>`;
+  if (b.t === "tbl" && b.plain) return `<table style="width:100%;border-collapse:collapse;font-size:${b.size}pt;text-align:center"><tr>` + b.tbl.rows[0].map(c => `<td style="vertical-align:top">${c.map(q => runsHtml(normRuns(q.runs, b.punct).map(x => ({ ...x, size: b.size })))).join("<br>")}</td>`).join("") + "</tr></table>";
   if (b.t === "gap") return `<div style="height:${(b.size * 1.15 * b.lines).toFixed(0)}pt"></div>`;
   if (b.t === "kg") return `<div style="margin-top:${b.before}pt;display:flex;padding-left:2cm"><div style="width:2.3cm;flex:none">${runsHtml([b.label])}</div><div>${b.items.map(x => runsHtml([x])).join("<br>")}</div></div>`;
   if (b.t === "tbl") return `<table class="tblv" style="font-size:${b.size}pt">` + b.tbl.rows.map(rw => "<tr>" + rw.map(c => `<td>${c.map(q => runsHtml(normRuns(q.runs, b.punct).map(x => ({ ...x, size: b.size })))).join("<br>")}</td>`).join("") + "</tr>").join("") + "</table>";
@@ -1008,6 +1073,7 @@ function renderPreview(spec, marks){
   let h = `<div class="hd">${col(spec.head.L, G.L)}${col(spec.head.R, G.R)}</div>`;
   h += spec.body.map(b => blockHtml(b, px, marks)).join("");
   h += `<div class="ft">${col(spec.foot.L, G.FL, "l")}${col(spec.foot.R, G.FR, "r")}</div>`;
+  h += spec.appendix.map(b => blockHtml(b, px, {})).join("");
   const page = $("page");
   page.style.padding = `${o.mt}mm ${o.mr}mm ${o.mb}mm ${o.ml}mm`;
   page.innerHTML = h;
@@ -1060,6 +1126,12 @@ function checks(M){
     add("ok", `Đã trình bày ${M.canCu.to - M.canCu.from} dòng căn cứ${M.dang ? "" : " (in nghiêng)"}: cuối mỗi dòng dấu chấm phẩy, dòng cuối dấu chấm.`);
     if (M.dang && M.body.slice(M.canCu.from, M.canCu.to).some(it => !/^[-–]/.test(it.runs.map(r => r.text).join("")))) add("info", "Văn bản Đảng: mỗi dòng căn cứ bắt đầu bằng dấu gạch ngang (-).");
   }
+  if (M.canCu){
+    const cc = M.body.slice(M.canCu.from, M.canCu.to).map(it => it.runs.map(r => r.text).join(""));
+    if (cc.some(t => /58\/NQ-ĐHTG/.test(t)) && cc.some(t => /733\/QĐ-ĐHTG/.test(t))) add("warn", "Đang dùng cả hai Quy chế tổ chức và hoạt động (Nghị quyết 58/NQ-ĐHTG năm 2021 và Quyết định 733/QĐ-ĐHTG năm 2026) — chỉ giữ văn bản còn hiệu lực.");
+    else if (cc.some(t => /58\/NQ-ĐHTG/.test(t))) add("info", "Căn cứ Nghị quyết 58/NQ-ĐHTG (2021) có thể đã được thay bằng Quyết định 733/QĐ-ĐHTG ngày 01/10/2026 — kiểm tra hiệu lực.");
+  }
+  if (M.appendix.length) add("info", `File có văn bản kèm theo sau phần chữ ký (${M.appendix.length} đoạn/bảng) — đã tách riêng, đặt sang trang mới và giữ nguyên nội dung, chưa trình bày lại theo thể thức.`);
   if (STATE && STATE.unitFilled && STATE.unitFilled.length) add("info", "Đã điền từ thông tin đơn vị đã lưu: " + STATE.unitFilled.join(", ") + ".");
   M.trichYeu ? add("ok", "Có trích yếu nội dung.") : add("warn", "Thiếu trích yếu nội dung.");
   if (M.loai === "cv" && !M.kinhGui.length) add("warn", "Công văn chưa có “Kính gửi”.");
@@ -1350,6 +1422,13 @@ function buildDocx(spec){
         children: [TR(b.label), new D.TextRun({ children: [new D.Tab(), b.items[0].text], size: b.items[0].size * 2, font: F })] });
       return [first, ...b.items.slice(1).map(x => new D.Paragraph({ alignment: AL.LEFT, indent: { left: at }, children: [TR(x)] }))];
     }
+    if (b.t === "pb") return [new D.Paragraph({ children: [new D.PageBreak()] })];
+    if (b.t === "tbl" && b.plain){
+      const ncol = Math.max(...b.tbl.rows.map(r => r.length)), cw = Math.floor(G.textW / ncol);
+      const rows = b.tbl.rows.map(r => new D.TableRow({ children: r.map(c => new D.TableCell({ width: { size: cw, type: D.WidthType.DXA }, borders: NB,
+        children: c.length ? c.map(q => new D.Paragraph({ alignment: AL.CENTER, children: normRuns(q.runs, b.punct).map(x => TR({ ...x, size: b.size })) })) : [new D.Paragraph({})] })) }));
+      return [new D.Table({ rows, width: { size: cw * ncol, type: D.WidthType.DXA }, columnWidths: Array(ncol).fill(cw), borders: TB })];
+    }
     if (b.t === "tbl"){
       const ncol = Math.max(...b.tbl.rows.map(r => r.length)), cw = Math.floor(G.textW / ncol);
       const rows = b.tbl.rows.map(r => new D.TableRow({ children: r.map(c => new D.TableCell({
@@ -1367,7 +1446,7 @@ function buildDocx(spec){
   const twoCol = (a, b, wa, wb) => new D.Table({ rows: [new D.TableRow({ children: [cell(a, wa), cell(b, wb)], cantSplit: true })],
     width: { size: wa + wb, type: D.WidthType.DXA }, columnWidths: [wa, wb], layout: D.TableLayoutType.FIXED, borders: TB });
   const children = [twoCol(spec.head.L, spec.head.R, G.L, G.R), ...spec.body.flatMap(b => conv(b, G.textW)),
-                    twoCol(spec.foot.L, spec.foot.R, G.FL, G.FR)];
+                    twoCol(spec.foot.L, spec.foot.R, G.FL, G.FR), ...spec.appendix.flatMap(b => conv(b, G.textW))];
   const header = new D.Header({ children: [new D.Paragraph({ alignment: AL.CENTER, children: [new D.TextRun({ children: [D.PageNumber.CURRENT], size: spec.pageNum * 2, font: F })] })] });
   return new D.Document({
     creator: "Định dạng văn bản — Tổ Chuyển đổi số Trường Đại học Tiền Giang",
@@ -1404,7 +1483,7 @@ function update(){
   const marks = {};
   issues.forEach(x => { if (x.field === "body" && x.start >= 0) (marks[x.idx] ||= []).push(x); });
   LAST = { M, issues };
-  renderPreview(spec, marks); checks(M); renderSpell(issues);
+  renderPreview(spec, marks); checks(M); renderSpell(issues); renderCanCu(M);
 }
 function setProfileUI(){
   const D = isDangProf();
@@ -1553,6 +1632,133 @@ $("newDoc").addEventListener("click", () => {
 });
 $("profile").addEventListener("change", refreshUnitNote);
 refreshUnitNote();
+
+/* ---- Thư viện căn cứ cho Quyết định (lấy từ các quyết định của Trường Đại học Tiền Giang)
+   Thứ tự mảng = thứ tự sắp xếp khi chèn: văn bản Thủ tướng → Thông tư → văn bản của Trường → nhu cầu → đề nghị */
+const CC_LIB = [
+  { id: "tl132", g: "Thành lập Trường", key: "132/2005/QĐ-TTg", base: true,
+    text: "Căn cứ Quyết định số 132/2005/QĐ-TTg ngày 06 tháng 6 năm 2005 của Thủ tướng Chính phủ về việc thành lập Trường Đại học Tiền Giang" },
+  { id: "tt08", g: "Tuyển sinh", key: "08/2022/TT-BGD", tags: ["tuyển sinh"],
+    text: "Căn cứ Thông tư số 08/2022/TT-BGD&ĐT ngày 06 tháng 6 năm 2022 của Bộ trưởng Bộ Giáo dục và Đào tạo về việc ban hành Quy chế tuyển sinh đại học, tuyển sinh cao đẳng ngành Giáo dục Mầm non" },
+  { id: "tt06", g: "Tuyển sinh", key: "06/2025/TT-BGD", tags: ["tuyển sinh"],
+    text: "Căn cứ Thông tư số 06/2025/TT-BGD&ĐT ngày 19 tháng 3 năm 2025 của Bộ trưởng Bộ Giáo dục và Đào tạo về việc sửa đổi, bổ sung một số điều của Quy chế tuyển sinh đại học, tuyển sinh cao đẳng ngành Giáo dục Mầm non ban hành kèm theo Thông tư số 08/2022/TT-BGD&ĐT ngày 06 tháng 6 năm 2022 của Bộ trưởng Bộ Giáo dục và Đào tạo" },
+  { id: "qc733", g: "Tổ chức và hoạt động", key: "733/QĐ-ĐHTG", base: true,
+    text: "Căn cứ Quyết định số 733/QĐ-ĐHTG ngày 01 tháng 10 năm 2026 của Trường Đại học Tiền Giang về việc ban hành Quy chế Tổ chức và hoạt động của Trường Đại học Tiền Giang" },
+  { id: "nq58", g: "Tổ chức và hoạt động", key: "58/NQ-ĐHTG", old: "Có thể đã được thay bằng Quyết định 733/QĐ-ĐHTG ngày 01/10/2026 — kiểm tra hiệu lực trước khi dùng.",
+    text: "Căn cứ Nghị quyết số 58/NQ-ĐHTG ngày 15 tháng 10 năm 2021 của Hội đồng trường Trường Đại học Tiền Giang về việc ban hành Quy chế tổ chức và hoạt động của Trường Đại học Tiền Giang" },
+  { id: "qd738", g: "Đào tạo", key: "738/QĐ-ĐHTG", tags: ["đào tạo", "học phần", "thi ", "giảng dạy", "tốt nghiệp", "sinh viên", "người học", "học vụ", "khảo thí"],
+    text: "Căn cứ Quyết định số 738/QĐ-ĐHTG ngày 05 tháng 10 năm 2026 của Trường Đại học Tiền Giang về việc ban hành Quy định đào tạo trình độ đại học, trình độ cao đẳng ngành Giáo dục Mầm non của Trường Đại học Tiền Giang" },
+  { id: "qd235", g: "Tuyển sinh", key: "235/QĐ-ĐHTG", tags: ["tuyển sinh"],
+    text: "Căn cứ Quyết định số 235/QĐ-ĐHTG ngày 29 tháng 4 năm 2025 của Hiệu trưởng Trường Đại học Tiền Giang về việc ban hành Quy chế tuyển sinh đại học, tuyển sinh cao đẳng ngành Giáo dục mầm non của Trường Đại học Tiền Giang" },
+  { id: "nhucau", g: "Khác", kind: "nhucau", tags: ["hội đồng", "thành lập", "phân công", "cử ", "điều động", "bổ nhiệm", "kiêm nhiệm", "ban chỉ đạo", "ban tổ chức", "tổ công tác", "tổ chuyên"],
+    text: "Căn cứ nhu cầu công tác, phẩm chất và năng lực của cán bộ" },
+  { id: "dnKT", g: "Theo đề nghị", kind: "denghi", tags: ["thi ", "khảo thí", "tuyển sinh", "chất lượng", "kiểm định"],
+    text: "Theo đề nghị của Trung tâm Khảo thí và Đảm bảo chất lượng giáo dục" },
+];
+const CC_GROUPS = ["Thành lập Trường", "Tổ chức và hoạt động", "Tuyển sinh", "Đào tạo", "Khác", "Theo đề nghị", "Căn cứ đã lưu"];
+const RX_DENGHI = /^[-–]?\s*(Theo|Xét)\s*đề\s*nghị/i;
+const ccNorm = s => clean(s).replace(/^[-–]\s*/, "").replace(/[;.,:\s]+$/, "").toLowerCase().replace(/\s*&\s*/g, " và ").replace(/\s+/g, "");
+function ccSaved(){ try { return JSON.parse(localStorage.getItem("dinhdang.cancu") || "[]"); } catch (e){ return []; } }
+function ccSavedPut(a){ try { localStorage.setItem("dinhdang.cancu", JSON.stringify(a)); return true; } catch (e){ return false; } }
+const ccKeyOf = t => { const m = t.match(/\d+\/(\d{4}\/)?[\p{L}\d&.]+(-[\p{L}\d&.]+)*/u); return m ? m[0] : ""; };
+function ccAll(){
+  return [...CC_LIB, ...ccSaved().map((x, i) => ({ id: "s" + i, g: "Căn cứ đã lưu", key: ccKeyOf(x.text), saved: i, kind: RX_DENGHI.test(x.text) ? "denghi" : "", text: x.text }))];
+}
+const ccMatch = (line, it) => it.key ? ccNorm(line).includes(it.key.toLowerCase().replace(/\s+/g, "")) : ccNorm(line) === ccNorm(it.text);
+const ccOrder = (line, all) => {
+  const k = all.findIndex(it => !it.saved && ccMatch(line, it));
+  if (k >= 0) return k * 10;
+  if (RX_DENGHI.test(clean(line))) return 9000;
+  if (/nhu cầu công tác/i.test(line)) return 8000;
+  return 5000; // căn cứ khác: giữ thứ tự, đặt trước “nhu cầu”, “đề nghị”
+};
+// Tìm khối căn cứ trong ô Nội dung: sau dòng thẩm quyền (in hoa), trước “QUYẾT ĐỊNH:”
+function ccBlock(){
+  const lns = $("f_body").value.split("\n");
+  let i = 0; while (i < lns.length && !clean(lns[i])) i++;
+  let start = i;
+  const t = clean(lns[i] || "");
+  if (t && isUpper(t) && !RX_CANCU.test(t) && !/:$/.test(t) && !QD_TYPES.test(t.replace(/:$/, ""))) start = i + 1;
+  let end = start;
+  while (end < lns.length && (RX_CANCU.test(clean(lns[end])) || !clean(lns[end]))) end++;
+  while (end > start && !clean(lns[end - 1])) end--;
+  return { lns, start, end, block: lns.slice(start, end).filter(l => clean(l)) };
+}
+function ccWrite(block){
+  const { lns, start, end } = ccBlock(), all = ccAll();
+  const sorted = block.map((l, k) => ({ l, k, o: ccOrder(l, all) })).sort((a, b) => a.o - b.o || a.k - b.k).map(x => x.l);
+  lns.splice(start, end - start, ...sorted);
+  $("f_body").value = lns.join("\n");
+  update();
+}
+function ccToggle(it, on){
+  let { block } = ccBlock();
+  const D = isDangProf();
+  if (on){
+    if (block.some(l => ccMatch(l, it))) return;
+    // bỏ dòng mẫu còn “…” cùng loại (căn cứ hoặc đề nghị)
+    const isDN = it.kind === "denghi";
+    block = block.filter(l => !(/…/.test(l) && RX_DENGHI.test(clean(l)) === isDN));
+    block.push((D ? "- " : "") + it.text + ";");
+  } else block = block.filter(l => !ccMatch(l, it));
+  ccWrite(block);
+}
+function ccSuggested(M, it){
+  const ty = " " + (M.trichYeu || "").toLowerCase() + " ";
+  return it.base || (it.tags || []).some(tg => ty.includes(tg));
+}
+function renderCanCu(M){
+  const show = M.loai === "tl" && QD_TYPES.test(M.tenLoai);
+  $("ccSec").style.display = show ? "" : "none";
+  if (!show) return;
+  const { block } = ccBlock(), all = ccAll();
+  let nIn = 0, nSug = 0, h = "";
+  for (const g of CC_GROUPS){
+    const items = all.filter(it => it.g === g); if (!items.length) continue;
+    h += `<div class="ccg">${esc(g)}</div>`;
+    for (const it of items){
+      const on = block.some(l => ccMatch(l, it)), sug = !on && ccSuggested(M, it);
+      if (on) nIn++; if (sug) nSug++;
+      h += `<label class="cci${on ? " on" : ""}"><input type="checkbox" data-cc="${it.id}"${on ? " checked" : ""}>
+        <span>${esc(it.text)}${sug ? ' <b class="ccsug">gợi ý</b>' : ""}${it.old ? `<span class="ccold">${esc(it.old)}</span>` : ""}</span>
+        ${it.saved !== undefined ? `<button type="button" class="ccdel" data-ccdel="${it.saved}" title="Xóa khỏi thư viện">×</button>` : ""}</label>`;
+    }
+  }
+  $("ccList").innerHTML = h;
+  $("ccTag").textContent = `${nIn} đã chọn${nSug ? " · " + nSug + " gợi ý" : ""}`;
+  $("ccSuggest").disabled = !nSug;
+}
+$("ccList").addEventListener("change", e => {
+  const id = e.target.dataset.cc; if (!id) return;
+  const it = ccAll().find(x => x.id === id); if (it) ccToggle(it, e.target.checked);
+});
+$("ccList").addEventListener("click", e => {
+  const b = e.target.closest("[data-ccdel]"); if (!b) return;
+  e.preventDefault();
+  const a = ccSaved(); a.splice(+b.dataset.ccdel, 1); ccSavedPut(a); update();
+});
+$("ccSuggest").addEventListener("click", () => {
+  if (!LAST) return;
+  let { block } = ccBlock();
+  const D = isDangProf(), add = ccAll().filter(it => !block.some(l => ccMatch(l, it)) && ccSuggested(LAST.M, it));
+  for (const it of add){
+    const isDN = it.kind === "denghi";
+    block = block.filter(l => !(/…/.test(l) && RX_DENGHI.test(clean(l)) === isDN));
+    block.push((D ? "- " : "") + it.text + ";");
+  }
+  ccWrite(block);
+});
+$("ccSaveDoc").addEventListener("click", () => {
+  const { block } = ccBlock(), all = ccAll(), saved = ccSaved();
+  let n = 0;
+  for (const l of block){
+    if (/…/.test(l) || all.some(it => ccMatch(l, it))) continue;
+    saved.push({ text: clean(l).replace(/^[-–]\s*/, "").replace(/[;.,]+$/, "") }); n++;
+  }
+  if (!n){ $("ccNote").textContent = "Không có căn cứ mới nào trong văn bản để lưu."; return; }
+  $("ccNote").textContent = ccSavedPut(saved) ? `Đã lưu ${n} căn cứ vào thư viện (trên trình duyệt này).` : "Trình duyệt không cho lưu ở trang này (thử mở bằng địa chỉ GitHub Pages).";
+  update();
+});
 
 /* ---- Văn bản mẫu (nội dung giả định, trình bày lộn xộn, cố ý có lỗi chính tả) */
 const sp = (t, x = {}) => mkP([{ text: t, b: !!x.b, i: !!x.i, u: false }], x.align || "");
