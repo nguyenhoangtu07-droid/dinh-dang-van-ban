@@ -31,6 +31,7 @@
   .spell .ctx{color:var(--muted);font-size:12px;margin-top:2px}
   .spell .acts{margin-top:6px;display:flex;gap:6px}
   .spell .btn{padding:3px 10px;font-size:12.5px}
+  .spell .manfix{border:1px solid var(--line);border-radius:6px;padding:3px 8px;font-size:13px;width:130px}
   .sp-ok{color:var(--ok);font-size:13px}
   .cclist{display:grid;gap:4px}
   .ccg{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.03em;margin-top:6px}
@@ -1286,6 +1287,17 @@ const SPELL = (() => {
       if (!hasDia) return null; // không dấu: thường là từ nước ngoài hoặc chữ viết tắt
       const nb = fixOnset(d.base);
       if (nb && valid(nb, d.tone)){ const pos = tonePos(nb); return { msg: "Sai quy tắc ghép phụ âm đầu", sug: caseLike(tok, compose([...nb], d.tone, pos[0])) }; }
+      // Lỗi gõ phím: đảo hai chữ liền nhau (“Trườgn” → “Trường”), gõ thừa một chữ (“vvề” → “về”)
+      // Lỗi thiếu dấu móc (“Trừong” → “Trường”), đảo hai chữ liền nhau, gõ lặp một chữ (chỉ xóa chữ lặp liền nhau)
+      const ch = [...d.base], cands = [d.base.replace("ưo", "ươ").replace("uơ", "ươ")];
+      for (let i = 0; i + 1 < ch.length; i++){ const c = ch.slice(); [c[i], c[i + 1]] = [c[i + 1], c[i]]; cands.push(c.join("")); }
+      for (let i = 0; i + 1 < ch.length; i++) if (ch[i] === ch[i + 1]) cands.push(ch.slice(0, i).concat(ch.slice(i + 1)).join(""));
+      for (const cb of cands){
+        if (!cb || cb === d.base || !valid(cb, d.tone)) continue;
+        const pos = tonePos(cb);
+        if (d.tone && !pos.length) continue;
+        return { msg: "Lỗi gõ phím (đảo hoặc thừa chữ)", sug: caseLike(tok, compose([...cb], d.tone, pos[0])) };
+      }
       return { msg: "Từ không đúng cách ghép vần tiếng Việt", sug: null };
     }
     if (d.tone){
@@ -1341,7 +1353,8 @@ function renderSpell(issues){
     const show = s => esc(s).replace(/ $/, "␣");
     return `<li><b>${esc(x.msg)}</b>${x.sug ? `: <span class="w">${show(x.found)}</span> → <span class="s">${show(x.sug)}</span>` : ""}
       <div class="ctx">${esc(x.label)}${ctx ? " · “" + ctx + "”" : ""}</div>
-      <div class="acts">${x.sug ? `<button class="btn" data-fix="${i}">Sửa</button>` : ""}<button class="btn" data-ign="${i}">Bỏ qua</button></div></li>`;
+      <div class="acts">${x.sug ? `<button class="btn" data-fix="${i}">Sửa</button>`
+        : (x.start >= 0 ? `<input class="manfix" data-mi="${i}" value="${esc(x.found)}" title="Gõ từ đúng rồi bấm Thay"><button class="btn" data-man="${i}">Thay</button>` : "")}<button class="btn" data-ign="${i}">Bỏ qua</button></div></li>`;
   }).join("") + (issues.length > 80 ? `<li class="note">… còn ${issues.length - 80} lỗi nữa, sửa bớt để xem tiếp.</li>` : "");
 }
 // Sửa lỗi: thay đoạn chữ [start,end) bằng gợi ý, giữ định dạng đậm/nghiêng nếu lỗi nằm trong một đoạn chữ cùng định dạng
@@ -1517,7 +1530,15 @@ $("o_punct").addEventListener("change", () => {
 $("spell").addEventListener("click", e => {
   const b = e.target.closest("button"); if (!b || !LAST) return;
   if (b.dataset.fix !== undefined) applyFixes([LAST.issues[+b.dataset.fix]]);
+  else if (b.dataset.man !== undefined){
+    const x = LAST.issues[+b.dataset.man], inp = $("spell").querySelector(`input[data-mi="${b.dataset.man}"]`);
+    const v = inp ? inp.value.trim() : "";
+    if (v && v !== x.found) applyFixes([{ ...x, sug: v }]);
+  }
   else if (b.dataset.ign !== undefined){ const x = LAST.issues[+b.dataset.ign]; STATE.ignored.add(`${x.field}|${x.found}`); update(); }
+});
+$("spell").addEventListener("keydown", e => {
+  if (e.key === "Enter" && e.target.matches("input.manfix")){ e.preventDefault(); const b = $("spell").querySelector(`button[data-man="${e.target.dataset.mi}"]`); if (b) b.click(); }
 });
 $("fixAll").addEventListener("click", () => { if (LAST) applyFixes(LAST.issues.filter(x => x.sug)); });
 const msg = (t, err) => { $("msg").textContent = t; $("msg").style.color = err ? "var(--err)" : "var(--muted)"; };
