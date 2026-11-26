@@ -7,6 +7,12 @@
 
 > Bản thử nghiệm. Văn bản xuất ra cần người soạn rà soát lại trước khi trình ký.
 
+## Bổ sung (phiên bản 2.3)
+
+- Mẫu **Biên bản** trong mục “Soạn văn bản mới từ mẫu”, cho cả NĐ 30 và văn bản Đảng: thời gian, địa điểm, thành phần, chủ trì (chủ tọa), thư ký, nội dung, kết luận.
+- Hỗ trợ **hai người ký**: thư ký bên trái, chủ tọa/chủ trì bên phải, ngang hàng nhau; phần nơi nhận chuyển xuống dưới.
+- Nhận diện biên bản tải lên có hai chữ ký, trình bày bằng bảng hoặc bằng phím Tab.
+
 ## Bổ sung (phiên bản 2.2)
 
 - **Gợi ý căn cứ cho Quyết định**: thư viện căn cứ lấy từ các quyết định của Trường (thành lập Trường, Quy chế tổ chức và hoạt động, tuyển sinh, đào tạo…). Tích để thêm, bỏ tích để gỡ; tự sắp thứ tự và dấu câu cuối dòng; gợi ý theo trích yếu; cảnh báo căn cứ có thể đã hết hiệu lực. Có thể lưu thêm căn cứ riêng vào thư viện.

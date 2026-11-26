@@ -144,7 +144,7 @@
       <div class="emblem"><img src="assets/logo-tgu.svg" alt="Logo Trường Đại học Tiền Giang" width="56" height="56"></div>
       <div class="ttl">
         <div class="kicker">Tổ Chuyển đổi số Trường Đại học Tiền Giang</div>
-        <h1>Định dạng văn bản hành chính <span class="ver">Phiên bản 2.2</span></h1>
+        <h1>Định dạng văn bản hành chính <span class="ver">Phiên bản 2.3</span></h1>
         <p>Trình bày lại thể thức theo Nghị định 30/2020/NĐ-CP và Hướng dẫn 05-HD/VPTW · kiểm tra chính tả</p>
       </div>
       <div class="sp"></div>
@@ -177,7 +177,7 @@
         <div class="row">
           <select id="newType">
             <option value="cv">Công văn</option><option value="qd">Quyết định</option><option value="tt">Tờ trình</option>
-            <option value="bc">Báo cáo</option><option value="kh">Kế hoạch</option><option value="tb">Thông báo</option><option value="gm">Giấy mời</option>
+            <option value="bc">Báo cáo</option><option value="kh">Kế hoạch</option><option value="tb">Thông báo</option><option value="gm">Giấy mời</option><option value="bb">Biên bản</option>
           </select>
           <button class="btn primary" id="newDoc">Soạn mới</button>
         </div>
@@ -276,6 +276,13 @@
           <div class="note" id="sigNote">NĐ 30 ghi quyền hạn: TM., KT., TL., TUQ., Q. — văn bản Đảng ghi: T/M, K/T, T/L, Q.</div>
           <label class="f">Họ và tên người ký
             <input id="f_nguoiKy"></label>
+          <div id="sig2Wrap">
+            <label class="f">Người ký thứ hai, bên trái (biên bản: thư ký) — chức danh
+              <textarea id="f_sig2" rows="1" placeholder="THƯ KÝ"></textarea></label>
+            <label class="f">Họ và tên người ký thứ hai
+              <input id="f_nguoiKy2"></label>
+            <div class="note">Khi có người ký thứ hai, hai chữ ký đặt ngang nhau (thư ký bên trái, chủ tọa/chủ trì bên phải); phần nơi nhận chuyển xuống dưới.</div>
+          </div>
           <label class="f">Nơi nhận (mỗi dòng một nơi; dòng cuối thường là “Lưu: VT, …”)
             <textarea id="f_noiNhan" rows="4"></textarea></label>
         </div>
@@ -326,7 +333,7 @@
 <footer class="foot">
   <div class="foot-in">
     <div class="copy">Copyright © 2026 Tổ Chuyển đổi số, Trường Đại học Tiền Giang</div>
-    <div class="sub">Phiên bản 2.2 · Thể thức theo Nghị định 30/2020/NĐ-CP và Hướng dẫn 05-HD/VPTW · Văn bản được xử lý ngay trên trình duyệt, không gửi lên máy chủ</div>
+    <div class="sub">Phiên bản 2.3 · Thể thức theo Nghị định 30/2020/NĐ-CP và Hướng dẫn 05-HD/VPTW · Văn bản được xử lý ngay trên trình duyệt, không gửi lên máy chủ</div>
   </div>
 </footer>
 
@@ -541,7 +548,8 @@ function linearize(blocks){
     if (b.type === "p"){ items.push({ kind: "p", p: b, origin: "p", bi }); return; }
     const txt = b.rows.map(r => r.map(c => c.map(p => p.text).join("\n")).join("\n")).join("\n");
     const headerLike = RX.qh.test(txt) || RX.tn.test(txt) || RX.dcs.test(txt) || /^\s*Số\s*[:\d]/im.test(txt) || /Kính\s*(gửi|trình)/i.test(txt) && bi < 4;
-    const footerLike = /Nơi\s*nhận/i.test(txt) || (bi >= N - 4 && /^\s*((KT|TM|TL|TUQ|Q|PT)\s*\.\s|(T\/M|K\/T|T\/L)\s)/m.test(txt));
+    const footerLike = /Nơi\s*nhận/i.test(txt) || (bi >= N - 4 && /^\s*((KT|TM|TL|TUQ|Q|PT)\s*\.\s|(T\/M|K\/T|T\/L)\s)/m.test(txt))
+      || (bi >= N - 3 && b.rows.length <= 3 && /^\s*(THƯ KÝ|CHỦ TỌA|CHỦ TRÌ|NGƯỜI GHI BIÊN BẢN|ĐẠI DIỆN\b)/m.test(txt));
     if (headerLike || footerLike){ for (const row of b.rows) for (const cell of row) for (const p of cell) items.push({ kind: "p", p, origin: "cell", bi }); }
     else items.push({ kind: "tbl", tbl: b, bi });
   });
@@ -698,6 +706,21 @@ function classify(blocks){
     const last = sl[sl.length - 1];
     if (isUpper(last) && !RX.chucVu.test(last) && !RX.qhan.test(last) && last.split(" ").length <= 6){ name = titleCase(last); sl.pop(); }
   }
+  // Hai người ký (biên bản: thư ký bên trái, chủ tọa bên phải)
+  R.sig2 = []; R.nguoiKy2 = "";
+  const nm = sl.map((s, q) => isNameLike(s) ? q : -1).filter(q => q >= 0);
+  if (name && nm.length >= 1 && nm[nm.length - 1] < sl.length){
+    const q1 = nm[0];
+    if (q1 >= 1 && q1 === sl.length - 1 && sl.length >= 2 && !nm.slice(1).length){
+      // dạng tab: "THƯ KÝ  CHỦ TỌA" rồi "Tên trái  Tên phải" → tên bên phải đã lấy, tên trái là sl[q1]
+      const up = sl.slice(0, q1);
+      if (up.length >= 2){ const h = Math.floor(up.length / 2);
+        R.sig2 = up.slice(0, h).map(s => s.toUpperCase()); R.nguoiKy2 = sl[q1]; sl.splice(0, sl.length, ...up.slice(h)); }
+    } else if (q1 >= 1 && q1 < sl.length - 1){
+      // dạng ô bảng: chức danh trái, tên trái, chức danh phải
+      R.sig2 = sl.slice(0, q1).map(s => s.toUpperCase()); R.nguoiKy2 = sl[q1]; sl.splice(0, q1 + 1);
+    }
+  }
   R.sig = sl.map(s => s.toUpperCase());
   R.nguoiKy = name;
   R.noiNhan = nnItems.map(s => s.startsWith("+") ? s : s.replace(RX.dash, "")).map(s => s.replace(/[;,.]+$/, "").trim()).filter(Boolean);
@@ -733,7 +756,7 @@ const lines = s => (s || "").split("\n").map(clean).filter(Boolean);
    ========================================================= */
 let STATE = null; // { bodyItems, bodyOrig, fileName, R, rawDate, ignored }
 const $ = id => document.getElementById(id);
-const FIELDS = ["coQuanCT", "coQuan", "so", "diaDanh", "d", "m", "y", "loai", "tenLoai", "trichYeu", "kgLabel", "kinhGui", "body", "sig", "nguoiKy", "noiNhan"];
+const FIELDS = ["coQuanCT", "coQuan", "so", "diaDanh", "d", "m", "y", "loai", "tenLoai", "trichYeu", "kgLabel", "kinhGui", "body", "sig", "nguoiKy", "sig2", "nguoiKy2", "noiNhan"];
 const isDangProf = () => $("profile").value === "dang";
 
 function normSo(s, prof){
@@ -795,11 +818,11 @@ function loadResult(R, fileName, opts = {}){
     kgLabel: R.kgTrinh || (prof === "dang" && /^TỜ TRÌNH/.test(R.tenLoai || "")) ? "trinh" : "gui",
     kinhGui: R.kinhGui.join("\n"),
     body: bodyItems.map(x => x.line).join("\n"),
-    sig: R.sig.map(s => normSig(s, prof)).join("\n"), nguoiKy: R.nguoiKy, noiNhan: R.noiNhan.join("\n"),
+    sig: R.sig.map(s => normSig(s, prof)).join("\n"), nguoiKy: R.nguoiKy, sig2: (R.sig2 || []).map(s => normSig(s, prof)).join("\n"), nguoiKy2: R.nguoiKy2 || "", noiNhan: R.noiNhan.join("\n"),
   };
   STATE = { bodyItems, bodyOrig: m.body, fileName, R, appendix: R.appendix || [], rawDate: { d: R.d, m: R.m }, rawDiaDanh: clean(R.diaDanh), ignored: new Set(), auto };
   for (const f of FIELDS) $("f_" + f).value = m[f] || "";
-  STATE.unitFilled = unitFill(opts.template ? "all" : "empty");
+  STATE.unitFilled = unitFill(opts.template ? "all" : "empty", opts.template && (R.sig2 || []).length ? ["sig", "nguoiKy"] : []);
   refreshUnitNote();
   $("work").style.display = "grid";
   update();
@@ -825,6 +848,8 @@ function readModel(){
     kinhGui: lines(v("kinhGui")).map(s => s.replace(RX.dash, "").replace(/[;,.]+$/, "").trim()).filter(Boolean),
     sig: lines(v("sig")).map(s => normSig(s, prof)),
     nguoiKy: clean(v("nguoiKy")),
+    sig2: lines(v("sig2")).map(s => normSig(s, prof)),
+    nguoiKy2: clean(v("nguoiKy2")),
     noiNhan: lines(v("noiNhan")).map(s => s.startsWith("+") ? s : s.replace(RX.dash, "")).map(s => s.replace(/[;,.]+$/, "").trim()).filter(Boolean),
     opt: o,
   };
@@ -1012,13 +1037,20 @@ function buildSpec(M){
     first = false;
   });
   // Nơi nhận, chữ ký
-  const FL = [], FR = [], S = D ? 14 : B;
+  const FL = [], FR = [], FA = [], S = D ? 14 : B;
+  const two = !!(M.sig2.length || M.nguoiKy2);
+  if (two){
+    (M.sig2.length ? M.sig2 : ["CHỨC DANH"]).forEach((s, k) => FL.push(p(r(s, { b: true, size: S, ph: !M.sig2.length }), { before: k === 0 ? 12 : 0 })));
+    FL.push({ t: "gap", lines: 4, size: S });
+    FL.push(p(r(M.nguoiKy2 || "Họ và tên", { b: true, size: S, ph: !M.nguoiKy2 })));
+  }
+  const NN = two ? FA : FL;
   if (M.noiNhan.length){
-    FL.push(p(D ? r("Nơi nhận:", { u: true, size: 14 }) : r("Nơi nhận:", { b: true, i: true, size: 12 }), { align: "left", before: 12 }));
-    listOut(M.noiNhan).forEach(s => FL.push(p(r(s, { size: D ? 12 : 11 }), { align: "left" })));
+    NN.push(p(D ? r("Nơi nhận:", { u: true, size: 14 }) : r("Nơi nhận:", { b: true, i: true, size: 12 }), { align: "left", before: 12 }));
+    listOut(M.noiNhan).forEach(s => NN.push(p(r(s, { size: D ? 12 : 11 }), { align: "left" })));
   }
   const sig = M.sig.length ? M.sig : ["QUYỀN HẠN, CHỨC VỤ"];
-  sig.forEach((s, k) => FR.push(p(r(s, { b: D ? isAuthLine(s) : true, size: S, ph: !M.sig.length }), { before: k === 0 ? 12 : 0 })));
+  sig.forEach((s, k) => FR.push(p(r(s, { b: D ? isAuthLine(s) || two : true, size: S, ph: !M.sig.length }), { before: k === 0 ? 12 : 0 })));
   FR.push({ t: "gap", lines: 4, size: S });
   FR.push(p(r(M.nguoiKy || "Họ và tên", { b: true, size: S, ph: !M.nguoiKy })));
   // Văn bản kèm theo: sang trang mới, giữ nguyên nội dung và kiểu chữ đậm/nghiêng
@@ -1033,7 +1065,7 @@ function buildSpec(M){
       AP.push(p(runs.map(x => r(x.text, { ...x, size: B })), { align: al, before: o.para, indent: al === "justify" ? o.ind : 0, line }));
     }
   }
-  return { G, o, D, head: { L, R: Rt }, body: A, foot: { L: FL, R: FR }, appendix: AP, pageNum: D ? 14 : B };
+  return { G, o, D, head: { L, R: Rt }, body: A, foot: { L: FL, R: FR, after: FA, wL: two ? Math.round(G.textW / 2) : G.FL, wR: two ? G.textW - Math.round(G.textW / 2) : G.FR }, appendix: AP, pageNum: D ? 14 : B };
 }
 
 /* =========================================================
@@ -1073,7 +1105,8 @@ function renderPreview(spec, marks){
   const col = (arr, w, cls = "") => `<div class="${cls}" style="width:${px(w)}">${arr.map(b => blockHtml(b, px, marks)).join("")}</div>`;
   let h = `<div class="hd">${col(spec.head.L, G.L)}${col(spec.head.R, G.R)}</div>`;
   h += spec.body.map(b => blockHtml(b, px, marks)).join("");
-  h += `<div class="ft">${col(spec.foot.L, G.FL, "l")}${col(spec.foot.R, G.FR, "r")}</div>`;
+  h += `<div class="ft">${col(spec.foot.L, spec.foot.wL, "l")}${col(spec.foot.R, spec.foot.wR, "r")}</div>`;
+  h += spec.foot.after.map(b => blockHtml(b, px, {})).join("");
   h += spec.appendix.map(b => blockHtml(b, px, {})).join("");
   const page = $("page");
   page.style.padding = `${o.mt}mm ${o.mr}mm ${o.mb}mm ${o.ml}mm`;
@@ -1141,6 +1174,11 @@ function checks(M){
   else if (M.dang && M.sig.some(s => /^(KT|TM|TL)\./.test(s))) add("warn", "Văn bản Đảng ghi quyền hạn là T/M, K/T, T/L.");
   else add("ok", "Có quyền hạn, chức vụ người ký.");
   if (!M.nguoiKy) add("warn", "Thiếu họ tên người ký.");
+  if (/^BIÊN BẢN/.test(M.tenLoai)){
+    if (!M.sig2.length && !M.nguoiKy2) add("info", "Biên bản thường có hai chữ ký: thư ký (bên trái) và chủ tọa/chủ trì (bên phải). Điền mục “Người ký thứ hai”.");
+    else if (!M.nguoiKy2) add("warn", "Thiếu họ tên người ký thứ hai (thư ký).");
+    else add("ok", "Biên bản có đủ chữ ký thư ký và chủ tọa/chủ trì.");
+  }
   if (!M.noiNhan.length) add("warn", "Thiếu phần nơi nhận.");
   else if (M.dang){
     if (!M.noiNhan.some(s => /^Lưu\b/i.test(s))) add("warn", "Nơi nhận chưa có dòng lưu (ví dụ “Lưu Văn phòng …”).");
@@ -1459,7 +1497,7 @@ function buildDocx(spec){
   const twoCol = (a, b, wa, wb) => new D.Table({ rows: [new D.TableRow({ children: [cell(a, wa), cell(b, wb)], cantSplit: true })],
     width: { size: wa + wb, type: D.WidthType.DXA }, columnWidths: [wa, wb], layout: D.TableLayoutType.FIXED, borders: TB });
   const children = [twoCol(spec.head.L, spec.head.R, G.L, G.R), ...spec.body.flatMap(b => conv(b, G.textW)),
-                    twoCol(spec.foot.L, spec.foot.R, G.FL, G.FR), ...spec.appendix.flatMap(b => conv(b, G.textW))];
+                    twoCol(spec.foot.L, spec.foot.R, spec.foot.wL, spec.foot.wR), ...spec.foot.after.flatMap(b => conv(b, G.textW)), ...spec.appendix.flatMap(b => conv(b, G.textW))];
   const header = new D.Header({ children: [new D.Paragraph({ alignment: AL.CENTER, children: [new D.TextRun({ children: [D.PageNumber.CURRENT], size: spec.pageNum * 2, font: F })] })] });
   return new D.Document({
     creator: "Định dạng văn bản — Tổ Chuyển đổi số Trường Đại học Tiền Giang",
@@ -1493,6 +1531,7 @@ let tmr = null, LAST = null;
 function update(){
   if (!STATE) return;
   const M = readModel(), spec = buildSpec(M), issues = spellIssues(M);
+  $("sig2Wrap").style.display = /^BIÊN BẢN/.test(M.tenLoai) || M.sig2.length || M.nguoiKy2 ? "" : "none";
   const marks = {};
   issues.forEach(x => { if (x.field === "body" && x.start >= 0) (marks[x.idx] ||= []).push(x); });
   LAST = { M, issues };
@@ -1578,11 +1617,11 @@ const unitKey = () => "dinhdang.unit." + $("profile").value;
 function unitGet(){ try { return JSON.parse(localStorage.getItem(unitKey()) || "null"); } catch (e){ return null; } }
 function unitPut(d){ try { localStorage.setItem(unitKey(), JSON.stringify(d)); return true; } catch (e){ return false; } }
 // mode "empty": chỉ điền ô đang trống · "all": ghi đè (dùng khi soạn từ mẫu hoặc bấm nút)
-function unitFill(mode){
+function unitFill(mode, skip = []){
   const u = unitGet(); if (!u) return [];
   const done = [];
   for (const [k, name] of Object.entries(UNIT_FIELDS)){
-    if (!u[k]) continue;
+    if (!u[k] || skip.includes(k)) continue;
     const el = $("f_" + k);
     if (mode === "all" || !clean(el.value)){ if (el.value !== u[k]){ el.value = u[k]; done.push(name); } }
   }
@@ -1636,12 +1675,22 @@ function templateR(type, dang){
           body: ["… trân trọng kính mời: …", "Tới dự: …", "Thời gian: … giờ … phút, ngày … tháng … năm " + y + ".", "Địa điểm: …",
                  dang ? "Rất mong các đồng chí tham dự đầy đủ, đúng giờ." : "Rất mong … sắp xếp thời gian tham dự./."],
           noiNhan: ["Như trên", dang ? "Lưu Văn phòng …" : "Lưu: VT, …"] },
+    bb: { loai: "tl", tenLoai: "BIÊN BẢN", trichYeu: dang ? "…" : "Cuộc họp …", ab: "BB",
+          body: ["Thời gian bắt đầu: … giờ … phút, ngày … tháng … năm " + y + ".", "Địa điểm: …",
+                 "Thành phần tham dự: …", "Vắng mặt: …", dang ? "Chủ trì: đồng chí …" : "Chủ trì (chủ tọa): …",
+                 dang ? "Thư ký: đồng chí …" : "Thư ký (người ghi biên bản): …",
+                 dang ? "NỘI DUNG" : "Nội dung (theo diễn biến cuộc họp, hội nghị, hội thảo):", "1. …", "2. …",
+                 "Kết luận: …",
+                 "Cuộc họp kết thúc vào … giờ … phút cùng ngày, nội dung đã được thông qua và các thành viên dự họp cùng thống nhất."
+                   + (dang ? "" : "/.")],
+          sig: dang ? ["CHỦ TRÌ"] : ["CHỦ TỌA"], sig2: ["THƯ KÝ"],
+          noiNhan: ["…", dang ? "Lưu Văn phòng …" : "Lưu: VT, …"] },
   }[type];
   const so = dang ? `-${T.ab}/…` : (T.loai === "cv" ? "/…" : `/${T.ab}-…`);
   return {
     coQuan: [], so, diaDanh: "", d: String(now.getDate()), m: String(now.getMonth() + 1), y,
     loai: T.loai, tenLoai: T.tenLoai, trichYeu: T.trichYeu, kinhGui: T.kinhGui || [], kgTrinh: !!T.kgTrinh,
-    sig: dang ? ["T/M …", "BÍ THƯ"] : ["CHỨC VỤ NGƯỜI KÝ"], nguoiKy: "", noiNhan: T.noiNhan,
+    sig: T.sig || (dang ? ["T/M …", "BÍ THƯ"] : ["CHỨC VỤ NGƯỜI KÝ"]), nguoiKy: "", sig2: T.sig2 || [], nguoiKy2: "", noiNhan: T.noiNhan,
     body: T.body.map(P), unknown: [], dang, hasQH: !dang, found: {},
   };
 }
