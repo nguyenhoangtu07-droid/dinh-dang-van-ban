@@ -7,6 +7,15 @@
 
 > Bản thử nghiệm. Văn bản xuất ra cần người soạn rà soát lại trước khi trình ký.
 
+## Bổ sung (phiên bản 2.4) — theo góp ý người dùng
+
+- Trang đầu chia bước: **1. Chọn bộ thể thức** (hai thẻ lớn), **2. Tải văn bản Word lên**, hoặc soạn mới từ mẫu.
+- Khi rà soát, chỉnh sửa có thanh công việc cố định ở trên: **Quay lại** (giữ văn bản đang làm), các bước đang ở đâu, đổi thể thức, **Làm văn bản khác**, **Tiếp tục: Tải về .docx**.
+- Thông báo nổi khi sửa lỗi chính tả (đã sửa gì, còn bao nhiêu lỗi) và khi tải file về (chọn tiếp tục chỉnh sửa hay làm văn bản khác).
+- Mẫu **Khác…**: tự nhập hoặc chọn tên loại (Hướng dẫn, Chương trình, Quy chế…), ký hiệu tự lấy theo tên loại.
+- Chân trang luôn ở cuối trang, thêm biểu tượng.
+- Sửa câu cảnh báo căn cứ Nghị quyết 58/NQ-ĐHTG: “Lưu ý: kiểm tra lại… đã được thay thế bằng Quyết định số 733/QĐ-ĐHTG ngày 01/10/2026”.
+
 ## Bổ sung (phiên bản 2.3)
 
 - Mẫu **Biên bản** trong mục “Soạn văn bản mới từ mẫu”, cho cả NĐ 30 và văn bản Đảng: thời gian, địa điểm, thành phần, chủ trì (chủ tọa), thư ký, nội dung, kết luận.

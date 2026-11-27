@@ -133,8 +133,51 @@
   .muted-ph{color:#b0b7c0}
   .pbreak{margin:28pt -30mm 18pt;border-top:2px dashed #9aa6b2;text-align:center;font:12px system-ui,sans-serif;color:#5d6b7a;padding-top:6px}
   .tag{display:inline-block;font-size:11px;padding:1px 7px;border-radius:999px;background:#eef1f5;color:var(--muted);margin-left:6px;font-weight:500}
-  footer.foot{margin-top:28px;background:#2a0c0d;color:rgba(255,255,255,.75);border-top:4px solid #d4a73a;font-size:12.5px;text-align:center}
+  footer.foot{flex:none;margin-top:28px;background:#2a0c0d;color:rgba(255,255,255,.75);border-top:4px solid #d4a73a;font-size:12.5px;text-align:center}
   .foot-in{max-width:1400px;margin:0 auto;padding:18px}
+  body{min-height:100vh;display:flex;flex-direction:column}
+  body>.wrap{flex:1 0 auto;width:100%}
+  .step{display:flex;align-items:center;gap:8px;margin:4px 0 8px;font-size:15px}
+  .step .num{width:26px;height:26px;border-radius:50%;background:var(--accent);color:#fff;display:grid;place-items:center;font-weight:700;font-size:13px}
+  .profcards{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+  @media (max-width:640px){.profcards{grid-template-columns:1fr}}
+  .pcard{display:flex;align-items:center;gap:12px;text-align:left;border:2px solid var(--line);background:#fff;border-radius:12px;padding:14px;cursor:pointer;position:relative;transition:.15s}
+  .pcard:hover{border-color:#c98a8c}
+  .pcard svg{width:34px;height:34px;flex:none;fill:none;stroke:var(--accent);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;background:#fbeeee;border-radius:10px;padding:6px}
+  .pcard span{display:grid;gap:2px}
+  .pcard b{font-size:15px}
+  .pcard small{color:var(--muted);font-size:12.5px}
+  .pcard .chk{position:absolute;top:8px;right:10px;font-style:normal;font-weight:700;color:#fff;background:var(--accent);border-radius:50%;width:20px;height:20px;display:none;place-items:center;font-size:12px}
+  .pcard.on{border-color:var(--accent);background:#fff8f7;box-shadow:0 0 0 3px rgba(163,22,27,.12)}
+  .pcard.on .chk{display:grid}
+  .dropic{width:40px;height:40px;fill:none;stroke:var(--accent);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;display:block;margin:0 auto 8px}
+  .intro ol{margin:6px 0 0;padding-left:20px;color:var(--muted);line-height:1.6}
+  #newOther{border:1px solid var(--line);border-radius:8px;padding:8px 10px;min-width:190px}
+  .workbar{display:none;position:sticky;top:0;z-index:20;background:#fff;border:1px solid var(--line);border-radius:10px;padding:8px 10px;margin-bottom:12px;align-items:center;gap:10px;flex-wrap:wrap;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+  .workbar .sp{flex:1}
+  .steps{list-style:none;display:flex;gap:4px;margin:0;padding:0;flex-wrap:wrap;counter-reset:st}
+  .steps li{counter-increment:st;font-size:12.5px;color:var(--muted);padding:4px 10px 4px 6px;border-radius:999px;background:#f1f3f6;display:flex;align-items:center;gap:6px}
+  .steps li::before{content:counter(st);width:18px;height:18px;border-radius:50%;background:#c9d0d8;color:#fff;display:grid;place-items:center;font-size:11px;font-weight:700}
+  .steps li.done::before{content:"✓";background:var(--ok)}
+  .steps li.cur{background:#fbeeee;color:var(--accent);font-weight:600}
+  .steps li.cur::before{background:var(--accent)}
+  .wprof{display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--muted)}
+  .wprof select{border:1px solid var(--line);border-radius:8px;padding:6px 8px;background:#fff}
+  #work > .panel{top:64px;max-height:calc(100vh - 74px)}
+  .pv-col{top:64px}
+  .pv-outer{max-height:calc(100vh - 120px)}
+  @media (max-width:1000px){ .workbar{position:static} }
+  #toast{position:fixed;left:50%;bottom:22px;transform:translate(-50%,20px);opacity:0;pointer-events:none;z-index:50;transition:.2s;
+    background:#1f2a37;color:#fff;border-radius:10px;padding:12px 16px;box-shadow:0 8px 24px rgba(0,0,0,.25);display:flex;gap:12px;align-items:center;max-width:min(92vw,640px);font-size:14px}
+  #toast.show{opacity:1;transform:translate(-50%,0);pointer-events:auto}
+  #toast.ok{border-left:5px solid #3fb871} #toast.err{border-left:5px solid #f0645c}
+  #toast .tb{border:1px solid rgba(255,255,255,.35);background:transparent;color:#fff;border-radius:7px;padding:5px 10px;cursor:pointer;white-space:nowrap}
+  #toast .tb.pr{background:#fff;color:#1f2a37;font-weight:600}
+  .foot .feats{display:flex;justify-content:center;gap:22px;flex-wrap:wrap;margin-bottom:14px;color:rgba(255,255,255,.85)}
+  .foot .feats span{display:flex;align-items:center;gap:7px}
+  .foot .feats svg{width:20px;height:20px;fill:none;stroke:#f1d38a;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+  .foot .brand{display:flex;align-items:center;justify-content:center;gap:10px;padding-top:12px;border-top:1px solid rgba(255,255,255,.12)}
+  .foot .brand img{background:#fff;border-radius:50%;padding:2px}
   .foot .copy{color:#fff;font-weight:600;font-size:13.5px}
   .foot .sub{margin-top:4px}
 </style>
@@ -146,24 +189,28 @@
       <div class="emblem"><img src="assets/logo-tgu.svg" alt="Logo Trường Đại học Tiền Giang" width="56" height="56"></div>
       <div class="ttl">
         <div class="kicker">Tổ Chuyển đổi số Trường Đại học Tiền Giang</div>
-        <h1>Định dạng văn bản hành chính <span class="ver">Phiên bản 2.3</span></h1>
+        <h1>Định dạng văn bản hành chính <span class="ver">Phiên bản 2.4</span></h1>
         <p>Trình bày lại thể thức theo Nghị định 30/2020/NĐ-CP và Hướng dẫn 05-HD/VPTW · kiểm tra chính tả</p>
       </div>
-      <div class="sp"></div>
-      <label class="prof">Bộ thể thức
-        <select id="profile">
-          <option value="nd30">Nghị định 30/2020/NĐ-CP (văn bản hành chính)</option>
-          <option value="dang">Văn bản của Đảng (Hướng dẫn 05-HD/VPTW, 2026)</option>
-        </select>
-      </label>
     </div>
   </div>
 </header>
 
 <div class="wrap">
-  <section class="intro">
+  <section class="intro" id="intro">
     <div>
+      <div class="step"><span class="num">1</span><b>Chọn bộ thể thức</b></div>
+      <div class="profcards" id="profCards">
+        <button type="button" class="pcard" data-prof="nd30">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 21V8l7-5 7 5v13M9 21v-6h6v6M3 21h18"/></svg>
+          <span><b>Văn bản hành chính</b><small>Nghị định 30/2020/NĐ-CP</small></span><i class="chk">✓</i></button>
+        <button type="button" class="pcard" data-prof="dang">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 21V3M5 4h11l-2 4 2 4H5"/></svg>
+          <span><b>Văn bản của Đảng</b><small>Hướng dẫn 05-HD/VPTW (2026)</small></span><i class="chk">✓</i></button>
+      </div>
+      <div class="step"><span class="num">2</span><b>Tải văn bản Word lên</b></div>
       <div id="drop" tabindex="0">
+        <svg class="dropic" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M12 18v-6M9 15l3-3 3 3"/></svg>
         <b>Kéo thả file Word (.docx) vào đây</b>
         <div class="hint">hoặc bấm để chọn file · file được xử lý ngay trên máy bạn, không gửi đi đâu</div>
         <input type="file" id="file" accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document" hidden>
@@ -171,33 +218,50 @@
       <div class="row" style="margin-top:10px">
         <button class="btn" id="demo">Thử với công văn mẫu</button>
         <button class="btn" id="demo2">Thử với văn bản Đảng mẫu</button>
+        <button class="btn primary" id="resume" style="display:none">Tiếp tục văn bản đang làm →</button>
         <span id="msg"></span>
       </div>
       <div class="newdoc">
-        <div><b>Soạn văn bản mới từ mẫu</b>
-          <div class="note">Dùng bộ thể thức đang chọn ở đầu trang và thông tin đơn vị đã lưu (nếu có). Thay các chỗ “…” bằng nội dung thật.</div></div>
+        <div><b>Hoặc soạn văn bản mới từ mẫu</b>
+          <div class="note">Dùng bộ thể thức đã chọn ở bước 1 và thông tin đơn vị đã lưu (nếu có). Thay các chỗ “…” bằng nội dung thật.</div></div>
         <div class="row">
           <select id="newType">
             <option value="cv">Công văn</option><option value="qd">Quyết định</option><option value="tt">Tờ trình</option>
             <option value="bc">Báo cáo</option><option value="kh">Kế hoạch</option><option value="tb">Thông báo</option><option value="gm">Giấy mời</option><option value="bb">Biên bản</option>
+            <option value="khac">Khác…</option>
           </select>
+          <input id="newOther" list="otherTypes" placeholder="Tên loại, ví dụ Hướng dẫn" style="display:none">
+          <datalist id="otherTypes"></datalist>
           <button class="btn primary" id="newDoc">Soạn mới</button>
         </div>
       </div>
     </div>
     <div class="card">
-      <b>Cách dùng</b>
-      <ul>
-        <li>Tải lên công văn, báo cáo, kế hoạch, tờ trình… dạng <b>.docx</b> (file .doc cũ: mở bằng Word rồi lưu lại thành .docx).</li>
-        <li>Ứng dụng tự nhận diện: tên cơ quan, số ký hiệu, ngày tháng, trích yếu, kính gửi, nội dung, chữ ký, nơi nhận. Văn bản có tiêu đề “ĐẢNG CỘNG SẢN VIỆT NAM” được tự chuyển sang thể thức Đảng.</li>
-        <li>Mục <b>Kiểm tra chính tả</b> chỉ ra từ viết sai, đặt dấu thanh sai, lỗi viết hoa, lặp từ, thiếu khoảng trắng — bấm <b>Sửa</b> để sửa ngay.</li>
-        <li>Không có sẵn file? Chọn loại văn bản ở mục <b>Soạn văn bản mới từ mẫu</b>. Bấm <b>Lưu thông tin đơn vị</b> một lần để lần sau tự điền tên cơ quan, địa danh, người ký, nơi nhận.</li>
-        <li>Kiểm tra và sửa các ô bên trái nếu nhận diện sai, xem trước ở bên phải, rồi bấm <b>Tải về .docx</b>.</li>
-        <li>Kết quả cần người soạn rà lại trước khi trình ký.</li>
-      </ul>
+      <b>Các bước thực hiện</b>
+      <ol>
+        <li><b>Chọn bộ thể thức</b>: văn bản hành chính (NĐ 30) hoặc văn bản của Đảng. Văn bản có tiêu đề “ĐẢNG CỘNG SẢN VIỆT NAM” được tự chuyển sang thể thức Đảng.</li>
+        <li><b>Tải file .docx lên</b> (file .doc cũ: mở bằng Word rồi lưu lại thành .docx), hoặc soạn mới từ mẫu.</li>
+        <li><b>Rà soát, chỉnh sửa</b>: xem mục Kiểm tra thể thức và Kiểm tra chính tả, sửa các ô bên trái nếu nhận diện sai, xem trước ở bên phải.</li>
+        <li><b>Tải về .docx</b>. Kết quả cần người soạn rà lại trước khi trình ký.</li>
+      </ol>
+      <div class="note" style="margin-top:8px">Mẹo: bấm <b>Lưu thông tin đơn vị</b> một lần để lần sau tự điền tên cơ quan, địa danh, người ký, nơi nhận.</div>
     </div>
   </section>
 
+  <div class="workbar" id="workbar">
+    <button class="btn" id="back">← Quay lại</button>
+    <ol class="steps">
+      <li class="done">Chọn thể thức</li><li class="done">Tải văn bản</li><li class="cur">Rà soát, chỉnh sửa</li><li id="stDl">Tải về</li>
+    </ol>
+    <label class="wprof">Thể thức
+      <select id="profile">
+        <option value="nd30">Nghị định 30/2020/NĐ-CP</option>
+        <option value="dang">Văn bản Đảng (HD 05-HD/VPTW)</option>
+      </select></label>
+    <span class="sp"></span>
+    <button class="btn" id="reset">Làm văn bản khác</button>
+    <button class="btn primary" id="dl2">Tiếp tục: Tải về .docx →</button>
+  </div>
   <section id="work">
     <div class="panel">
       <details class="sec" open>
@@ -325,7 +389,6 @@
         <span class="t">Xem trước</span>
         <span class="m">gần đúng, không chia trang · cuộn trong khung để xem hết</span>
         <span class="sp" style="flex:1"></span>
-        <button class="btn" id="reset">Tải file khác</button>
         <button class="btn primary" id="dl">Tải về .docx</button>
       </div>
       <div class="pv-outer" id="pvOuter"><div id="pvScale"><div class="page" id="page"></div></div></div>
@@ -334,10 +397,16 @@
 </div>
 <footer class="foot">
   <div class="foot-in">
-    <div class="copy">Copyright © 2026 Tổ Chuyển đổi số, Trường Đại học Tiền Giang</div>
-    <div class="sub">Phiên bản 2.3 · Thể thức theo Nghị định 30/2020/NĐ-CP và Hướng dẫn 05-HD/VPTW · Văn bản được xử lý ngay trên trình duyệt, không gửi lên máy chủ</div>
+    <div class="feats">
+      <span><svg viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/></svg>Xử lý ngay trên máy, không gửi file đi</span>
+      <span><svg viewBox="0 0 24 24"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M8 13h8M8 17h5"/></svg>Thể thức NĐ 30/2020 và HD 05-HD/VPTW</span>
+      <span><svg viewBox="0 0 24 24"><path d="M4 19l4-12 4 12M5.5 15h5M14 15l3 3 5-6"/></svg>Kiểm tra chính tả tiếng Việt</span>
+    </div>
+    <div class="brand"><img src="assets/logo-tgu.svg" alt="" width="34" height="34"><div class="copy">Copyright © 2026 Tổ Chuyển đổi số, Trường Đại học Tiền Giang</div></div>
+    <div class="sub">Phiên bản 2.4 · Thể thức theo Nghị định 30/2020/NĐ-CP và Hướng dẫn 05-HD/VPTW · Văn bản được xử lý ngay trên trình duyệt, không gửi lên máy chủ</div>
   </div>
 </footer>
+<div id="toast" role="status" aria-live="polite"></div>
 
 <script>
 "use strict";
@@ -826,9 +895,9 @@ function loadResult(R, fileName, opts = {}){
   for (const f of FIELDS) $("f_" + f).value = m[f] || "";
   STATE.unitFilled = unitFill(opts.template ? "all" : "empty", opts.template && (R.sig2 || []).length ? ["sig", "nguoiKy"] : []);
   refreshUnitNote();
-  $("work").style.display = "grid";
+  enterWork();
   update();
-  setTimeout(() => $("work").scrollIntoView({ behavior: "smooth", block: "start" }), 50);
+  setTimeout(() => $("workbar").scrollIntoView({ behavior: "smooth", block: "start" }), 50);
 }
 function readOpts(){
   const n = id => +$("o_" + id).value;
@@ -1165,7 +1234,7 @@ function checks(M){
   if (M.canCu){
     const cc = M.body.slice(M.canCu.from, M.canCu.to).map(it => it.runs.map(r => r.text).join(""));
     if (cc.some(t => /58\/NQ-ĐHTG/.test(t)) && cc.some(t => /733\/QĐ-ĐHTG/.test(t))) add("warn", "Đang dùng cả hai Quy chế tổ chức và hoạt động (Nghị quyết 58/NQ-ĐHTG năm 2021 và Quyết định 733/QĐ-ĐHTG năm 2026) — chỉ giữ văn bản còn hiệu lực.");
-    else if (cc.some(t => /58\/NQ-ĐHTG/.test(t))) add("info", "Căn cứ Nghị quyết 58/NQ-ĐHTG (2021) có thể đã được thay bằng Quyết định 733/QĐ-ĐHTG ngày 01/10/2026 — kiểm tra hiệu lực.");
+    else if (cc.some(t => /58\/NQ-ĐHTG/.test(t))) add("warn", "Lưu ý: kiểm tra lại căn cứ Nghị quyết 58/NQ-ĐHTG (2021), văn bản này đã được thay thế bằng Quyết định số 733/QĐ-ĐHTG ngày 01/10/2026.");
   }
   if (M.appendix.length) add("info", `File có văn bản kèm theo sau phần chữ ký (${M.appendix.length} đoạn/bảng) — đã tách riêng, đặt sang trang mới và giữ nguyên nội dung, chưa trình bày lại theo thể thức.`);
   if (STATE && STATE.unitFilled && STATE.unitFilled.length) add("info", "Đã điền từ thông tin đơn vị đã lưu: " + STATE.unitFilled.join(", ") + ".");
@@ -1401,6 +1470,7 @@ function renderSpell(issues){
 const splice = (t, a, b, s) => t.slice(0, a) + s + t.slice(b);
 function applyFixes(fixes){
   if (!STATE || !LAST) return;
+  const valid = fixes.filter(x => x.sug && x.start >= 0);
   const M = LAST.M;
   const groups = {};
   for (const x of fixes){ if (!x.sug || x.start < 0) continue; (groups[x.field + "|" + x.idx] ||= []).push(x); }
@@ -1412,6 +1482,11 @@ function applyFixes(fixes){
     else if (field === "body") fixBody(M, idx, g);
   }
   update();
+  if (!valid.length) return;
+  const left = LAST ? LAST.issues.length : 0;
+  const what = valid.length === 1 ? `Đã sửa “${valid[0].found}” thành “${valid[0].sug}”.` : `Đã sửa ${valid.length} lỗi chính tả.`;
+  toast(what + (left ? ` Còn ${left} lỗi cần xem lại.` : " Không còn lỗi chính tả nào."), left ? "ok" : "ok",
+    left ? [] : [{ label: "Tải về .docx", primary: true, run: () => $("dl").click() }]);
 }
 function fixBody(M, idx, g){
   const it = M.body[idx]; if (!it || it.kind !== "p") return;
@@ -1591,7 +1666,8 @@ async function handleFile(file){
     Object.assign(STATS, { drawings: 0, merged: false, numbered: 0, numConverted: 0, footnotes: false });
     const blocks = await readDocx(file);
     loadResult(classify(blocks), file.name.replace(/\.docx$/i, ""));
-    msg("Đã đọc " + file.name + ". Kiểm tra các ô bên dưới.");
+    msg("");
+    toast("Đã đọc " + file.name + ". Xem mục Kiểm tra thể thức và Kiểm tra chính tả, sửa nếu cần rồi tải về.");
   } catch (e){ console.error(e); msg("Không đọc được file: " + (e.message || e), true); }
 }
 const drop = $("drop"), fileIn = $("file");
@@ -1601,15 +1677,55 @@ fileIn.addEventListener("change", () => { handleFile(fileIn.files[0]); fileIn.va
 ["dragenter", "dragover"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add("hover"); }));
 ["dragleave", "drop"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove("hover"); }));
 drop.addEventListener("drop", e => handleFile(e.dataTransfer.files[0]));
-$("reset").addEventListener("click", () => { $("work").style.display = "none"; STATE = null; msg(""); window.scrollTo({ top: 0, behavior: "smooth" }); });
+/* ---- Chuyển bước: trang đầu (chọn thể thức, tải file) ⇄ rà soát, chỉnh sửa */
+function enterWork(){
+  $("intro").style.display = "none"; $("workbar").style.display = "flex"; $("work").style.display = "grid";
+  $("stDl").className = ""; hideToast();
+}
+function leaveWork(keep){
+  $("work").style.display = "none"; $("workbar").style.display = "none"; $("intro").style.display = "";
+  $("resume").style.display = keep && STATE ? "" : "none";
+  if (keep && STATE) msg("Văn bản đang làm vẫn được giữ: bấm “Tiếp tục văn bản đang làm” để quay lại chỉnh sửa.");
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+$("back").addEventListener("click", () => leaveWork(true));
+$("resume").addEventListener("click", () => { if (STATE){ enterWork(); update(); msg(""); } });
+$("reset").addEventListener("click", () => { STATE = null; msg(""); hideToast(); leaveWork(false); });
+$("dl2").addEventListener("click", () => $("dl").click());
+// Thẻ chọn bộ thể thức ở bước 1, đồng bộ với ô chọn trên thanh công việc
+function syncProfCards(){ document.querySelectorAll(".pcard").forEach(c => c.classList.toggle("on", c.dataset.prof === $("profile").value)); }
+document.querySelectorAll(".pcard").forEach(c => c.addEventListener("click", () => {
+  if ($("profile").value !== c.dataset.prof){ $("profile").value = c.dataset.prof; $("profile").dispatchEvent(new Event("change")); }
+  syncProfCards();
+}));
+$("profile").addEventListener("change", syncProfCards);
+/* ---- Thông báo nổi (luôn nhìn thấy, kể cả khi đang cuộn trong khung chỉnh sửa) */
+let toastTmr = null;
+function hideToast(){ $("toast").classList.remove("show"); }
+function toast(text, kind = "ok", actions = [], ms = 4500){
+  const t = $("toast"); t.className = kind; t.innerHTML = "";
+  const sp = document.createElement("span"); sp.textContent = text; t.appendChild(sp);
+  actions.forEach(a => { const b = document.createElement("button"); b.className = "tb" + (a.primary ? " pr" : ""); b.textContent = a.label;
+    b.addEventListener("click", () => { hideToast(); a.run && a.run(); }); t.appendChild(b); });
+  requestAnimationFrame(() => t.classList.add("show"));
+  clearTimeout(toastTmr); if (ms) toastTmr = setTimeout(hideToast, ms);
+}
 $("dl").addEventListener("click", async () => {
   if (!STATE) return;
   const btn = $("dl"); btn.disabled = true;
   try {
     const M = readModel();
     const blob = await docx.Packer.toBlob(buildDocx(buildSpec(M)));
-    msg(await saveFile(blob, (STATE.fileName || "van-ban") + (M.dang ? "_Dang.docx" : "_ND30.docx")));
-  } catch (e){ console.error(e); msg("Lỗi khi tạo file: " + (e.message || e), true); }
+    const name = (STATE.fileName || "van-ban") + (M.dang ? "_Dang.docx" : "_ND30.docx");
+    const r = await saveFile(blob, name);
+    msg(r);
+    if (/^Đã (tải|tạo)/.test(r)){
+      $("stDl").className = "done";
+      const left = LAST ? LAST.issues.length : 0;
+      toast(`Đã chỉnh sửa xong và tải về file “${name}”.` + (left ? ` Lưu ý: còn ${left} lỗi chính tả chưa xử lý.` : ""), "ok",
+        [{ label: "Tiếp tục chỉnh sửa" }, { label: "Làm văn bản khác", primary: true, run: () => $("reset").click() }], 0);
+    } else toast(r, "err");
+  } catch (e){ console.error(e); msg("Lỗi khi tạo file: " + (e.message || e), true); toast("Lỗi khi tạo file: " + (e.message || e), "err"); }
   btn.disabled = false;
 });
 
@@ -1644,7 +1760,7 @@ $("unitSave").addEventListener("click", () => {
 $("unitFill").addEventListener("click", () => { const done = unitFill("all"); if (STATE) STATE.unitFilled = done; refreshUnitNote(); update(); });
 
 /* ---- Soạn mới từ mẫu */
-function templateR(type, dang){
+function templateR(type, dang, other = ""){
   const now = new Date(), y = String(now.getFullYear());
   const P = t => ({ kind: "p", p: mkP([{ text: t, b: false, i: false, u: false }], "", false), t });
   const T = {
@@ -1687,7 +1803,12 @@ function templateR(type, dang){
                    + (dang ? "" : "/.")],
           sig: dang ? ["CHỦ TRÌ"] : ["CHỦ TỌA"], sig2: ["THƯ KÝ"],
           noiNhan: ["…", dang ? "Lưu Văn phòng …" : "Lưu: VT, …"] },
-  }[type];
+  }[type] || (() => {
+    // “Khác…”: người dùng tự nhập tên loại (Hướng dẫn, Chương trình, Quy chế, Giấy giới thiệu…)
+    const tl = clean(other).toUpperCase() || "TÊN LOẠI VĂN BẢN";
+    return { loai: "tl", tenLoai: tl, trichYeu: "…", ab: ABBR[dang ? "dang" : "nd30"][tl] || "…",
+             body: ["…", "1. …", "2. …", "…"], noiNhan: ["…", dang ? "Lưu Văn phòng …" : "Lưu: VT, …"] };
+  })();
   const so = dang ? `-${T.ab}/…` : (T.loai === "cv" ? "/…" : `/${T.ab}-…`);
   return {
     coQuan: [], so, diaDanh: "", d: String(now.getDate()), m: String(now.getMonth() + 1), y,
@@ -1698,10 +1819,22 @@ function templateR(type, dang){
 }
 $("newDoc").addEventListener("click", () => {
   Object.assign(STATS, { drawings: 0, merged: false, numbered: 0, numConverted: 0, footnotes: false });
-  const type = $("newType").value, dang = isDangProf();
-  loadResult(templateR(type, dang), "soan-moi-" + type, { template: true });
-  msg(`Đã mở mẫu ${$("newType").selectedOptions[0].text.toLowerCase()} theo thể thức ${dang ? "văn bản Đảng" : "NĐ 30"}. Thay các chỗ “…” bằng nội dung thật.`);
+  const type = $("newType").value, dang = isDangProf(), other = $("newOther").value;
+  if (type === "khac" && !clean(other)){ $("newOther").focus(); msg("Nhập hoặc chọn tên loại văn bản ở ô bên cạnh.", true); return; }
+  loadResult(templateR(type, dang, other), "soan-moi-" + (type === "khac" ? "khac" : type), { template: true });
+  const nm = type === "khac" ? clean(other).toLowerCase() : $("newType").selectedOptions[0].text.toLowerCase();
+  toast(`Đã mở mẫu ${nm} theo thể thức ${dang ? "văn bản Đảng" : "NĐ 30"}. Thay các chỗ “…” bằng nội dung thật.`);
 });
+function fillOtherTypes(){
+  const have = ["CÔNG VĂN", "QUYẾT ĐỊNH", "TỜ TRÌNH", "BÁO CÁO", "KẾ HOẠCH", "THÔNG BÁO", "GIẤY MỜI", "BIÊN BẢN"];
+  const names = [...new Set(Object.keys(ABBR[isDangProf() ? "dang" : "nd30"]))].filter(k => !have.includes(k) && !/THOẢ|UỶ/.test(k));
+  $("otherTypes").innerHTML = names.map(k => `<option value="${k.charAt(0) + k.slice(1).toLowerCase()}">`).join("");
+}
+$("newType").addEventListener("change", () => {
+  const k = $("newType").value === "khac"; $("newOther").style.display = k ? "" : "none"; if (k){ fillOtherTypes(); $("newOther").focus(); }
+});
+$("profile").addEventListener("change", fillOtherTypes);
+syncProfCards();
 $("profile").addEventListener("change", refreshUnitNote);
 refreshUnitNote();
 
@@ -1716,7 +1849,7 @@ const CC_LIB = [
     text: "Căn cứ Thông tư số 06/2025/TT-BGD&ĐT ngày 19 tháng 3 năm 2025 của Bộ trưởng Bộ Giáo dục và Đào tạo về việc sửa đổi, bổ sung một số điều của Quy chế tuyển sinh đại học, tuyển sinh cao đẳng ngành Giáo dục Mầm non ban hành kèm theo Thông tư số 08/2022/TT-BGD&ĐT ngày 06 tháng 6 năm 2022 của Bộ trưởng Bộ Giáo dục và Đào tạo" },
   { id: "qc733", g: "Tổ chức và hoạt động", key: "733/QĐ-ĐHTG", base: true,
     text: "Căn cứ Quyết định số 733/QĐ-ĐHTG ngày 01 tháng 10 năm 2026 của Trường Đại học Tiền Giang về việc ban hành Quy chế Tổ chức và hoạt động của Trường Đại học Tiền Giang" },
-  { id: "nq58", g: "Tổ chức và hoạt động", key: "58/NQ-ĐHTG", old: "Có thể đã được thay bằng Quyết định 733/QĐ-ĐHTG ngày 01/10/2026 — kiểm tra hiệu lực trước khi dùng.",
+  { id: "nq58", g: "Tổ chức và hoạt động", key: "58/NQ-ĐHTG", old: "Lưu ý: kiểm tra lại, văn bản này đã được thay thế bằng Quyết định số 733/QĐ-ĐHTG ngày 01/10/2026.",
     text: "Căn cứ Nghị quyết số 58/NQ-ĐHTG ngày 15 tháng 10 năm 2021 của Hội đồng trường Trường Đại học Tiền Giang về việc ban hành Quy chế tổ chức và hoạt động của Trường Đại học Tiền Giang" },
   { id: "qd738", g: "Đào tạo", key: "738/QĐ-ĐHTG", tags: ["đào tạo", "học phần", "thi ", "giảng dạy", "tốt nghiệp", "sinh viên", "người học", "học vụ", "khảo thí"],
     text: "Căn cứ Quyết định số 738/QĐ-ĐHTG ngày 05 tháng 10 năm 2026 của Trường Đại học Tiền Giang về việc ban hành Quy định đào tạo trình độ đại học, trình độ cao đẳng ngành Giáo dục Mầm non của Trường Đại học Tiền Giang" },
@@ -1875,12 +2008,12 @@ function sampleDang(){
 $("demo").addEventListener("click", () => {
   Object.assign(STATS, { drawings: 0, merged: false, numbered: 0, numConverted: 0, footnotes: false });
   loadResult(classify(sampleBlocks()), "cong-van-mau");
-  msg("Đang dùng công văn mẫu (nội dung giả định, cố ý có vài lỗi chính tả).");
+  toast("Đang dùng công văn mẫu (nội dung giả định, cố ý có vài lỗi chính tả).");
 });
 $("demo2").addEventListener("click", () => {
   Object.assign(STATS, { drawings: 0, merged: false, numbered: 0, numConverted: 0, footnotes: false });
   loadResult(classify(sampleDang()), "van-ban-dang-mau");
-  msg("Đang dùng văn bản Đảng mẫu (nội dung giả định, cố ý có vài lỗi chính tả).");
+  toast("Đang dùng văn bản Đảng mẫu (nội dung giả định, cố ý có vài lỗi chính tả).");
 });
 </script>
 </body>
